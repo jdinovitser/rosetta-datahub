@@ -25,6 +25,10 @@ Talk-to-data agents fail **silently** when one metric name has two definitions. 
 4. **Reconciliation Broker** — drafts one canonical definition, routes to the real owners.
 5. **Writer** — upserts the canonical GlossaryTerm, links every affected asset, deprecates losers. *The loop that compounds.*
 
+
+### Full pipeline overview
+![Rosetta architecture — read, reason, reconcile, write-back](assets/07_architecture.png)
+
 ## Quick start (zero config)
 ```bash
 pip install -r requirements-demo.txt
