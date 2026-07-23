@@ -56,7 +56,7 @@ Replit (`.replit`), Render (`render.yaml`), Docker (`Dockerfile`) or `gunicorn -
 
 ## Tests
 ```bash
-pytest -q      # 26 passed
+pytest -q      # 36 passed
 ```
 
 ## Docs
