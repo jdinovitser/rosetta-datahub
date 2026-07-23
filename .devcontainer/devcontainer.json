@@ -7,11 +7,6 @@
       "moby": true
     }
   },
-  "hostRequirements": {
-    "cpus": 4,
-    "memory": "16gb",
-    "storage": "32gb"
-  },
   "forwardPorts": [9002, 8080, 5000],
   "portsAttributes": {
     "9002": { "label": "DataHub UI" },
