@@ -1,0 +1,27 @@
+{
+  "name": "Rosetta + DataHub (live)",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true
+    }
+  },
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb",
+    "storage": "32gb"
+  },
+  "forwardPorts": [9002, 8080, 5000],
+  "portsAttributes": {
+    "9002": { "label": "DataHub UI" },
+    "8080": { "label": "DataHub GMS" },
+    "5000": { "label": "Rosetta web app" }
+  },
+  "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt acryl-datahub",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-azuretools.vscode-docker"]
+    }
+  }
+}
