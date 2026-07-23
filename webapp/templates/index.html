@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rosetta — Semantic Consistency Agent</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <img class="logo" src="{{ url_for('static', filename='img/rosetta-logo.svg') }}" alt="Rosetta">
+    <div class="mode {{ 'live' if live_mode else 'demo' }}">
+      {{ 'LIVE DATAHUB' if live_mode else 'DEMO MODE · seed data' }}
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>One metric. Two meanings. <span class="accent">Silent chaos.</span></h1>
+    <p class="tagline">
+      Rosetta is a linter for <em>meaning</em> across your DataHub graph. It finds
+      where two teams silently mean different things by the same metric, quantifies
+      the blast radius, brokers a canonical definition, and writes it back.
+    </p>
+    <div class="actions">
+      <button id="runDemo" class="btn primary">▶ Run the five-agent demo</button>
+      <button id="runScan" class="btn ghost">Read-only scan</button>
+      <div class="exports" id="exportBar" hidden>
+        <span>Export report:</span>
+        <a class="chip" href="/api/export/json">JSON</a>
+        <a class="chip" href="/api/export/csv">CSV</a>
+        <a class="chip" href="/api/export/md">Markdown</a>
+        <a class="chip" href="/api/export/html">HTML</a>
+      </div>
+    </div>
+  </section>
+
+  <main class="grid">
+    <section class="col pipeline">
+      <h2>Pipeline</h2>
+      <ol id="steps" class="steps">
+        <li class="empty">Click <b>Run the five-agent demo</b> to watch Rosetta work.</li>
+      </ol>
+    </section>
+
+    <section class="col results">
+      <h2>Findings</h2>
+      <div id="summary" class="summary" hidden>
+        <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Conflicts</div></div>
+        <div class="stat"><div class="n" id="sHigh">0</div><div class="l">High severity</div></div>
+        <div class="stat"><div class="n" id="sAssets">0</div><div class="l">Assets at risk</div></div>
+        <div class="stat cost"><div class="n" id="sCost">$0</div><div class="l">Cost avoided</div></div>
+      </div>
+      <div id="conflicts" class="conflicts"></div>
+
+      <div id="graphWrap" class="graph-wrap" hidden>
+        <div class="graph-head">
+          <h3 id="graphTitle">Blast radius</h3>
+          <div class="legend">
+            <span><i style="background:#7c9cff"></i>metric</span>
+            <span><i style="background:#35c4c9"></i>dataset</span>
+            <span><i style="background:#f7a03b"></i>dashboard</span>
+            <span><i style="background:#e5484d"></i>ML model</span>
+          </div>
+        </div>
+        <svg id="graph" class="graph"></svg>
+        <p class="graph-note">Each edge is a downstream dependency Rosetta walked in DataHub lineage.
+          A wrong definition silently flows to every node here.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    Rosetta · Built for the DataHub Agent Hackathon · Apache-2.0 ·
+    <a href="https://github.com/">source</a>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "canonical_term": "urn:li:glossaryTerm:active_user",
+  "display_name": "Monthly Active Users",
+  "canonical_definition": "CANONICAL DEFINITION of 'Monthly Active Users'. Base (from marketing, highest coverage): Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline. Reconciliation note: 2 teams defined this differently. Agreed computation: COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false. Conflicting variants from finance are deprecated and mapped here.",
+  "linked_assets": [
+    "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+    "urn:li:dashboard:(looker,fin_exec_overview)",
+    "urn:li:dashboard:(looker,fin_board_pack)",
+    "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+    "urn:li:dashboard:(looker,growth_weekly)",
+    "urn:li:dashboard:(looker,campaign_attribution)",
+    "urn:li:dashboard:(tableau,cmo_review)",
+    "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+  ],
+  "deprecated_terms": [
+    "urn:li:glossaryTerm:finance.active_user"
+  ],
+  "approvers_notified": [
+    "urn:li:corpGroup:finance-analytics",
+    "urn:li:corpGroup:growth-marketing"
+  ],
+  "audit": {
+    "reconciled_by": "rosetta-agent",
+    "reconciled_at": "2026-07-21T15:04:00Z",
+    "human_approved_by": "urn:li:corpGroup:finance-analytics"
+  }
+}

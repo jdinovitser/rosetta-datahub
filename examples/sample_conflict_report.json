@@ -1,0 +1,586 @@
+{
+  "generated_at": "2026-07-21T15:37:58.132442+00:00",
+  "summary": {
+    "total_conflicts": 3,
+    "critical": 0,
+    "high": 1,
+    "assets_at_risk": 24,
+    "impact": {
+      "total_impacted_assets": 24,
+      "total_manual_hours_avoided": 12.0,
+      "estimated_cost_avoided_usd": 1080
+    }
+  },
+  "conflicts": [
+    {
+      "kind": "silent_contradiction",
+      "metric": "active_user",
+      "severity": "high",
+      "confidence": 0.933,
+      "blast_radius": 12,
+      "impacted_assets": [
+        "urn:li:chart:(looker,arpu_trend)",
+        "urn:li:dashboard:(looker,campaign_attribution)",
+        "urn:li:dashboard:(looker,fin_board_pack)",
+        "urn:li:dashboard:(looker,fin_exec_overview)",
+        "urn:li:dashboard:(looker,growth_weekly)",
+        "urn:li:dashboard:(looker,retention_health)",
+        "urn:li:dashboard:(tableau,cmo_review)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.arpu,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)",
+        "urn:li:mlModel:(mlflow,churn_predictor,PROD)"
+      ],
+      "impact_graph": {
+        "nodes": [
+          {
+            "id": "metric::active_user::finance",
+            "label": "Monthly Active Users\n(finance)",
+            "type": "metric"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+            "label": "mau_revenue",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,fin_exec_overview)",
+            "label": "fin_exec_overview",
+            "type": "dashboard"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,fin_board_pack)",
+            "label": "fin_board_pack",
+            "type": "dashboard"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.arpu,PROD)",
+            "label": "arpu",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:chart:(looker,arpu_trend)",
+            "label": "arpu_trend",
+            "type": "dashboard"
+          },
+          {
+            "id": "metric::active_user::marketing",
+            "label": "Monthly Active Users\n(marketing)",
+            "type": "metric"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+            "label": "mau_sessions",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,growth_weekly)",
+            "label": "growth_weekly",
+            "type": "dashboard"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,campaign_attribution)",
+            "label": "campaign_attribution",
+            "type": "dashboard"
+          },
+          {
+            "id": "urn:li:dashboard:(tableau,cmo_review)",
+            "label": "cmo_review",
+            "type": "dashboard"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)",
+            "label": "user_engagement",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:mlModel:(mlflow,churn_predictor,PROD)",
+            "label": "churn_predictor",
+            "type": "model"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,retention_health)",
+            "label": "retention_health",
+            "type": "dashboard"
+          }
+        ],
+        "edges": [
+          {
+            "source": "metric::active_user::finance",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)"
+          },
+          {
+            "source": "metric::active_user::finance",
+            "target": "urn:li:dashboard:(looker,fin_exec_overview)"
+          },
+          {
+            "source": "metric::active_user::finance",
+            "target": "urn:li:dashboard:(looker,fin_board_pack)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+            "target": "urn:li:dashboard:(looker,fin_exec_overview)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.arpu,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.arpu,PROD)",
+            "target": "urn:li:dashboard:(looker,fin_board_pack)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.arpu,PROD)",
+            "target": "urn:li:chart:(looker,arpu_trend)"
+          },
+          {
+            "source": "metric::active_user::marketing",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)"
+          },
+          {
+            "source": "metric::active_user::marketing",
+            "target": "urn:li:dashboard:(looker,growth_weekly)"
+          },
+          {
+            "source": "metric::active_user::marketing",
+            "target": "urn:li:dashboard:(looker,campaign_attribution)"
+          },
+          {
+            "source": "metric::active_user::marketing",
+            "target": "urn:li:dashboard:(tableau,cmo_review)"
+          },
+          {
+            "source": "metric::active_user::marketing",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)",
+            "target": "urn:li:mlModel:(mlflow,churn_predictor,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)",
+            "target": "urn:li:dashboard:(tableau,cmo_review)"
+          },
+          {
+            "source": "urn:li:mlModel:(mlflow,churn_predictor,PROD)",
+            "target": "urn:li:dashboard:(looker,retention_health)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+            "target": "urn:li:dashboard:(looker,growth_weekly)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+          }
+        ]
+      },
+      "logic_similarity": 0.133,
+      "name_similarity": 1.0,
+      "rationale": "'Monthly Active Users' (finance) and 'Monthly Active Users' (marketing) share a name but compute differently (logic overlap 13%).",
+      "definitions": [
+        {
+          "domain": "finance",
+          "owner": "urn:li:corpGroup:finance-analytics",
+          "display_name": "Monthly Active Users",
+          "definition_text": "Users who completed at least one paid transaction in the trailing 30 days.",
+          "sql_logic": "COUNT(DISTINCT user_id) WHERE txn_amount > 0 AND event_date >= CURRENT_DATE - 30",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+            "urn:li:dashboard:(looker,fin_exec_overview)",
+            "urn:li:dashboard:(looker,fin_board_pack)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:finance.active_user"
+        },
+        {
+          "domain": "marketing",
+          "owner": "urn:li:corpGroup:growth-marketing",
+          "display_name": "Monthly Active Users",
+          "definition_text": "Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline.",
+          "sql_logic": "COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+            "urn:li:dashboard:(looker,growth_weekly)",
+            "urn:li:dashboard:(looker,campaign_attribution)",
+            "urn:li:dashboard:(tableau,cmo_review)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:marketing.active_user"
+        }
+      ],
+      "impact": {
+        "impacted_assets": 12,
+        "asset_breakdown": {
+          "dashboard": 7,
+          "dataset": 4,
+          "model": 1
+        },
+        "manual_reconciliation_hours": 6.0,
+        "estimated_manual_cost_usd": 540,
+        "risk_statement": "A wrong 'active_user' silently feeds 8 decision surface(s) (7 dashboards, 1 models) across 2 teams."
+      },
+      "proposed_reconciliation": {
+        "before": [
+          {
+            "term_urn": "urn:li:glossaryTerm:finance.active_user",
+            "domain": "finance",
+            "display_name": "Monthly Active Users",
+            "definition": "Users who completed at least one paid transaction in the trailing 30 days.",
+            "status": "active"
+          },
+          {
+            "term_urn": "urn:li:glossaryTerm:marketing.active_user",
+            "domain": "marketing",
+            "display_name": "Monthly Active Users",
+            "definition": "Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline.",
+            "status": "active"
+          }
+        ],
+        "after": {
+          "canonical_term_id": "active_user",
+          "display_name": "Monthly Active Users",
+          "definition": "CANONICAL DEFINITION of 'Monthly Active Users'. Base (from marketing, highest coverage): Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline. Reconciliation note: 2 teams defined this differently. Agreed computation: COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false. Conflicting variants from finance are deprecated and mapped here.",
+          "linked_assets": [
+            "urn:li:dashboard:(looker,campaign_attribution)",
+            "urn:li:dashboard:(looker,fin_board_pack)",
+            "urn:li:dashboard:(looker,fin_exec_overview)",
+            "urn:li:dashboard:(looker,growth_weekly)",
+            "urn:li:dashboard:(tableau,cmo_review)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+          ],
+          "deprecated_terms": [
+            "urn:li:glossaryTerm:finance.active_user"
+          ],
+          "status": "canonical"
+        }
+      }
+    },
+    {
+      "kind": "silent_contradiction",
+      "metric": "revenue",
+      "severity": "medium",
+      "confidence": 0.921,
+      "blast_radius": 6,
+      "impacted_assets": [
+        "urn:li:dashboard:(looker,cfo_monthly)",
+        "urn:li:dashboard:(looker,fin_exec_overview)",
+        "urn:li:dashboard:(salesforce,pipeline_dashboard)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.gross_margin,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.net_revenue,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.bookings,PROD)"
+      ],
+      "impact_graph": {
+        "nodes": [
+          {
+            "id": "metric::revenue::finance",
+            "label": "Net Revenue\n(finance)",
+            "type": "metric"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.net_revenue,PROD)",
+            "label": "net_revenue",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,fin_exec_overview)",
+            "label": "fin_exec_overview",
+            "type": "dashboard"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.gross_margin,PROD)",
+            "label": "gross_margin",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,cfo_monthly)",
+            "label": "cfo_monthly",
+            "type": "dashboard"
+          },
+          {
+            "id": "metric::revenue::sales",
+            "label": "Revenue\n(sales)",
+            "type": "metric"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.bookings,PROD)",
+            "label": "bookings",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dashboard:(salesforce,pipeline_dashboard)",
+            "label": "pipeline_dashboard",
+            "type": "dashboard"
+          }
+        ],
+        "edges": [
+          {
+            "source": "metric::revenue::finance",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.net_revenue,PROD)"
+          },
+          {
+            "source": "metric::revenue::finance",
+            "target": "urn:li:dashboard:(looker,fin_exec_overview)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.net_revenue,PROD)",
+            "target": "urn:li:dashboard:(looker,fin_exec_overview)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.net_revenue,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.gross_margin,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.gross_margin,PROD)",
+            "target": "urn:li:dashboard:(looker,cfo_monthly)"
+          },
+          {
+            "source": "metric::revenue::sales",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.bookings,PROD)"
+          },
+          {
+            "source": "metric::revenue::sales",
+            "target": "urn:li:dashboard:(salesforce,pipeline_dashboard)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.bookings,PROD)",
+            "target": "urn:li:dashboard:(salesforce,pipeline_dashboard)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.bookings,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.gross_margin,PROD)"
+          }
+        ]
+      },
+      "logic_similarity": 0.158,
+      "name_similarity": 1.0,
+      "rationale": "'Net Revenue' (finance) and 'Revenue' (sales) share a name but compute differently (logic overlap 16%).",
+      "definitions": [
+        {
+          "domain": "finance",
+          "owner": "urn:li:corpGroup:finance-analytics",
+          "display_name": "Net Revenue",
+          "definition_text": "Gross bookings minus refunds and chargebacks, recognized in the period.",
+          "sql_logic": "SUM(booking_amount) - SUM(refund_amount) - SUM(chargeback_amount)",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.net_revenue,PROD)",
+            "urn:li:dashboard:(looker,fin_exec_overview)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:finance.net_revenue"
+        },
+        {
+          "domain": "sales",
+          "owner": "urn:li:corpGroup:sales-ops",
+          "display_name": "Revenue",
+          "definition_text": "Total value of closed-won deals booked in the period, before refunds.",
+          "sql_logic": "SUM(booking_amount) WHERE stage = 'closed_won'",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.bookings,PROD)",
+            "urn:li:dashboard:(salesforce,pipeline_dashboard)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:sales.revenue"
+        }
+      ],
+      "impact": {
+        "impacted_assets": 6,
+        "asset_breakdown": {
+          "dashboard": 3,
+          "dataset": 3
+        },
+        "manual_reconciliation_hours": 3.0,
+        "estimated_manual_cost_usd": 270,
+        "risk_statement": "A wrong 'revenue' silently feeds 3 decision surface(s) (3 dashboards, 0 models) across 2 teams."
+      },
+      "proposed_reconciliation": {
+        "before": [
+          {
+            "term_urn": "urn:li:glossaryTerm:finance.net_revenue",
+            "domain": "finance",
+            "display_name": "Net Revenue",
+            "definition": "Gross bookings minus refunds and chargebacks, recognized in the period.",
+            "status": "active"
+          },
+          {
+            "term_urn": "urn:li:glossaryTerm:sales.revenue",
+            "domain": "sales",
+            "display_name": "Revenue",
+            "definition": "Total value of closed-won deals booked in the period, before refunds.",
+            "status": "active"
+          }
+        ],
+        "after": {
+          "canonical_term_id": "revenue",
+          "display_name": "Net Revenue",
+          "definition": "CANONICAL DEFINITION of 'Net Revenue'. Base (from finance, highest coverage): Gross bookings minus refunds and chargebacks, recognized in the period. Reconciliation note: 2 teams defined this differently. Agreed computation: SUM(booking_amount) - SUM(refund_amount) - SUM(chargeback_amount). Conflicting variants from sales are deprecated and mapped here.",
+          "linked_assets": [
+            "urn:li:dashboard:(looker,fin_exec_overview)",
+            "urn:li:dashboard:(salesforce,pipeline_dashboard)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.net_revenue,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.bookings,PROD)"
+          ],
+          "deprecated_terms": [
+            "urn:li:glossaryTerm:sales.revenue"
+          ],
+          "status": "canonical"
+        }
+      }
+    },
+    {
+      "kind": "hidden_synonym",
+      "metric": "customer_churn~attrition",
+      "severity": "medium",
+      "confidence": 0.808,
+      "blast_radius": 6,
+      "impacted_assets": [
+        "urn:li:dashboard:(looker,cs_health)",
+        "urn:li:dashboard:(looker,product_health)",
+        "urn:li:dashboard:(looker,retention_health)",
+        "urn:li:dashboard:(tableau,cs_qbr)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,cs.mart.attrition,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,prod.mart.churn,PROD)"
+      ],
+      "impact_graph": {
+        "nodes": [
+          {
+            "id": "metric::customer_churn::product",
+            "label": "Churn Rate\n(product)",
+            "type": "metric"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:snowflake,prod.mart.churn,PROD)",
+            "label": "churn",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,product_health)",
+            "label": "product_health",
+            "type": "dashboard"
+          },
+          {
+            "id": "metric::attrition::customer_success",
+            "label": "Customer Attrition\n(customer_success)",
+            "type": "metric"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:snowflake,cs.mart.attrition,PROD)",
+            "label": "attrition",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,cs_health)",
+            "label": "cs_health",
+            "type": "dashboard"
+          },
+          {
+            "id": "urn:li:dashboard:(tableau,cs_qbr)",
+            "label": "cs_qbr",
+            "type": "dashboard"
+          },
+          {
+            "id": "urn:li:dashboard:(looker,retention_health)",
+            "label": "retention_health",
+            "type": "dashboard"
+          }
+        ],
+        "edges": [
+          {
+            "source": "metric::customer_churn::product",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,prod.mart.churn,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,prod.mart.churn,PROD)",
+            "target": "urn:li:dashboard:(looker,product_health)"
+          },
+          {
+            "source": "metric::attrition::customer_success",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:snowflake,cs.mart.attrition,PROD)"
+          },
+          {
+            "source": "metric::attrition::customer_success",
+            "target": "urn:li:dashboard:(looker,cs_health)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,cs.mart.attrition,PROD)",
+            "target": "urn:li:dashboard:(tableau,cs_qbr)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:snowflake,cs.mart.attrition,PROD)",
+            "target": "urn:li:dashboard:(looker,retention_health)"
+          }
+        ]
+      },
+      "logic_similarity": 0.769,
+      "name_similarity": 0.0,
+      "rationale": "'Churn Rate' and 'Customer Attrition' appear to be the same metric under different names (logic overlap 77%).",
+      "definitions": [
+        {
+          "domain": "product",
+          "owner": "urn:li:corpGroup:product-analytics",
+          "display_name": "Churn Rate",
+          "definition_text": "Share of paying customers who cancelled their subscription in the period.",
+          "sql_logic": "COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,prod.mart.churn,PROD)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:product.customer_churn"
+        },
+        {
+          "domain": "customer_success",
+          "owner": "urn:li:corpGroup:customer-success",
+          "display_name": "Customer Attrition",
+          "definition_text": "Fraction of paying customers who cancelled their subscription during the period.",
+          "sql_logic": "COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,cs.mart.attrition,PROD)",
+            "urn:li:dashboard:(looker,cs_health)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:cs.attrition"
+        }
+      ],
+      "impact": {
+        "impacted_assets": 6,
+        "asset_breakdown": {
+          "dashboard": 4,
+          "dataset": 2
+        },
+        "manual_reconciliation_hours": 3.0,
+        "estimated_manual_cost_usd": 270,
+        "risk_statement": "A wrong 'customer_churn~attrition' silently feeds 4 decision surface(s) (4 dashboards, 0 models) across 2 teams."
+      },
+      "proposed_reconciliation": {
+        "before": [
+          {
+            "term_urn": "urn:li:glossaryTerm:product.customer_churn",
+            "domain": "product",
+            "display_name": "Churn Rate",
+            "definition": "Share of paying customers who cancelled their subscription in the period.",
+            "status": "active"
+          },
+          {
+            "term_urn": "urn:li:glossaryTerm:cs.attrition",
+            "domain": "customer_success",
+            "display_name": "Customer Attrition",
+            "definition": "Fraction of paying customers who cancelled their subscription during the period.",
+            "status": "active"
+          }
+        ],
+        "after": {
+          "canonical_term_id": "attrition",
+          "display_name": "Customer Attrition",
+          "definition": "CANONICAL DEFINITION unifying synonyms: Customer Attrition / Churn Rate. Definition: Fraction of paying customers who cancelled their subscription during the period. Computation: COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id).",
+          "linked_assets": [
+            "urn:li:dashboard:(looker,cs_health)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,cs.mart.attrition,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,prod.mart.churn,PROD)"
+          ],
+          "deprecated_terms": [
+            "urn:li:glossaryTerm:product.customer_churn"
+          ],
+          "status": "canonical"
+        }
+      }
+    }
+  ]
+}

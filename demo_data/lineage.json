@@ -1,0 +1,40 @@
+{
+  "_comment": "Downstream lineage edges: asset URN -> list of assets that depend on it. Rosetta walks this graph transitively to compute true blast radius (mirrors DataHub client.lineage.get_lineage(direction=DOWNSTREAM)).",
+  "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)": [
+    "urn:li:dashboard:(looker,fin_exec_overview)",
+    "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.arpu,PROD)"
+  ],
+  "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.arpu,PROD)": [
+    "urn:li:dashboard:(looker,fin_board_pack)",
+    "urn:li:chart:(looker,arpu_trend)"
+  ],
+  "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)": [
+    "urn:li:dashboard:(looker,growth_weekly)",
+    "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+  ],
+  "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)": [
+    "urn:li:mlModel:(mlflow,churn_predictor,PROD)",
+    "urn:li:dashboard:(tableau,cmo_review)"
+  ],
+  "urn:li:mlModel:(mlflow,churn_predictor,PROD)": [
+    "urn:li:dashboard:(looker,retention_health)"
+  ],
+  "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.net_revenue,PROD)": [
+    "urn:li:dashboard:(looker,fin_exec_overview)",
+    "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.gross_margin,PROD)"
+  ],
+  "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.bookings,PROD)": [
+    "urn:li:dashboard:(salesforce,pipeline_dashboard)",
+    "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.gross_margin,PROD)"
+  ],
+  "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.gross_margin,PROD)": [
+    "urn:li:dashboard:(looker,cfo_monthly)"
+  ],
+  "urn:li:dataset:(urn:li:dataPlatform:snowflake,prod.mart.churn,PROD)": [
+    "urn:li:dashboard:(looker,product_health)"
+  ],
+  "urn:li:dataset:(urn:li:dataPlatform:snowflake,cs.mart.attrition,PROD)": [
+    "urn:li:dashboard:(tableau,cs_qbr)",
+    "urn:li:dashboard:(looker,retention_health)"
+  ]
+}

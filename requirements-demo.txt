@@ -1,0 +1,4 @@
+# Minimal deps to run the offline DEMO + web app anywhere (Replit, Render...).
+# The DataHub SDK is only needed for live scans / write-back (see requirements.txt).
+flask>=3.0
+pytest>=7.0

@@ -1,0 +1,83 @@
+[
+  {
+    "name": "active_user",
+    "display_name": "Monthly Active Users",
+    "domain": "finance",
+    "owner": "urn:li:corpGroup:finance-analytics",
+    "definition_text": "Users who completed at least one paid transaction in the trailing 30 days.",
+    "sql_logic": "COUNT(DISTINCT user_id) WHERE txn_amount > 0 AND event_date >= CURRENT_DATE - 30",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+      "urn:li:dashboard:(looker,fin_exec_overview)",
+      "urn:li:dashboard:(looker,fin_board_pack)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:finance.active_user"
+  },
+  {
+    "name": "active_user",
+    "display_name": "Monthly Active Users",
+    "domain": "marketing",
+    "owner": "urn:li:corpGroup:growth-marketing",
+    "definition_text": "Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline.",
+    "sql_logic": "COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+      "urn:li:dashboard:(looker,growth_weekly)",
+      "urn:li:dashboard:(looker,campaign_attribution)",
+      "urn:li:dashboard:(tableau,cmo_review)",
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:marketing.active_user"
+  },
+  {
+    "name": "revenue",
+    "display_name": "Net Revenue",
+    "domain": "finance",
+    "owner": "urn:li:corpGroup:finance-analytics",
+    "definition_text": "Gross bookings minus refunds and chargebacks, recognized in the period.",
+    "sql_logic": "SUM(booking_amount) - SUM(refund_amount) - SUM(chargeback_amount)",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.net_revenue,PROD)",
+      "urn:li:dashboard:(looker,fin_exec_overview)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:finance.net_revenue"
+  },
+  {
+    "name": "revenue",
+    "display_name": "Revenue",
+    "domain": "sales",
+    "owner": "urn:li:corpGroup:sales-ops",
+    "definition_text": "Total value of closed-won deals booked in the period, before refunds.",
+    "sql_logic": "SUM(booking_amount) WHERE stage = 'closed_won'",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.bookings,PROD)",
+      "urn:li:dashboard:(salesforce,pipeline_dashboard)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:sales.revenue"
+  },
+  {
+    "name": "customer_churn",
+    "display_name": "Churn Rate",
+    "domain": "product",
+    "owner": "urn:li:corpGroup:product-analytics",
+    "definition_text": "Share of paying customers who cancelled their subscription in the period.",
+    "sql_logic": "COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,prod.mart.churn,PROD)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:product.customer_churn"
+  },
+  {
+    "name": "attrition",
+    "display_name": "Customer Attrition",
+    "domain": "customer_success",
+    "owner": "urn:li:corpGroup:customer-success",
+    "definition_text": "Fraction of paying customers who cancelled their subscription during the period.",
+    "sql_logic": "COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,cs.mart.attrition,PROD)",
+      "urn:li:dashboard:(looker,cs_health)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:cs.attrition"
+  }
+]
