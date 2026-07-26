@@ -1,0 +1,4 @@
+metric,kind,severity,confidence,blast_radius,est_cost_usd,manual_hours,logic_similarity,name_similarity,domains,owners,rationale
+active_user,silent_contradiction,high,0.933,12,540,6.0,0.133,1.0,finance | marketing,urn:li:corpGroup:finance-analytics | urn:li:corpGroup:growth-marketing,'Monthly Active Users' (finance) and 'Monthly Active Users' (marketing) share a name but compute differently (logic overlap 13%).
+revenue,silent_contradiction,medium,0.921,6,270,3.0,0.158,1.0,finance | sales,urn:li:corpGroup:finance-analytics | urn:li:corpGroup:sales-ops,'Net Revenue' (finance) and 'Revenue' (sales) share a name but compute differently (logic overlap 16%).
+customer_churn~attrition,hidden_synonym,medium,0.808,6,270,3.0,0.769,0.0,product | customer_success,urn:li:corpGroup:product-analytics | urn:li:corpGroup:customer-success,'Churn Rate' and 'Customer Attrition' appear to be the same metric under different names (logic overlap 77%).

@@ -1,0 +1,1 @@
+- [Demo determinism](demo-determinism.md) — all "AI" narrative/scoring layers must be deterministic (no LLM, fixed stale-date cutoff) so the offline demo, exports, and tests stay reproducible.

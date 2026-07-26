@@ -1,0 +1,113 @@
+You are working on an existing project called Rosetta DataHub.
+
+Your first task is to understand the existing application before making changes.
+
+DO NOT rewrite the application.
+DO NOT replace existing architecture.
+DO NOT remove working features.
+
+Analyze the repository and identify:
+- frontend framework and main UI components
+- backend services
+- data processing pipeline
+- ingestion flow
+- metadata model
+- detection logic
+- recommendation logic
+- export/reporting functionality
+- existing AI components
+
+Explain the architecture before making major modifications.
+
+The goal is to transform Rosetta DataHub from a technical prototype into a polished enterprise AI data intelligence demo.
+
+Core narrative:
+
+"Rosetta DataHub is an AI-powered data intelligence platform that helps organizations understand their data ecosystem, identify risks, improve governance, and prepare enterprise data for AI."
+
+Enhance the application with the following:
+
+1. Enterprise Data Intelligence Experience
+
+Create realistic enterprise scenarios around:
+- data discovery
+- metadata management
+- data quality
+- ownership
+- governance
+- lineage
+- AI readiness
+- compliance risks
+
+Examples:
+- unidentified critical datasets
+- missing ownership metadata
+- outdated data assets
+- inconsistent definitions
+- data quality issues
+- sensitive information exposure
+- AI readiness gaps
+
+2. AI Explanation Layer
+
+Improve outputs so they explain:
+
+Finding:
+What was discovered?
+
+Evidence:
+What data signals caused this finding?
+
+Impact:
+Why does this matter to the organization?
+
+Recommendation:
+What should the organization do next?
+
+Example:
+
+Instead of:
+"Dataset has missing metadata"
+
+Show:
+"Customer Analytics dataset has incomplete ownership and business definitions. This creates governance risk and reduces confidence when using this data for analytics and AI initiatives. Recommended action: assign data owner and complete metadata classification."
+
+3. Executive Dashboard
+
+Add a leadership-friendly view showing:
+
+- Overall data health score
+- Governance maturity
+- AI readiness score
+- Critical findings
+- Priority recommendations
+- Data ecosystem overview
+
+The dashboard should be understandable to:
+- Chief Data Officers
+- Data Architects
+- AI Governance teams
+- Enterprise technology leaders
+
+4. Demo Flow
+
+Create a clear story:
+
+Problem:
+"Organizations have massive amounts of data but lack visibility, trust, and governance."
+
+Discovery:
+"Rosetta analyzes metadata and identifies issues."
+
+Intelligence:
+"AI explains what matters and why."
+
+Action:
+"Teams receive prioritized recommendations."
+
+Important:
+- Preserve existing working components.
+- Make incremental changes.
+- Tell me every file changed.
+- Explain why each change improves the demo.
+- Test the application after changes.

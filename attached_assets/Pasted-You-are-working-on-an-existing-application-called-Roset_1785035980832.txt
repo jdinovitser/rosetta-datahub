@@ -1,0 +1,96 @@
+You are working on an existing application called Rosetta DataHub.
+
+Your first priority is to understand and preserve the current working application. Do NOT rewrite the architecture. Do NOT replace existing functionality. Do NOT remove working components.
+
+Before making changes:
+1. Analyze the repository structure.
+2. Identify:
+   - frontend framework and key UI files
+   - backend services
+   - data processing pipeline
+   - existing orchestrator logic
+   - detector logic
+   - broker logic
+   - exporter logic
+   - APIs and integrations
+3. Explain your findings before making major changes.
+
+The goal is to evolve this from a technical demo into a Salesforce enterprise AI governance and data intelligence demo.
+
+Theme:
+"Rosetta DataHub: An AI-powered data intelligence layer that helps Salesforce organizations understand, govern, and optimize enterprise data and AI workflows."
+
+Preserve the current technical foundation and enhance the storytelling layer.
+
+Add Salesforce enterprise context:
+
+1. Salesforce Data Scenario
+Create realistic enterprise metadata and examples based on Salesforce environments:
+- Sales Cloud
+- Service Cloud
+- Marketing Cloud
+- Data Cloud / Data 360
+- Nonprofit Cloud
+- Slack
+- Tableau
+- MuleSoft/API integrations
+
+Use realistic examples:
+- customer records
+- donor/customer engagement
+- cases
+- campaigns
+- duplicate records
+- data quality issues
+- AI readiness
+- governance risks
+
+2. AI Reasoning Layer
+Make the output explain:
+- what was detected
+- why it matters
+- business impact
+- recommended action
+
+Example:
+Instead of:
+"Duplicate records detected"
+
+Show:
+"Detected 12,430 duplicate Account and Contact records. This impacts Salesforce reporting accuracy, AI recommendations, and customer engagement. Recommended action: initiate identity resolution before activating AI agents."
+
+3. Salesforce Executive View
+Add a demo-friendly dashboard section showing:
+- Data health score
+- AI readiness score
+- Governance maturity
+- Business impact
+- Recommended actions
+
+Make it understandable for:
+- Salesforce architects
+- CIOs
+- AI governance leaders
+- hackathon judges
+
+4. Demo Storyline
+Create a clear narrative:
+Problem:
+"Enterprise Salesforce organizations struggle with fragmented data, governance challenges, and AI readiness."
+
+Discovery:
+"Rosetta analyzes enterprise data signals."
+
+Insight:
+"AI explains risks and opportunities."
+
+Action:
+"Teams receive prioritized recommendations."
+
+Important:
+- Keep all existing working features.
+- Make minimal architectural changes.
+- Do not remove existing APIs.
+- Do not replace existing components.
+- Tell me which files you modify and why.
+- After changes, run the application and verify it still works.

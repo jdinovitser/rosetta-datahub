@@ -1,0 +1,17 @@
+[project]
+name = "rosetta-datahub"
+version = "0.1.0"
+description = "Semantic Consistency Agent for DataHub — a linter for meaning."
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+dependencies = ["acryl-datahub>=0.14.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["rosetta*"]

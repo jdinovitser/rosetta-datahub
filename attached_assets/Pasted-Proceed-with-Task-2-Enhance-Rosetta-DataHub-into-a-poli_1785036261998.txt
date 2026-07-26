@@ -1,0 +1,104 @@
+Proceed with Task #2: Enhance Rosetta DataHub into a polished enterprise AI data intelligence demo.
+
+Important:
+Preserve the existing five-agent architecture:
+Harvester → Conflict Detector → Blast-Radius Analyzer → Reconciliation Broker → Writer
+
+Do not rewrite or replace these components.
+Do not remove existing functionality.
+Make incremental improvements on top of the existing system.
+
+Implement the following enhancements:
+
+1. Expand Enterprise Demo Scenarios
+
+Improve the demo dataset so it tells a stronger enterprise story.
+
+Add realistic metadata scenarios involving:
+- conflicting business definitions
+- missing ownership
+- incomplete metadata
+- sensitive data governance risks
+- AI readiness gaps
+- outdated datasets
+- unclear stewardship
+
+Keep the examples realistic for enterprise data teams.
+
+2. Add AI Explanation Layer
+
+Enhance every finding to follow this structure:
+
+Finding:
+What issue was detected?
+
+Evidence:
+What metadata signals or lineage relationships support this finding?
+
+Impact:
+Why does this matter to the business?
+
+Recommendation:
+What should happen next?
+
+Example:
+
+Current:
+"Customer revenue definition conflict detected"
+
+Enhanced:
+"Customer Revenue has conflicting definitions across analytics datasets. Evidence: 3 downstream assets use different calculation logic. Impact: executive reporting and AI models may produce inconsistent results. Recommendation: establish a canonical definition and assign ownership."
+
+3. Add Executive Data Intelligence View
+
+Create a leadership-friendly dashboard layer.
+
+Include:
+- Data Health Score
+- Governance Maturity Score
+- AI Readiness Score
+- Critical Risks
+- Assets Impacted
+- Recommended Actions
+
+The existing technical details should remain available, but add an executive summary view.
+
+4. Improve Demo Narrative
+
+Reframe the UI around:
+
+Problem:
+"Enterprise data grows faster than organizations can govern it."
+
+Discovery:
+"Rosetta analyzes the DataHub metadata graph."
+
+Intelligence:
+"AI identifies conflicts, explains business impact, and recommends action."
+
+Resolution:
+"Teams create trusted definitions and improve data reliability."
+
+5. Improve Visual Presentation
+
+Enhance:
+- dashboard cards
+- summary sections
+- labels
+- storytelling flow
+- demo readability
+
+Keep the current pipeline visualization because it is a strong differentiator.
+
+6. Validation
+
+After changes:
+- Run the application
+- Confirm existing APIs still work
+- Confirm exports still work
+- Run tests
+- Summarize all modified files
+- Explain how each change improves the hackathon demo
+
+Do not optimize for more features.
+Optimize for a judge understanding the value within the first 2 minutes.

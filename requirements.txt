@@ -1,0 +1,13 @@
+# ---- Web app (the hosted demo the judges click) ----
+flask>=3.0
+
+# ---- Core write-back to DataHub (needed only for --apply / live scan) ----
+acryl-datahub>=0.14.0
+
+# ---- Agent Context Kit + MCP (optional; for the live agent loop) ----
+# datahub-agent-context
+# langchain            # if you build the agent loop with LangChain
+# google-adk           # if you build with Google ADK
+
+# ---- Dev / test ----
+pytest>=7.0

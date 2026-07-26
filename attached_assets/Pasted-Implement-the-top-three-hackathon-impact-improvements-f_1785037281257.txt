@@ -1,0 +1,63 @@
+Implement the top three hackathon-impact improvements from the review.
+
+Do not change the core five-agent architecture.
+Do not rewrite the application.
+Make targeted demo-polish changes only.
+
+Priority 1: Create a stronger critical-risk moment
+
+Update the demo scenario so one conflict clearly demonstrates enterprise urgency.
+
+Adjust the active_user lineage scenario so the blast radius represents a truly critical governance issue.
+
+Goals:
+- The Dashboard should show a meaningful critical risk.
+- The Critical Risks section should contain an obvious high-impact issue.
+- The story should communicate why unresolved semantic conflicts threaten analytics and AI reliability.
+
+Keep the scenario realistic. Do not make numbers artificially extreme.
+
+Priority 2: Improve polish and visual storytelling
+
+Fix customer_churn~attrition appearing as an internal technical name.
+
+Replace internal identifiers with business-friendly labels.
+
+Examples:
+customer_churn~attrition →
+Customer Churn vs Customer Attrition
+
+Other internal names should be translated into readable business language where displayed to judges.
+
+Also improve the demo flow:
+- After the top conflict appears, make the blast-radius visualization easier to discover.
+- Add a clear visual cue/button/link that guides the judge to the lineage graph.
+- Ensure the most visually impressive feature is seen during the demo.
+
+Priority 3: Simplify the agent pipeline animation
+
+Keep the five-agent architecture visible.
+
+However, reduce repetitive pipeline narration.
+
+Instead of showing multiple identical Conflict Detector events:
+"Conflict Detector detected X"
+"Conflict Detector detected Y"
+"Conflict Detector detected Z"
+
+Create a cleaner story:
+
+1. Harvester
+2. Conflict Detector: "5 semantic conflicts identified"
+3. Blast-Radius Analyzer
+4. Reconciliation Broker
+5. Writer
+
+The goal is for judges to understand the multi-agent workflow within seconds.
+
+After changes:
+- Run the demo
+- Verify existing functionality
+- Verify exports
+- Verify tests
+- Provide a summary of files changed and why each improves judging.

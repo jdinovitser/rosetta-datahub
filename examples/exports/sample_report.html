@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rosetta Semantic Consistency Report</title>
+<style>
+  :root{--bg:#0a0f1f;--panel:#111a30;--line:#22304f;--cyan:#22d3ee;--text:#e6edf7;--muted:#8ea0c0}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:32px}
+  h1{font-size:26px;margin:0 0 4px} .sub{color:var(--muted);margin-bottom:24px}
+  .stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:16px 22px;min-width:150px}
+  .stat .n{font-size:30px;font-weight:700;color:var(--cyan)}
+  .stat .l{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin-bottom:18px}
+  .card-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+  .metric{font-size:18px;font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .badge{color:#0a0f1f;font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px}
+  .kind{color:var(--muted)} .blast{margin-left:auto;color:var(--muted)}
+  .rationale{color:var(--text);opacity:.9;margin:6px 0 14px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:#a9c7ff}
+  .sims{color:var(--muted);font-size:12px;margin-top:10px}
+  footer{color:var(--muted);font-size:12px;margin-top:30px}
+</style></head><body>
+  <h1>Rosetta — Semantic Consistency Report</h1>
+  <div class="sub">Generated 2026-07-21T15:37:57.478432+00:00</div>
+  <div class="stats">
+    <div class="stat"><div class="n">3</div><div class="l">Conflicts</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">Critical</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">High</div></div>
+    <div class="stat"><div class="n">24</div><div class="l">Assets at risk</div></div>
+  </div>
+  
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">active_user</span>
+                <span class="badge" style="background:#f76808">HIGH</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>12</b></span>
+              </div>
+              <p class="rationale">'Monthly Active Users' (finance) and 'Monthly Active Users' (marketing) share a name but compute differently (logic overlap 13%).</p>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>finance</td><td class='mono'>urn:li:corpGroup:finance-analytics</td><td>Users who completed at least one paid transaction in the trailing 30 days.</td><td class='mono'>COUNT(DISTINCT user_id) WHERE txn_amount > 0 AND event_date >= CURRENT_DATE - 30</td></tr><tr><td>marketing</td><td class='mono'>urn:li:corpGroup:growth-marketing</td><td>Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline.</td><td class='mono'>COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.133 ·
+                name similarity 1.0 ·
+                confidence 0.933 ·
+                est. cost $540</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">revenue</span>
+                <span class="badge" style="background:#ffb224">MEDIUM</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>6</b></span>
+              </div>
+              <p class="rationale">'Net Revenue' (finance) and 'Revenue' (sales) share a name but compute differently (logic overlap 16%).</p>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>finance</td><td class='mono'>urn:li:corpGroup:finance-analytics</td><td>Gross bookings minus refunds and chargebacks, recognized in the period.</td><td class='mono'>SUM(booking_amount) - SUM(refund_amount) - SUM(chargeback_amount)</td></tr><tr><td>sales</td><td class='mono'>urn:li:corpGroup:sales-ops</td><td>Total value of closed-won deals booked in the period, before refunds.</td><td class='mono'>SUM(booking_amount) WHERE stage = 'closed_won'</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.158 ·
+                name similarity 1.0 ·
+                confidence 0.921 ·
+                est. cost $270</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">customer_churn~attrition</span>
+                <span class="badge" style="background:#ffb224">MEDIUM</span>
+                <span class="kind">hidden synonym</span>
+                <span class="blast">blast radius: <b>6</b></span>
+              </div>
+              <p class="rationale">'Churn Rate' and 'Customer Attrition' appear to be the same metric under different names (logic overlap 77%).</p>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>product</td><td class='mono'>urn:li:corpGroup:product-analytics</td><td>Share of paying customers who cancelled their subscription in the period.</td><td class='mono'>COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)</td></tr><tr><td>customer_success</td><td class='mono'>urn:li:corpGroup:customer-success</td><td>Fraction of paying customers who cancelled their subscription during the period.</td><td class='mono'>COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.769 ·
+                name similarity 0.0 ·
+                confidence 0.808 ·
+                est. cost $270</div>
+            </div>
+  <footer>Rosetta · the linter for meaning across your DataHub graph · Apache-2.0</footer>
+</body></html>
