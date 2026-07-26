@@ -335,6 +335,16 @@ function buildStep3(report) {
 
     <div class="asset-chips">${chips}</div>
 
+    <div class="s3-graph-wrap">
+      <div class="s3-graph-legend">
+        <span class="s3-leg-item"><span class="s3-dot" style="background:#7c9cff"></span>metric</span>
+        <span class="s3-leg-item"><span class="s3-dot" style="background:#35c4c9"></span>dataset</span>
+        <span class="s3-leg-item"><span class="s3-dot" style="background:#f7a03b"></span>dashboard</span>
+        <span class="s3-leg-item"><span class="s3-dot s3-dot-pulse" style="background:#e5484d"></span>AI model</span>
+      </div>
+      <svg id="s3Graph" class="s3-graph-svg" data-h="300" aria-label="Blast-radius dependency graph"></svg>
+    </div>
+
     <p class="step-narrative">
       "A wrong definition silently contaminates every dashboard, model, and
       dataset downstream — with no error message."
@@ -475,15 +485,22 @@ function populateSteps(data, dash) {
     animateCount(document.getElementById("s1assets"), s.assets_at_risk || 63);
   }, 50);
 
-  // Animate numbers in step 3
+  // Animate numbers in step 3 + draw blast-radius graph
   const top = (report.conflicts || [])[0];
   if (top) {
     const topImp = top.impact || {};
-    // These animate when step 3 becomes active (slight delay so the DOM exists)
     const blast = top.blast_radius || 0;
     const cost  = topImp.estimated_manual_cost_usd || 0;
     const hours = topImp.manual_reconciliation_hours || 0;
     document.getElementById("wtStep3")._animArgs = { blast, cost, hours };
+
+    // Draw graph into step-3 SVG (needs a tick for the SVG to be in the DOM)
+    if (top.impact_graph) {
+      setTimeout(() => {
+        const s3svg = document.getElementById("s3Graph");
+        if (s3svg) drawGraphInto(s3svg, top.impact_graph);
+      }, 80);
+    }
   }
 
   // Wire approve button in step 4
@@ -595,14 +612,12 @@ const TYPE_COLOR = {
   metric: "#7c9cff", dataset: "#35c4c9", dashboard: "#f7a03b", model: "#e5484d",
 };
 
-function drawGraph(graph, metricName) {
-  const svg = $("#graph");
+function drawGraphInto(svg, graph) {
   svg.innerHTML = "";
-  if (!graph || !graph.nodes || !graph.nodes.length) { $("#graphWrap").hidden = true; return; }
-  $("#graphWrap").hidden = false;
-  $("#graphTitle").textContent = `Blast radius: ${metricName}`;
+  if (!graph || !graph.nodes || !graph.nodes.length) return false;
 
-  const W = svg.clientWidth || 640, H = 380;
+  const W = svg.clientWidth || svg.parentElement?.clientWidth || 680,
+        H = parseInt(svg.getAttribute("data-h") || "340");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   const nodes = graph.nodes.map((n) => ({ ...n }));
   const idx = Object.fromEntries(nodes.map((n, i) => [n.id, i]));
@@ -658,6 +673,16 @@ function drawGraph(graph, metricName) {
     const title = document.createElementNS(NS, "title"); title.textContent = `${n.type}: ${n.label}`; g.appendChild(title);
     svg.appendChild(g);
   });
+  return true;
+}
+
+// Wrapper for developer-view graph (keeps original call sites working)
+function drawGraph(graph, metricName) {
+  const svg = $("#graph");
+  if (!graph || !graph.nodes || !graph.nodes.length) { $("#graphWrap").hidden = true; return; }
+  $("#graphWrap").hidden = false;
+  $("#graphTitle").textContent = `Blast radius: ${metricName}`;
+  drawGraphInto(svg, graph);
 }
 
 function renderAiExplanation(c) {
