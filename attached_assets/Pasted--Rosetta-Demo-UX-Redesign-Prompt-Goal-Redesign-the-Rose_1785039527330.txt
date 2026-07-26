@@ -1,0 +1,350 @@
+# Rosetta Demo UX Redesign Prompt
+
+## Goal
+
+Redesign the Rosetta DataHub demo experience into a guided product walkthrough instead of a scrolling technical dashboard.
+
+The current demo is too dense and requires judges to read too much information. The goal is to create a clear hackathon-winning experience where someone understands Rosetta's value in under 30 seconds.
+
+The new experience should feel like a guided AI agent investigation:
+
+**Discover → Detect → Measure → Reconcile → Write Back**
+
+The user should visually follow the five Rosetta agents completing a semantic consistency workflow.
+
+Do not remove existing functionality. Keep all backend logic, APIs, data, exports, and technical views available. This is a frontend UX redesign focused on storytelling.
+
+---
+
+# New Demo Structure
+
+Create a "Judge Demo Mode" as the primary experience.
+
+Instead of one long scrolling page, create a step-by-step interactive walkthrough.
+
+Add navigation:
+
+
+← Previous Agent 1 of 5 Next →
+
+
+At the top include a progress indicator:
+
+
+●━━━●━━━●━━━●━━━●
+
+Discover → Detect → Impact → Reconcile → Write
+
+
+Each step should replace the main content area without requiring scrolling.
+
+Use smooth transitions between steps.
+
+---
+
+# Landing Screen / Hero
+
+The first screen should immediately explain Rosetta.
+
+Title:
+
+"Rosetta"
+
+Subtitle:
+
+"The Semantic Consistency Agent for DataHub"
+
+Supporting message:
+
+"Find where teams disagree on meaning. Measure the impact. Write the truth back."
+
+Primary button:
+
+"▶ Run Rosetta Demo"
+
+Secondary button:
+
+"View Technical Details"
+
+Do not show complex tables or raw metadata on the first screen.
+
+The first screen should communicate:
+
+- semantic drift problem
+- five-agent solution
+- DataHub integration
+
+---
+
+# Step 1: Harvester Agent
+
+## Purpose:
+Show Rosetta learning the organization's data language.
+
+Title:
+
+"1. Harvester — Discover the meaning"
+
+Visual design:
+
+Show an AI agent card.
+
+Example:
+
+
+🤖 HARVESTER
+
+Reading DataHub metadata...
+
+✓ Glossary terms discovered
+✓ Owners identified
+✓ Lineage mapped
+
+24 assets analyzed
+8 business terms loaded
+
+
+Show a simple lineage visualization:
+
+
+Customer
+
+|
+|
+
+Active User
+
+|
++---- Executive Dashboard
+
+|
++---- Marketing KPI Report
+
+
+Narrative:
+
+"Rosetta starts by understanding how your organization defines its data."
+
+---
+
+# Step 2: Conflict Detector Agent
+
+This is the most important moment.
+
+Make this visually prominent.
+
+Title:
+
+"2. Conflict Detector — Find semantic collisions"
+
+Show:
+
+
+🚨 SEMANTIC CONFLICT FOUND
+
+Metric:
+Active User
+
+Finance Definition:
+Users active within 30 days
+
+Marketing Definition:
+Users active within 90 days
+
+Confidence:
+94%
+
+
+Highlight:
+
+"Same words. Different meaning."
+
+The user should immediately understand the problem.
+
+---
+
+# Step 3: Blast-Radius Analyzer
+
+Title:
+
+"3. Blast-Radius Analyzer — Measure the impact"
+
+Show business impact.
+
+Example:
+
+
+IMPACT ANALYSIS
+
+Affected Assets:
+
+📊 Executive Dashboard
+📊 Marketing KPI Report
+📦 Customer Model
+📦 Revenue Dataset
+
+24 downstream assets affected
+
+Estimated Impact:
+$1,080
+
+Analyst Time:
+12 hours
+
+
+Make dollars and hours visually important.
+
+This is the business value moment.
+
+---
+
+# Step 4: Reconciliation Broker
+
+Title:
+
+"4. Reconciliation Broker — Create one trusted definition"
+
+Show a before/after comparison.
+
+Example:
+
+
+CONFLICTING DEFINITIONS
+
+Finance:
+Active users in 30 days
+
+Marketing:
+Active users in 90 days
+
+↓
+
+PROPOSED CANONICAL DEFINITION
+
+Active User:
+A unique user who performs
+a qualifying action within 30 days
+
+
+Add:
+
+"Human approval required"
+
+Button:
+
+"Approve Definition"
+
+Do not make it appear that AI silently changes governance decisions.
+
+---
+
+# Step 5: Writer Agent
+
+Title:
+
+"5. Writer — Make the graph smarter"
+
+Show completion state.
+
+Example:
+
+
+✅ WRITE BACK COMPLETE
+
+DataHub Updated:
+
+✓ Canonical glossary term created
+✓ Assets linked
+✓ Conflicting definitions retired
+
+Future AI agents inherit:
+Active User = 30 days
+
+
+End with:
+
+"Meaning restored."
+
+Large closing statement:
+
+"The numbers were never wrong. They were never comparable."
+
+---
+
+# Design Requirements
+
+## Visual style
+
+Make it feel like an enterprise AI product.
+
+Use:
+
+- clean cards
+- clear hierarchy
+- minimal text
+- large numbers
+- agent icons
+- animations where appropriate
+
+Avoid:
+
+- dense tables
+- walls of text
+- developer console appearance
+- too many competing panels
+
+---
+
+# Add a Judge Mode
+
+Add a button:
+
+"🎯 90 Second Judge Demo"
+
+When clicked:
+
+Automatically walks through all five agents.
+
+Timing:
+
+- 10 seconds: problem
+- 15 seconds: Harvester
+- 20 seconds: Conflict Detector
+- 20 seconds: Blast Radius
+- 15 seconds: Reconciliation + Write Back
+
+---
+
+# Keep Technical Details Available
+
+Do not delete:
+
+- JSON exports
+- CSV exports
+- technical metadata
+- DataHub connection details
+- test information
+
+Move them behind:
+
+"Technical Details"
+
+or
+
+"Developer View"
+
+The default experience should be for judges and executives.
+
+---
+
+# Success Criteria
+
+After using the demo, a judge should immediately understand:
+
+1. DataHub tells organizations where data exists.
+2. Rosetta tells organizations whether they agree on what that data means.
+3. Semantic drift creates hidden business risk.
+4. Rosetta detects, explains, and resolves that risk.
+5. The solution writes back into DataHub, improving the graph over time.
+
+Prioritize storytelling, clarity, and wow factor over showing every technical detail.
