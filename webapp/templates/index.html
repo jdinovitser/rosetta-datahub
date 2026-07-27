@@ -11,7 +11,7 @@
 
   <!-- ── TOP BAR ─────────────────────────────────────────────────────────── -->
   <header class="topbar">
-    <img class="logo" src="{{ url_for('static', filename='img/rosetta-logo.svg') }}" alt="Rosetta">
+    <img class="logo" src="{{ url_for('static', filename='img/mascot-circle.png') }}" alt="Rosetta">
 
     <!-- Progress indicator (always visible; dims when on landing) -->
     <nav class="wt-progress" id="wtProgress" aria-label="Demo progress">
@@ -36,8 +36,21 @@
     <div class="wt-step active" id="wtStep0">
       <div class="landing-inner">
         <div class="landing-eyebrow">Enterprise Data Governance · DataHub Agent Hackathon</div>
-        <h1 class="landing-title">Rosetta</h1>
-        <p class="landing-sub">The Semantic Consistency Agent for DataHub</p>
+
+        <div class="landing-hero-wrap">
+          <!-- Sticker mascot — mix-blend-mode:screen dissolves the black bg -->
+          <img class="mascot-float"
+               src="{{ url_for('static', filename='img/mascot-sticker.png') }}"
+               alt="">
+          <!-- Banner: "Rosetta — a linter for meaning" -->
+          <img class="landing-hero-img"
+               src="{{ url_for('static', filename='img/rosetta-hero.png') }}"
+               alt="Rosetta — a linter for meaning">
+        </div>
+
+        <!-- sr-only title keeps accessibility / SEO intact -->
+        <h1 class="sr-only">Rosetta — The Semantic Consistency Agent for DataHub</h1>
+
         <p class="landing-tagline">
           Find where teams disagree on meaning.<br>
           Measure the impact. Write the truth back.
