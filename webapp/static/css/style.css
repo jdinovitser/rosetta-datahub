@@ -360,42 +360,37 @@ body{
   color: var(--muted); margin-bottom: 18px;
 }
 
-/* Hero wrap: banner + floating sticker side-by-side on wide, stacked on mobile */
+/* Hero: animated mascot + title text side-by-side */
 .landing-hero-wrap {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  margin: -8px auto 4px;
-  max-width: 780px;
-}
-.landing-hero-img {
-  width: 100%;
-  max-width: 560px;
-  height: auto;
-  border-radius: 20px;
-  flex-shrink: 0;
+  gap: 8px;
+  margin: 0 auto 4px;
+  max-width: 700px;
 }
 /* Sticker mascot: mix-blend-mode:screen dissolves pure black → transparent */
 .mascot-float {
-  width: 200px;
-  height: 200px;
+  width: 210px;
+  height: 210px;
   object-fit: contain;
   mix-blend-mode: screen;
   flex-shrink: 0;
-  margin-right: -24px;  /* slight overlap into the banner */
-  filter: drop-shadow(0 0 18px rgba(34,211,238,.35));
+  filter: drop-shadow(0 0 20px rgba(34,211,238,.4));
   animation: mascot-bob 3s ease-in-out infinite;
 }
 @keyframes mascot-bob {
   0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-10px); }
+  50%       { transform: translateY(-12px); }
+}
+.landing-hero-text {
+  text-align: left;
+  flex-shrink: 0;
 }
 @media (max-width: 600px) {
-  .landing-hero-wrap { flex-direction: column; gap: 0; }
-  .mascot-float { width: 130px; height: 130px; margin-right: 0; margin-bottom: -16px; }
-  .landing-hero-img { max-width: 100%; }
+  .landing-hero-wrap { flex-direction: column; gap: 4px; align-items: center; }
+  .mascot-float { width: 140px; height: 140px; }
+  .landing-hero-text { text-align: center; }
 }
 
 .landing-title {
@@ -463,6 +458,23 @@ body{
   display: flex; flex-direction: column; align-items: center; gap: 20px;
   text-align: center; padding-bottom: 20px;
 }
+
+/* Mascot on each demo step */
+.step-mascot {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 14px rgba(34,211,238,.4));
+  animation: mascot-bob 3s ease-in-out infinite;
+  /* Each step gets a slightly different phase so it doesn't look copy-pasted */
+  margin-bottom: -4px;
+}
+/* Stagger the animation phase per step position */
+#wtStep2 .step-mascot { animation-delay: .4s; }
+#wtStep3 .step-mascot { animation-delay: .8s; }
+#wtStep4 .step-mascot { animation-delay: 1.2s; }
+#wtStep5 .step-mascot { animation-delay: 1.6s; }
 
 /* Agent identifier chip */
 .agent-chip {

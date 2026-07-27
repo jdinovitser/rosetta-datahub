@@ -189,6 +189,7 @@ function buildStep1(data) {
 
   return `
   <div class="agent-step-inner">
+    <img class="step-mascot" src="/static/img/mascot-sticker.png" alt="">
     <div class="agent-chip">
       <span class="agent-chip-icon">🔍</span>
       <span>HARVESTER &nbsp;·&nbsp; AGENT 1 OF 5</span>
@@ -240,6 +241,7 @@ function buildStep2(report) {
 
   return `
   <div class="agent-step-inner">
+    <img class="step-mascot" src="/static/img/mascot-sticker.png" alt="">
     <div class="agent-chip alert">
       <span class="agent-chip-icon">🚨</span>
       <span>CONFLICT DETECTOR &nbsp;·&nbsp; AGENT 2 OF 5</span>
@@ -311,6 +313,7 @@ function buildStep3(report) {
 
   return `
   <div class="agent-step-inner">
+    <img class="step-mascot" src="/static/img/mascot-sticker.png" alt="">
     <div class="agent-chip warn">
       <span class="agent-chip-icon">💥</span>
       <span>BLAST-RADIUS ANALYZER &nbsp;·&nbsp; AGENT 3 OF 5</span>
@@ -371,6 +374,7 @@ function buildStep4(report) {
 
   return `
   <div class="agent-step-inner">
+    <img class="step-mascot" src="/static/img/mascot-sticker.png" alt="">
     <div class="agent-chip gov">
       <span class="agent-chip-icon">🤝</span>
       <span>RECONCILIATION BROKER &nbsp;·&nbsp; AGENT 4 OF 5</span>
@@ -417,6 +421,7 @@ function buildStep5(data) {
 
   return `
   <div class="agent-step-inner">
+    <img class="step-mascot" src="/static/img/mascot-sticker.png" alt="">
     <div class="agent-chip done-chip">
       <span class="agent-chip-icon">✅</span>
       <span>WRITER &nbsp;·&nbsp; AGENT 5 OF 5</span>
