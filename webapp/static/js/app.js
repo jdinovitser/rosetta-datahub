@@ -761,11 +761,25 @@ function renderConflicts(conflicts) {
    RUN DEMO
    ══════════════════════════════════════════════════════════════════════════ */
 
+function setBadge(source) {
+  const badge = document.getElementById("modebadge");
+  if (!badge) return;
+  if (source === "healthcare") {
+    badge.textContent = "LIVE · Healthcare DB";
+    badge.className = "mode live-healthcare";
+  } else {
+    badge.textContent = "DEMO MODE · seed data";
+    badge.className = "mode demo";
+  }
+}
+
 async function run(endpoint, opts = {}) {
   const runBtn = $("#runDemo");
   const judgeBtn = $("#judgeBtn");
+  const healthBtn = $("#healthcareBtn");
   if (runBtn) runBtn.disabled = true;
   if (judgeBtn) { judgeBtn.disabled = true; judgeBtn.textContent = "Loading…"; }
+  if (healthBtn) { healthBtn.disabled = true; healthBtn.textContent = "Scanning…"; }
 
   try {
     const [res, dashRes] = await Promise.all([
@@ -789,6 +803,9 @@ async function run(endpoint, opts = {}) {
     demoData = data;
     dashData = dash;
 
+    // Update mode badge
+    setBadge(data.source || "demo");
+
     if (opts.judgeMode) {
       gotoStep(1);
       startJudgeAutoPlay();
@@ -801,6 +818,7 @@ async function run(endpoint, opts = {}) {
   } finally {
     if (runBtn) runBtn.disabled = false;
     if (judgeBtn) { judgeBtn.disabled = false; judgeBtn.textContent = "🎯 90-Second Judge Demo"; }
+    if (healthBtn) { healthBtn.disabled = false; healthBtn.textContent = "🏥 Live Healthcare Data"; }
   }
 }
 
@@ -831,6 +849,11 @@ document.getElementById("runDemo")?.addEventListener("click", () => {
 // Judge mode
 document.getElementById("judgeBtn")?.addEventListener("click", () => {
   run("/api/demo", { judgeMode: true });
+});
+
+// Healthcare live data
+document.getElementById("healthcareBtn")?.addEventListener("click", () => {
+  run("/api/healthcare-scan");
 });
 
 // Read-only scan (in tech view)

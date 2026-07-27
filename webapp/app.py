@@ -31,6 +31,7 @@ from flask import Flask, Response, jsonify, render_template
 from rosetta import exporter
 from rosetta.datahub_client import RosettaDataHub, _HAS_SDK
 from rosetta.demo import run_demo
+from rosetta.healthcare_demo import run_healthcare_demo
 from rosetta.orchestrator import build_report, run_scan
 from rosetta.intelligence import compute_executive_dashboard
 
@@ -51,6 +52,15 @@ def api_demo():
     """Full narrated walkthrough (offline, zero-config)."""
     global _LAST_REPORT
     result = run_demo()
+    _LAST_REPORT = result["report"]
+    return jsonify(result)
+
+
+@app.route("/api/healthcare-scan")
+def api_healthcare_scan():
+    """Five-agent pipeline on the real DataHub healthcare sample dataset."""
+    global _LAST_REPORT
+    result = run_healthcare_demo()
     _LAST_REPORT = result["report"]
     return jsonify(result)
 
