@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rosetta Semantic Consistency Report</title>
+<style>
+  :root{--bg:#0a0f1f;--panel:#111a30;--line:#22304f;--cyan:#22d3ee;--text:#e6edf7;--muted:#8ea0c0}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:32px}
+  h1{font-size:26px;margin:0 0 4px} .sub{color:var(--muted);margin-bottom:24px}
+  .stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:16px 22px;min-width:150px}
+  .stat .n{font-size:30px;font-weight:700;color:var(--cyan)}
+  .stat .l{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin-bottom:18px}
+  .card-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+  .metric{font-size:18px;font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .badge{color:#0a0f1f;font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px}
+  .kind{color:var(--muted)} .blast{margin-left:auto;color:var(--muted)}
+  .rationale{color:var(--text);opacity:.9;margin:6px 0 14px}
+  .ai{border:1px solid var(--line);border-left:3px solid var(--cyan);border-radius:10px;
+    padding:12px 14px;margin:0 0 14px;background:rgba(34,211,238,.04)}
+  .ai-t{color:var(--cyan);font-size:11px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;margin-bottom:8px}
+  .ai-r{display:flex;gap:10px;font-size:13px;margin-bottom:6px}
+  .ai-r b{flex:0 0 110px;color:var(--muted);font-weight:600}
+  .ai-r span{flex:1}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:#a9c7ff}
+  .sims{color:var(--muted);font-size:12px;margin-top:10px}
+  footer{color:var(--muted);font-size:12px;margin-top:30px}
+</style></head><body>
+  <h1>Rosetta — Semantic Consistency Report</h1>
+  <div class="sub">Generated 2026-07-27T19:38:40.981136+00:00</div>
+  <div class="stats">
+    <div class="stat"><div class="n">6</div><div class="l">Conflicts</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">Critical</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">High</div></div>
+    <div class="stat"><div class="n">63</div><div class="l">Assets at risk</div></div>
+  </div>
+  
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">active_user</span>
+                <span class="badge" style="background:#e5484d">CRITICAL</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>22</b></span>
+              </div>
+              <p class="rationale">'Monthly Active Users' (finance) and 'Monthly Active Users' (marketing) share a name but compute differently (logic overlap 13%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Active User' has 2 incompatible definitions across finance and marketing — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 13%, confidence 93%. Definitions: finance: "Users who completed at least one paid transaction in the trailing 30 day…"; marketing: "Any user with a session or app open in the last 30 days, bots excluded u…". Governance signals: marketing: definition stale (last updated 2024-03-02).</span></div><div class='ai-r'><b>Impact</b><span>CRITICAL severity. 22 downstream assets are at risk. A wrong 'Active User' silently feeds 15 decision surface(s) (11 dashboards, 4 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Escalate immediately: align finance and marketing leadership on a single canonical definition for 'Active User'. Freeze dependent pipelines until resolved. Rosetta can write the canonical GlossaryTerm to DataHub automatically.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>finance</td><td class='mono'>urn:li:corpGroup:finance-analytics</td><td>Users who completed at least one paid transaction in the trailing 30 days.</td><td class='mono'>COUNT(DISTINCT user_id) WHERE txn_amount > 0 AND event_date >= CURRENT_DATE - 30</td></tr><tr><td>marketing</td><td class='mono'>urn:li:corpGroup:growth-marketing</td><td>Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline.</td><td class='mono'>COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.133 ·
+                name similarity 1.0 ·
+                confidence 0.933 ·
+                est. cost $990</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">arr</span>
+                <span class="badge" style="background:#ffb224">MEDIUM</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>6</b></span>
+              </div>
+              <p class="rationale">'Annual Recurring Revenue' (finance) and 'Annual Recurring Revenue' (sales) share a name but compute differently (logic overlap 10%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'ARR' has 2 incompatible definitions across finance and sales — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 10%, confidence 95%. Definitions: finance: "Sum of all active subscription MRR annualized, excluding one-time fees a…"; sales: "Total contract value of all active annual deals, including upsells and e…". Governance signals: sales: definition stale (last updated 2023-09-27).</span></div><div class='ai-r'><b>Impact</b><span>MEDIUM severity. 6 downstream assets are at risk. A wrong 'ARR' silently feeds 3 decision surface(s) (3 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Open a data governance ticket for 'ARR'. Draft a canonical definition incorporating both teams' intent and circulate for sign-off in the next governance review cycle.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>finance</td><td class='mono'>urn:li:corpGroup:finance-analytics</td><td>Sum of all active subscription MRR annualized, excluding one-time fees and professional services.</td><td class='mono'>SUM(monthly_subscription_amount * 12) WHERE subscription_status = 'active' AND revenue_type = 'recurring'</td></tr><tr><td>sales</td><td class='mono'>urn:li:corpGroup:sales-ops</td><td>Total contract value of all active annual deals, including upsells and expansion revenue booked in period.</td><td class='mono'>SUM(contract_value) WHERE deal_type = 'annual' AND stage = 'closed_won' AND contract_status = 'active'</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.097 ·
+                name similarity 1.0 ·
+                confidence 0.952 ·
+                est. cost $270</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">conversion_rate</span>
+                <span class="badge" style="background:#f76808">HIGH</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>11</b></span>
+              </div>
+              <p class="rationale">'Conversion Rate' (marketing) and 'Conversion Rate' (product) share a name but compute differently (logic overlap 16%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Conversion Rate' has 2 incompatible definitions across marketing and product — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 16%, confidence 92%. Definitions: marketing: "Percentage of website visitors who completed any tracked goal (signup, p…"; product: "Percentage of trial users who converted to a paid plan within 14 days of…".</span></div><div class='ai-r'><b>Impact</b><span>HIGH severity. 11 downstream assets are at risk. At least one ML model trains on this data — a wrong definition corrupts model signals silently. A wrong 'Conversion Rate' silently feeds 7 decision surface(s) (5 dashboards, 2 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Schedule a cross-team definition review for 'Conversion Rate' within this sprint. Propose one canonical term, notify all 11 asset owners, and deprecate the conflicting variant.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>marketing</td><td class='mono'>urn:li:corpGroup:growth-marketing</td><td>Percentage of website visitors who completed any tracked goal (signup, purchase, or trial) in the session.</td><td class='mono'>COUNT(DISTINCT goal_completions) / COUNT(DISTINCT sessions) * 100</td></tr><tr><td>product</td><td class='mono'>urn:li:corpGroup:product-analytics</td><td>Percentage of trial users who converted to a paid plan within 14 days of signup.</td><td class='mono'>COUNT(DISTINCT user_id WHERE subscription_start <= trial_start + 14) / COUNT(DISTINCT trial_user_id) * 100</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.16 ·
+                name similarity 1.0 ·
+                confidence 0.92 ·
+                est. cost $495</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">customer_ltv</span>
+                <span class="badge" style="background:#f76808">HIGH</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>12</b></span>
+              </div>
+              <p class="rationale">'Customer Lifetime Value' (finance) and 'LTV' (data_science) share a name but compute differently (logic overlap 0%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Customer LTV' has 2 incompatible definitions across finance and data_science — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 0%, confidence 100%. Definitions: finance: "Predicted gross margin a single account will generate over a five-year h…"; data_science: "Historical dollars collected from each customer since signup. No project…". Governance signals: finance: handles sensitive/PII data; data_science: no owner assigned — stewardship unclear; data_science: not registered in the business glossary; data_science: handles sensitive/PII data; data_science: definition stale (last updated 2023-11-02).</span></div><div class='ai-r'><b>Impact</b><span>HIGH severity. 12 downstream assets are at risk. At least one ML model trains on this data — a wrong definition corrupts model signals silently. A wrong 'Customer LTV' silently feeds 8 decision surface(s) (5 dashboards, 3 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Schedule a cross-team definition review for 'Customer LTV' within this sprint. Propose one canonical term, notify all 12 asset owners, and deprecate the conflicting variant.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>finance</td><td class='mono'>urn:li:corpGroup:finance-analytics</td><td>Predicted gross margin a single account will generate over a five-year horizon, discounted to present value.</td><td class='mono'>SUM(projected_margin * discount_factor) OVER five_year_horizon</td></tr><tr><td>data_science</td><td class='mono'>⚠ unassigned</td><td>Historical dollars collected from each customer since signup. No projection, no discounting.</td><td class='mono'>SUM(invoice_amount) GROUP BY customer_id</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.0 ·
+                name similarity 1.0 ·
+                confidence 1.0 ·
+                est. cost $540</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">revenue</span>
+                <span class="badge" style="background:#ffb224">MEDIUM</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>6</b></span>
+              </div>
+              <p class="rationale">'Net Revenue' (finance) and 'Revenue' (sales) share a name but compute differently (logic overlap 16%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Revenue' has 2 incompatible definitions across finance and sales — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 16%, confidence 92%. Definitions: finance: "Gross bookings minus refunds and chargebacks, recognized in the period."; sales: "Total value of closed-won deals booked in the period, before refunds.". Governance signals: sales: definition stale (last updated 2025-01-19).</span></div><div class='ai-r'><b>Impact</b><span>MEDIUM severity. 6 downstream assets are at risk. A wrong 'Revenue' silently feeds 3 decision surface(s) (3 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Open a data governance ticket for 'Revenue'. Draft a canonical definition incorporating both teams' intent and circulate for sign-off in the next governance review cycle.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>finance</td><td class='mono'>urn:li:corpGroup:finance-analytics</td><td>Gross bookings minus refunds and chargebacks, recognized in the period.</td><td class='mono'>SUM(booking_amount) - SUM(refund_amount) - SUM(chargeback_amount)</td></tr><tr><td>sales</td><td class='mono'>urn:li:corpGroup:sales-ops</td><td>Total value of closed-won deals booked in the period, before refunds.</td><td class='mono'>SUM(booking_amount) WHERE stage = 'closed_won'</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.158 ·
+                name similarity 1.0 ·
+                confidence 0.921 ·
+                est. cost $270</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">customer_churn~attrition</span>
+                <span class="badge" style="background:#ffb224">MEDIUM</span>
+                <span class="kind">hidden synonym</span>
+                <span class="blast">blast radius: <b>6</b></span>
+              </div>
+              <p class="rationale">'Churn Rate' and 'Customer Attrition' appear to be the same metric under different names (logic overlap 77%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Customer Churn' and 'Attrition' are duplicate metrics across product and customer_success — same logic, different names.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 77%, confidence 81%. Definitions: product: "Share of paying customers who cancelled their subscription in the period…"; customer_success: "Fraction of paying customers who cancelled their subscription during the…".</span></div><div class='ai-r'><b>Impact</b><span>MEDIUM severity. 6 downstream assets are at risk. A wrong 'Customer Churn vs Attrition' silently feeds 4 decision surface(s) (4 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Open a data governance ticket for 'Customer Churn vs Attrition'. Draft a canonical definition incorporating both teams' intent and circulate for sign-off in the next governance review cycle.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>product</td><td class='mono'>urn:li:corpGroup:product-analytics</td><td>Share of paying customers who cancelled their subscription in the period.</td><td class='mono'>COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)</td></tr><tr><td>customer_success</td><td class='mono'>urn:li:corpGroup:customer-success</td><td>Fraction of paying customers who cancelled their subscription during the period.</td><td class='mono'>COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.769 ·
+                name similarity 0.0 ·
+                confidence 0.808 ·
+                est. cost $270</div>
+            </div>
+  <footer>Rosetta · the linter for meaning across your DataHub graph · Apache-2.0</footer>
+</body></html>
