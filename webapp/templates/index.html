@@ -11,7 +11,9 @@
 
   <!-- ── TOP BAR ─────────────────────────────────────────────────────────── -->
   <header class="topbar">
-    <img class="logo" src="{{ url_for('static', filename='img/mascot-circle.png') }}" alt="Rosetta">
+    <button class="logo-btn" id="homeBtn" title="Back to home">
+      <img class="logo" src="{{ url_for('static', filename='img/mascot-circle.png') }}" alt="Rosetta">
+    </button>
 
     <!-- Progress indicator (always visible; dims when on landing) -->
     <nav class="wt-progress" id="wtProgress" aria-label="Demo progress">

@@ -21,7 +21,10 @@ body{
 .topbar{display:flex;align-items:center;justify-content:space-between;
   padding:18px 32px;border-bottom:1px solid var(--line)}
 .topbar-right{display:flex;align-items:center;gap:16px}
-.logo{height:44px;width:44px;object-fit:cover;border-radius:50%}
+.logo-btn{background:none;border:none;padding:0;cursor:pointer;border-radius:50%;
+  transition:transform .15s,box-shadow .15s;}
+.logo-btn:hover{transform:scale(1.08);box-shadow:0 0 12px rgba(34,211,238,.4);}
+.logo{height:44px;width:44px;object-fit:cover;border-radius:50%;display:block;}
 .mode{font-size:12px;font-weight:700;letter-spacing:.08em;padding:6px 14px;
   border-radius:20px;border:1px solid var(--line)}
 .mode.demo{color:var(--cyan);background:rgba(34,211,238,.08)}

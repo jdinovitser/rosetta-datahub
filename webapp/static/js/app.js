@@ -117,7 +117,9 @@ function gotoStep(n) {
     nav.hidden = true;
   } else {
     nav.hidden = false;
-    $("#prevBtn").disabled = (n === 1);
+    const prevBtn = $("#prevBtn");
+    prevBtn.disabled = false;
+    prevBtn.textContent = n === 1 ? "⌂ Home" : "← Previous";
     const nextBtn = $("#nextBtn");
     nextBtn.textContent = n === 5 ? "View Full Report →" : "Next →";
   }
@@ -899,7 +901,12 @@ document.getElementById("toggleTechBtn")?.addEventListener("click", () => {
 // Prev / Next navigation
 document.getElementById("prevBtn")?.addEventListener("click", () => {
   stopJudge();
-  if (currentStep > 1) gotoStep(currentStep - 1);
+  if (currentStep > 0) gotoStep(currentStep - 1);
+});
+
+document.getElementById("homeBtn")?.addEventListener("click", () => {
+  stopJudge();
+  gotoStep(0);
 });
 
 document.getElementById("nextBtn")?.addEventListener("click", () => {
