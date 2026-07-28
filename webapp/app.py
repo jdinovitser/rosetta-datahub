@@ -31,6 +31,7 @@ import urllib.error
 from flask import Flask, Response, jsonify, render_template, request, session
 
 from rosetta import exporter
+from rosetta.broker import Proposal, apply_proposal
 from rosetta.datahub_client import RosettaDataHub, _HAS_SDK
 from rosetta.demo import run_demo
 from rosetta.healthcare_demo import run_healthcare_demo
@@ -41,8 +42,9 @@ from rosetta.intelligence import compute_executive_dashboard
 app = Flask(__name__, static_folder="static", template_folder="templates")
 app.secret_key = os.environ.get("SESSION_SECRET", "rosetta-dev-secret")
 
-# Cache the most recent report so the export endpoints have something to serve.
+# Cache the most recent report + proposals so export and write-back have something to serve.
 _LAST_REPORT: dict = {}
+_LAST_PROPOSALS: list = []
 
 
 def _active_gms_url() -> str:
@@ -94,34 +96,72 @@ def api_datahub_connect():
 @app.route("/api/demo")
 def api_demo():
     """Full narrated walkthrough (offline, zero-config)."""
-    global _LAST_REPORT
+    global _LAST_REPORT, _LAST_PROPOSALS
     result = run_demo()
     _LAST_REPORT = result["report"]
+    _LAST_PROPOSALS = result.get("proposals", [])
     return jsonify(result)
 
 
 @app.route("/api/fiction-retail-scan")
 def api_fiction_retail_scan():
     """Five-agent pipeline on the real Fiction Retail E-Commerce dataset."""
-    global _LAST_REPORT
+    global _LAST_REPORT, _LAST_PROPOSALS
     result = run_fiction_retail_demo()
     _LAST_REPORT = result["report"]
+    _LAST_PROPOSALS = result.get("proposals", [])
     return jsonify(result)
 
 
 @app.route("/api/healthcare-scan")
 def api_healthcare_scan():
     """Five-agent pipeline on the real DataHub healthcare sample dataset."""
-    global _LAST_REPORT
+    global _LAST_REPORT, _LAST_PROPOSALS
     result = run_healthcare_demo()
     _LAST_REPORT = result["report"]
+    _LAST_PROPOSALS = result.get("proposals", [])
     return jsonify(result)
+
+
+@app.route("/api/write-back", methods=["POST"])
+def api_write_back():
+    """Apply the top-conflict proposal to a live DataHub instance."""
+    if not _LAST_PROPOSALS:
+        return jsonify({"ok": False, "error": "No scan results to write back. Run a scan first."}), 400
+
+    gms_url = _active_gms_url()
+    token   = _active_token()
+    if not gms_url:
+        return jsonify({"ok": False, "error": "No live DataHub connection. Use Connect DataHub first."}), 400
+    if not _HAS_SDK:
+        return jsonify({"ok": False, "error": "DataHub SDK not available in this environment."}), 500
+
+    p_dict = _LAST_PROPOSALS[0]
+    proposal = Proposal(
+        term_id=p_dict["term_id"],
+        display_name=p_dict["display_name"],
+        canonical_definition=p_dict["canonical_definition"],
+        approvers=p_dict.get("approvers", []),
+        deprecated_terms=p_dict.get("deprecated_terms", []),
+        affected_assets=p_dict.get("affected_assets", []),
+    )
+
+    os.environ["DATAHUB_GMS_URL"] = gms_url
+    if token:
+        os.environ["DATAHUB_GMS_TOKEN"] = token
+
+    try:
+        dh = RosettaDataHub()
+        result = apply_proposal(dh, proposal)
+        return jsonify({"ok": True, "result": result})
+    except Exception as exc:  # noqa: BLE001
+        return jsonify({"ok": False, "error": str(exc)}), 500
 
 
 @app.route("/api/scan")
 def api_scan():
     """Read-only scan. Uses live DataHub if configured, else seed data."""
-    global _LAST_REPORT
+    global _LAST_REPORT, _LAST_PROPOSALS
     gms_url = _active_gms_url()
     token = _active_token()
     if gms_url and _HAS_SDK:

@@ -44,6 +44,7 @@ let demoData = null;
 let dashData = null;
 let stepsReady = false;
 let techVisible = false;
+let _writeBackResult = null;  // set after a successful live write-back
 
 // Build the 5 progress dots in the topbar
 function buildProgressDots() {
@@ -131,6 +132,12 @@ function gotoStep(n) {
   // Step label
   const lbl = $("#wtLabel");
   if (lbl && n >= 1) lbl.textContent = `Agent ${n} of 5 · ${STEP_LABELS[n]}`;
+
+  // Rebuild step 5 with actual write-back result when navigating to it
+  if (n === 5 && stepsReady && demoData) {
+    const step5El = document.getElementById("wtStep5");
+    if (step5El) step5El.innerHTML = buildStep5(demoData, _writeBackResult);
+  }
 
   // Fire step-3 number animation whenever step 3 becomes active
   if (n === 3) setTimeout(animateStep3, 350);
@@ -391,7 +398,7 @@ function buildStep4(report) {
   </div>`;
 }
 
-function buildStep5(data) {
+function buildStep5(data, writeResult) {
   const report = data.report || data;
   const writerStep = (data.steps || []).find((s) => s.agent === "Writer") || {};
   const detail = writerStep.detail || "";
@@ -403,6 +410,32 @@ function buildStep5(data) {
   const blast = (top || {}).blast_radius || 22;
   const name = friendlyMetric((top || {}).metric || "Active User");
 
+  const isLive = writeResult != null;
+
+  // Status banner
+  let statusBanner;
+  if (isLive) {
+    const termUrn   = writeResult.canonical_term || "";
+    const termId    = termUrn.split(":").pop() || termUrn;
+    const linked    = (writeResult.linked_assets || []).length;
+    const deprecated = (writeResult.deprecated_terms || []).length;
+    statusBanner = `
+      <div class="write-live-banner">
+        <span class="wlb-icon">✓</span>
+        <div>
+          <div class="wlb-title">Written to DataHub</div>
+          <div class="wlb-detail">Term <code>${esc(termId)}</code> created · ${linked} asset${linked !== 1 ? "s" : ""} linked · ${deprecated} definition${deprecated !== 1 ? "s" : ""} deprecated</div>
+        </div>
+      </div>`;
+  } else {
+    statusBanner = `
+      <div class="write-demo-notice">
+        <strong>DEMO MODE</strong> — Connect DataHub above and approve to write this for real.
+      </div>`;
+  }
+
+  const chk = (live) => `wc-check${live ? "" : " sim"}`;
+
   return `
   <div class="agent-step-inner">
     <img class="step-mascot" src="/static/img/mascot-sticker.png" alt="">
@@ -411,22 +444,24 @@ function buildStep5(data) {
       <span>WRITER &nbsp;·&nbsp; AGENT 5 OF 5</span>
     </div>
     <h2 class="step-title">Make the graph smarter</h2>
-    <p class="step-subtitle">Rosetta writes the canonical definition back to DataHub.</p>
+    <p class="step-subtitle">Rosetta ${isLive ? "wrote" : "would write"} the canonical definition back to DataHub.</p>
+
+    ${statusBanner}
 
     <div class="write-checklist">
-      <div class="wc-item"><span class="wc-check">✓</span>
-        <div><b>Canonical glossary term created</b><br>
-        <span class="wc-sub">${upsertMatch ? upsertMatch[1] : "6"} GlossaryTerm${upsertMatch && upsertMatch[1] === "1" ? "" : "s"} upserted to DataHub</span>
+      <div class="wc-item"><span class="${chk(isLive)}">✓</span>
+        <div><b>Canonical glossary term ${isLive ? "created" : "ready to create"}</b><br>
+        <span class="wc-sub">${upsertMatch ? upsertMatch[1] : "6"} GlossaryTerm${upsertMatch && upsertMatch[1] === "1" ? "" : "s"} ${isLive ? "upserted to DataHub" : "prepared"}</span>
         </div>
       </div>
-      <div class="wc-item"><span class="wc-check">✓</span>
-        <div><b>Downstream assets linked</b><br>
-        <span class="wc-sub">${linkMatch ? linkMatch[1] : blast} assets now point to the canonical term</span>
+      <div class="wc-item"><span class="${chk(isLive)}">✓</span>
+        <div><b>Downstream assets ${isLive ? "linked" : "identified"}</b><br>
+        <span class="wc-sub">${linkMatch ? linkMatch[1] : blast} assets ${isLive ? "now point to the canonical term" : "would be updated"}</span>
         </div>
       </div>
-      <div class="wc-item"><span class="wc-check">✓</span>
-        <div><b>Conflicting definitions retired</b><br>
-        <span class="wc-sub">${depMatch ? depMatch[1] : "5"} losing term${depMatch && depMatch[1] === "1" ? "" : "s"} deprecated</span>
+      <div class="wc-item"><span class="${chk(isLive)}">✓</span>
+        <div><b>Conflicting definitions ${isLive ? "retired" : "flagged for retirement"}</b><br>
+        <span class="wc-sub">${depMatch ? depMatch[1] : "5"} losing term${depMatch && depMatch[1] === "1" ? "" : "s"} ${isLive ? "deprecated" : "would be deprecated"}</span>
         </div>
       </div>
       <div class="wc-item"><span class="wc-check ai-check">🤖</span>
@@ -492,14 +527,44 @@ function populateSteps(data, dash) {
     }
   }
 
-  // Wire approve button in step 4
+  // Wire approve button in step 4 — live mode calls /api/write-back for real
   setTimeout(() => {
     const approveBtn = document.getElementById("approveBtn");
     if (approveBtn) {
-      approveBtn.addEventListener("click", () => {
-        approveBtn.textContent = "✓ Approved";
-        approveBtn.disabled = true;
-        approveBtn.style.background = "var(--low)";
+      approveBtn.addEventListener("click", async () => {
+        const isLive = document.getElementById("modebadge")?.classList.contains("live");
+        if (isLive) {
+          approveBtn.disabled = true;
+          approveBtn.textContent = "Writing to DataHub…";
+          approveBtn.style.opacity = "0.75";
+          try {
+            const res  = await fetch("/api/write-back", { method: "POST" });
+            const data = await res.json();
+            if (data.ok) {
+              approveBtn.textContent = "✓ Written to DataHub";
+              approveBtn.style.background = "var(--low)";
+              approveBtn.style.opacity = "1";
+              _writeBackResult = data.result;
+              setTimeout(() => gotoStep(5), 900);
+            } else {
+              approveBtn.disabled = false;
+              approveBtn.textContent = "✗ Write failed — retry";
+              approveBtn.style.background = "var(--crit)";
+              approveBtn.style.opacity = "1";
+            }
+          } catch (_) {
+            approveBtn.disabled = false;
+            approveBtn.textContent = "✗ Network error — retry";
+            approveBtn.style.background = "var(--crit)";
+            approveBtn.style.opacity = "1";
+          }
+        } else {
+          // Demo mode — visual simulation only
+          approveBtn.textContent = "✓ Approved";
+          approveBtn.disabled = true;
+          approveBtn.style.background = "var(--low)";
+          _writeBackResult = null;
+        }
       });
     }
   }, 100);
