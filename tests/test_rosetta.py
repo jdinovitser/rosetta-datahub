@@ -419,6 +419,114 @@ def test_exports_carry_ai_explanation():
     assert "AI Explanation" in html
 
 
+def test_export_parity_ui_fields_present_in_all_formats():
+    """
+    Parity guard: every field the UI renders per conflict card must appear in
+    CSV, Markdown, and HTML exports.  The assertion names the missing field so
+    a future regression is immediately actionable.
+    """
+    report = _demo_report()
+    assert report["conflicts"], "No conflicts in demo report — cannot verify parity"
+
+    csv_out  = exporter.export(report, "csv")
+    md_out   = exporter.export(report, "md")
+    html_out = exporter.export(report, "html")
+
+    # --- 1. CSV structural parity: all columns the UI relies on must be present ---
+    csv_header = csv_out.splitlines()[0]
+    required_csv_cols = [
+        "metric", "kind", "severity", "confidence", "blast_radius",
+        "est_cost_usd", "manual_hours", "rationale",
+        "ai_finding", "ai_evidence", "ai_impact", "ai_recommendation",
+        "domains", "owners",
+    ]
+    for col in required_csv_cols:
+        assert col in csv_header, (
+            f"CSV header is missing column '{col}' — "
+            f"UI field would silently drop from downloaded report"
+        )
+
+    # --- 2. Per-conflict value parity across MD and HTML ---
+    for c in report["conflicts"]:
+        metric = c["metric"]
+
+        # Scalar fields that the UI card always renders.
+        # Each entry is (field_label, csv_value, md_value, html_value).
+        # Exporters apply display transformations:
+        #   - kind   → spaces in HTML  ("silent contradiction")
+        #   - severity → uppercase in MD heading and HTML badge ("CRITICAL")
+        # The raw (lowercase/underscore) form still appears in CSV rows.
+        kind_display = c["kind"].replace("_", " ")
+        sev_upper    = c["severity"].upper()
+        scalar_fields = [
+            # (label,         csv,             md,              html)
+            ("metric",        c["metric"],     c["metric"],     c["metric"]),
+            ("kind",          c["kind"],       c["kind"],       kind_display),
+            ("severity",      c["severity"],   sev_upper,       sev_upper),
+            ("blast_radius",  str(c["blast_radius"]), str(c["blast_radius"]), str(c["blast_radius"])),
+            ("rationale",     c["rationale"],  c["rationale"],  c["rationale"]),
+        ]
+
+        ai = c.get("ai_explanation") or {}
+        ai_fields = [
+            ("ai_explanation.finding",        ai.get("finding", ""),        ai.get("finding", ""),        ai.get("finding", "")),
+            ("ai_explanation.evidence",       ai.get("evidence", ""),       ai.get("evidence", ""),       ai.get("evidence", "")),
+            ("ai_explanation.impact",         ai.get("impact", ""),         ai.get("impact", ""),         ai.get("impact", "")),
+            ("ai_explanation.recommendation", ai.get("recommendation", ""), ai.get("recommendation", ""), ai.get("recommendation", "")),
+        ]
+
+        imp = c.get("impact") or {}
+        impact_fields = []
+        if imp.get("risk_statement"):
+            rs = imp["risk_statement"]
+            impact_fields.append(("impact.risk_statement", rs, rs, rs))
+
+        all_fields = scalar_fields + ai_fields + impact_fields
+
+        for entry in all_fields:
+            field, csv_value, md_value, html_value = entry
+            if not csv_value:
+                continue  # skip genuinely empty optional strings
+            # CSV RFC 4180 escapes embedded double-quotes as ""; match that form.
+            csv_escaped = csv_value.replace('"', '""')
+            assert csv_escaped in csv_out, (
+                f"[{metric}] UI field '{field}' value {csv_value!r} "
+                f"is missing from CSV export (checked CSV-escaped form)"
+            )
+            assert md_value in md_out, (
+                f"[{metric}] UI field '{field}' (display form {md_value!r}) "
+                f"is missing from Markdown export"
+            )
+            assert html_value in html_out, (
+                f"[{metric}] UI field '{field}' (display form {html_value!r}) "
+                f"is missing from HTML export"
+            )
+
+        # --- 3. Per-definition governance fields (domain, owner, definition, sql) ---
+        for d in c.get("definitions", []):
+            def_fields = {
+                "definition.domain":          d.get("domain", ""),
+                "definition.definition_text": d.get("definition_text", ""),
+                "definition.sql_logic":       d.get("sql_logic", ""),
+            }
+            if d.get("owner"):
+                def_fields["definition.owner"] = d["owner"]
+
+            for field, value in def_fields.items():
+                if not value:
+                    continue
+                # MD table cells escape "|" as "\|"; check the escaped form too
+                md_value = value.replace("|", "\\|")
+                assert (value in md_out or md_value in md_out), (
+                    f"[{metric}] UI field '{field}' value {value!r} "
+                    f"is missing from Markdown export"
+                )
+                assert value in html_out, (
+                    f"[{metric}] UI field '{field}' value {value!r} "
+                    f"is missing from HTML export"
+                )
+
+
 def test_executive_dashboard_scores_and_actions():
     dash = compute_executive_dashboard(_demo_report())
     for k in ("data_health", "governance_maturity", "ai_readiness"):

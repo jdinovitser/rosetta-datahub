@@ -136,6 +136,62 @@
     "last_modified": "2023-09-27"
   },
   {
+    "name": "conversion_rate",
+    "display_name": "Conversion Rate",
+    "domain": "marketing",
+    "owner": "urn:li:corpGroup:growth-marketing",
+    "definition_text": "Percentage of website visitors who completed any tracked goal (signup, purchase, or trial) in the session.",
+    "sql_logic": "COUNT(DISTINCT goal_completions) / COUNT(DISTINCT sessions) * 100",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.conversion_funnel,PROD)",
+      "urn:li:dashboard:(looker,marketing_funnel)",
+      "urn:li:dashboard:(tableau,cmo_review)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:marketing.conversion_rate"
+  },
+  {
+    "name": "conversion_rate",
+    "display_name": "Conversion Rate",
+    "domain": "product",
+    "owner": "urn:li:corpGroup:product-analytics",
+    "definition_text": "Percentage of trial users who converted to a paid plan within 14 days of signup.",
+    "sql_logic": "COUNT(DISTINCT user_id WHERE subscription_start <= trial_start + 14) / COUNT(DISTINCT trial_user_id) * 100",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,prod.mart.trial_conversion,PROD)",
+      "urn:li:dashboard:(looker,product_health)",
+      "urn:li:mlModel:(mlflow,churn_predictor,PROD)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:product.conversion_rate"
+  },
+  {
+    "name": "arr",
+    "display_name": "Annual Recurring Revenue",
+    "domain": "finance",
+    "owner": "urn:li:corpGroup:finance-analytics",
+    "definition_text": "Sum of all active subscription MRR annualized, excluding one-time fees and professional services.",
+    "sql_logic": "SUM(monthly_subscription_amount * 12) WHERE subscription_status = 'active' AND revenue_type = 'recurring'",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.arr,PROD)",
+      "urn:li:dashboard:(looker,fin_board_pack)",
+      "urn:li:dashboard:(looker,cfo_monthly)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:finance.arr"
+  },
+  {
+    "name": "arr",
+    "display_name": "Annual Recurring Revenue",
+    "domain": "sales",
+    "owner": "urn:li:corpGroup:sales-ops",
+    "definition_text": "Total contract value of all active annual deals, including upsells and expansion revenue booked in period.",
+    "sql_logic": "SUM(contract_value) WHERE deal_type = 'annual' AND stage = 'closed_won' AND contract_status = 'active'",
+    "source_urns": [
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,sales.mart.arr_bookings,PROD)",
+      "urn:li:dashboard:(salesforce,pipeline_dashboard)",
+      "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.gross_margin,PROD)"
+    ],
+    "term_urn": "urn:li:glossaryTerm:sales.arr"
+  },
+  {
     "name": "customer_churn",
     "display_name": "Churn Rate",
     "domain": "product",
