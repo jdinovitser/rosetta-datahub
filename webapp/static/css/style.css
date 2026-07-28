@@ -170,7 +170,17 @@ body{
   letter-spacing:-.02em;margin:0 0 22px;color:#fff}
 .lp-h1-grad{background:linear-gradient(90deg,var(--cyan),#6366f1);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.lp-sub{max-width:700px;margin:0 auto 36px;font-size:17px;line-height:1.65;color:var(--muted)}
+.lp-ai-steward{
+  max-width:680px;margin:18px auto 6px;
+  font-size:clamp(15px,1.6vw,18px);line-height:1.5;
+  color:var(--text);text-align:center;
+}
+.lp-ai-steward strong{
+  background:linear-gradient(90deg,var(--cyan),#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-weight:800;
+}
+.lp-sub{max-width:700px;margin:10px auto 36px;font-size:16px;line-height:1.65;color:var(--muted)}
 .lp-ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
 .lp-gh{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--muted)}
 .lp-gh:hover{color:var(--text)}
