@@ -60,7 +60,9 @@ def api_demo():
 @app.route("/api/fiction-retail-scan")
 def api_fiction_retail_scan():
     """Five-agent pipeline on the real Fiction Retail E-Commerce dataset."""
+    global _LAST_REPORT
     result = run_fiction_retail_demo()
+    _LAST_REPORT = result["report"]
     return jsonify(result)
 
 
