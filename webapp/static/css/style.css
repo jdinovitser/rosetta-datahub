@@ -154,12 +154,11 @@ body{
 /* ── NEW LANDING PAGE ──────────────────────────────────────────────────────── */
 
 /* Hero */
-.lp-hero{position:relative;overflow:hidden;padding:60px 32px 48px;text-align:center;
-  background-image:url(/static/img/hero-banner.png);
-  background-size:cover;background-position:center 30%}
-.lp-glow{position:absolute;inset:0;
-  background:linear-gradient(to bottom,rgba(6,13,26,.82) 0%,rgba(6,13,26,.68) 45%,rgba(6,13,26,.90) 100%);
-  pointer-events:none}
+.lp-hero{position:relative;overflow:hidden;padding:60px 32px 48px;text-align:center}
+.lp-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:700px;height:500px;
+  background:radial-gradient(ellipse,rgba(34,211,238,.18),transparent 70%);
+  pointer-events:none;border-radius:50%}
 .lp-hero-inner{position:relative;z-index:1;max-width:860px;margin:0 auto}
 .lp-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 16px;
   border-radius:999px;border:1px solid rgba(34,211,238,.25);background:rgba(34,211,238,.07);

@@ -1,4 +1,4 @@
-Implement the top three hackathon-impact improvements from the review.
+cleaImplement the top three hackathon-impact improvements from the review.
 
 Do not change the core five-agent architecture.
 Do not rewrite the application.
