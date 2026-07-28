@@ -188,6 +188,19 @@
         </div>
       </section>
 
+      <!-- How It Works -->
+      <section class="lp-img-section">
+        <div class="lp-img-section-inner">
+          <div class="lp-section-badge-sm">Five Agents · One Pipeline</div>
+          <h2 class="lp-section-h2">How Rosetta Works</h2>
+          <p class="lp-section-sub lp-section-sub-center">From metadata harvest to canonical write-back — fully deterministic, no LLM required.</p>
+          <div class="lp-diagram-wrap">
+            <img src="{{ url_for('static', filename='img/how-it-works.png') }}"
+                 alt="How Rosetta Works — five-agent pipeline" class="lp-diagram-img">
+          </div>
+        </div>
+      </section>
+
       <!-- No DataHub? No problem. -->
       <section class="lp-nodh-section">
         <h2 class="lp-section-h2">No DataHub? No problem.</h2>
@@ -281,6 +294,19 @@
         </div>
       </section>
 
+      <!-- Architecture diagram -->
+      <section class="lp-img-section lp-arch-section">
+        <div class="lp-img-section-inner">
+          <div class="lp-section-badge-sm">System Design</div>
+          <h2 class="lp-section-h2">System Architecture</h2>
+          <p class="lp-section-sub lp-section-sub-center">DataHub is both the source and the destination — Rosetta reads the metadata graph, reasons over it, and writes the canonical fix straight back.</p>
+          <div class="lp-diagram-wrap">
+            <img src="{{ url_for('static', filename='img/architecture.png') }}"
+                 alt="Rosetta system architecture diagram" class="lp-diagram-img">
+          </div>
+        </div>
+      </section>
+
       <!-- DataHub callout -->
       <section class="lp-dh-section" id="lpDhSection">
         <div class="lp-dh-card">
@@ -355,6 +381,27 @@
         <button class="btn ghost btn-sm" id="runScan">Read-only scan</button>
       </div>
     </div>
+
+    <!-- Visual Overview -->
+    <section class="tech-visual-overview">
+      <div class="tvo-label">Visual Overview</div>
+      <div class="tvo-grid">
+        <div class="tvo-card">
+          <div class="tvo-card-label">System Architecture</div>
+          <img src="{{ url_for('static', filename='img/architecture.png') }}"
+               alt="Architecture diagram" class="tvo-img">
+        </div>
+        <div class="tvo-card">
+          <div class="tvo-card-label">How It Works</div>
+          <img src="{{ url_for('static', filename='img/how-it-works.png') }}"
+               alt="How it works pipeline" class="tvo-img">
+        </div>
+      </div>
+      <div class="tvo-scroll-hint">
+        <span>Full pipeline data &amp; live scores below</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </div>
+    </section>
 
     <!-- Executive Dashboard -->
     <section class="dashboard-section" id="sectionIntelligence">
