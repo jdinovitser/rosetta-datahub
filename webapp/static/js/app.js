@@ -883,6 +883,28 @@ document.getElementById("showTechFromLanding")?.addEventListener("click", () => 
 
 // Developer View toggle
 
+// Landing pipeline animation
+(function() {
+  const agents = document.querySelectorAll('#lpPipeline .lp-agent');
+  const connectors = document.querySelectorAll('#lpPipeline .lp-connector');
+  if (!agents.length) return;
+  let current = 0;
+  function tick() {
+    agents.forEach((a, i) => a.classList.toggle('active', i === current));
+    connectors.forEach((c, i) => c.classList.toggle('active', i === current));
+    current = (current + 1) % agents.length;
+  }
+  tick();
+  setInterval(tick, 1800);
+})();
+
+// Extra landing CTAs
+document.getElementById("runDemo2")?.addEventListener("click", () => run("/api/demo"));
+document.getElementById("navTechViewHero")?.addEventListener("click", () => {
+  if (!stepsReady) run("/api/demo").then(showTech);
+  else showTech();
+});
+
 // Prev / Next navigation
 document.getElementById("prevBtn")?.addEventListener("click", () => {
   if (currentStep > 0) gotoStep(currentStep - 1);

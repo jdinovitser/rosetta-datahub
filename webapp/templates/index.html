@@ -13,6 +13,7 @@
   <header class="topbar">
     <button class="logo-btn" id="homeBtn" title="Back to home">
       <img class="logo" src="{{ url_for('static', filename='img/mascot-circle.png') }}" alt="Rosetta">
+      <span class="logo-wordmark">Rosetta</span>
     </button>
 
     <!-- Progress indicator (always visible; dims when on landing) -->
@@ -42,53 +43,187 @@
 
     <!-- ── STEP 0: Landing ──────────────────────────────────────────────── -->
     <div class="wt-step active" id="wtStep0">
-      <div class="landing-inner">
-        <div class="landing-eyebrow">Enterprise Data Governance · DataHub Agent Hackathon</div>
 
-        <div class="landing-hero-wrap">
-          <!-- Sticker mascot — mix-blend-mode:screen dissolves the black bg -->
-          <img class="mascot-float"
+      <!-- Hero -->
+      <section class="lp-hero">
+        <div class="lp-glow"></div>
+        <div class="lp-hero-inner">
+          <div class="lp-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M2 12c0 4 4.5 8 10 8s10-4 10-8"/><path d="M2 12c0-4 4.5-8 10-8s10 4 10 8"/></svg>
+            DataHub Agent Hackathon 2026
+          </div>
+
+          <img class="lp-sticker"
                src="{{ url_for('static', filename='img/mascot-sticker.png') }}"
                alt="Rosetta mascot">
-          <div class="landing-hero-text">
-            <h1 class="landing-title">Rosetta</h1>
-            <p class="landing-sub">a linter for meaning</p>
-          </div>
-        </div>
 
-        <p class="landing-tagline">
-          Find where teams disagree on meaning.<br>
-          Measure the impact. Write the truth back.
-        </p>
+          <h1 class="lp-h1">
+            Your teams define the same metric differently.<br>
+            <span class="lp-h1-grad">Rosetta finds where — before it costs you.</span>
+          </h1>
 
-        <div class="problem-cards landing-cards">
-          <div class="problem-card">
-            <div class="pc-icon">🤖</div>
-            <div class="pc-title">AI Models Train on Corrupt Data</div>
-            <div class="pc-body">A patient-risk model trains on <code>patient_age</code> — including ages of −88 and 285. No error thrown. Wrong predictions shipped.</div>
-          </div>
-          <div class="problem-card">
-            <div class="pc-icon">💰</div>
-            <div class="pc-title">$28M Hidden in Plain Sight</div>
-            <div class="pc-body">Clinical and Finance define <code>billing_amount</code> differently. 1,215 negative billing rows reach the revenue mart. The CFO's forecast is off by $28.5 million.</div>
-          </div>
-          <div class="problem-card">
-            <div class="pc-icon">🔍</div>
-            <div class="pc-title">No One Knows It's Happening</div>
-            <div class="pc-body">DataHub holds the glossary. But when clinical, finance, and research teams define the same metric differently, nothing warns you — until Rosetta.</div>
-          </div>
-        </div>
+          <p class="lp-sub">
+            Five agents scan your metadata, detect where teams define the same metric differently,
+            measure the downstream blast radius, and write canonical fixes back to DataHub.
+          </p>
 
-        <div class="landing-actions">
-          <button id="runDemo" class="btn primary btn-lg">▶ Run Rosetta Demo</button>
+          <div class="lp-ctas">
+            <button id="runDemo" class="btn primary btn-lg">▶ Run Demo</button>
+            <button class="btn ghost btn-lg" id="navTechViewHero">Connect to DataHub</button>
+            <a class="btn ghost btn-lg lp-gh" href="https://github.com/jdinovitser/rosetta-datahub" target="_blank">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+              GitHub
+            </a>
+          </div>
         </div>
-        <div class="live-data-row">
-          <span class="live-data-label">Or scan a real dataset:</span>
-          <button id="healthcareBtn" class="btn healthcare-btn btn-sm">🏥 Live Healthcare Data</button>
-          <button id="retailBtn" class="btn retail-btn btn-sm">🛍️ Live Retail Data</button>
+      </section>
+
+      <!-- Agent pipeline -->
+      <section class="lp-pipeline-section">
+        <div class="lp-pipeline" id="lpPipeline">
+          <div class="lp-agent active" data-idx="0">
+            <div class="lp-agent-icon">🧲</div>
+            <div class="lp-agent-name">Harvester</div>
+          </div>
+          <div class="lp-connector"><div class="lp-flow"></div></div>
+          <div class="lp-agent" data-idx="1">
+            <div class="lp-agent-icon">🔍</div>
+            <div class="lp-agent-name">Detector</div>
+          </div>
+          <div class="lp-connector"><div class="lp-flow"></div></div>
+          <div class="lp-agent" data-idx="2">
+            <div class="lp-agent-icon">💥</div>
+            <div class="lp-agent-name">Blast Radius</div>
+          </div>
+          <div class="lp-connector"><div class="lp-flow"></div></div>
+          <div class="lp-agent" data-idx="3">
+            <div class="lp-agent-icon">🤝</div>
+            <div class="lp-agent-name">Broker</div>
+          </div>
+          <div class="lp-connector"><div class="lp-flow"></div></div>
+          <div class="lp-agent" data-idx="4">
+            <div class="lp-agent-icon">✅</div>
+            <div class="lp-agent-name">Writer</div>
+          </div>
         </div>
-        <button class="link-btn" id="showTechFromLanding">View Technical Details →</button>
-      </div>
+      </section>
+
+      <!-- No DataHub? No problem. -->
+      <section class="lp-nodh-section">
+        <h2 class="lp-section-h2">No DataHub? No problem.</h2>
+        <p class="lp-section-sub">Run the agents against a pre-configured local SQLite dataset to see how Rosetta catches semantic drift.</p>
+        <div class="lp-dataset-cards">
+          <div class="lp-dataset-card lp-hc" id="healthcareBtn">
+            <div class="lp-ds-icon">🏥</div>
+            <div class="lp-ds-body">
+              <h3>Healthcare Network</h3>
+              <p>Patient records, billing anomalies, and clinical/finance definition conflicts.</p>
+              <div class="lp-ds-meta">
+                <span><strong>55,500</strong> records</span>
+                <span class="lp-ds-conflicts">4 conflicts injected</span>
+              </div>
+            </div>
+            <button class="btn healthcare-btn btn-sm lp-ds-btn">🏥 Scan Healthcare</button>
+          </div>
+          <div class="lp-dataset-card lp-rt" id="retailBtn">
+            <div class="lp-ds-icon">🛍️</div>
+            <div class="lp-ds-body">
+              <h3>Fiction Retail Co.</h3>
+              <p>E-commerce orders where marketing and logistics disagree on key metrics.</p>
+              <div class="lp-ds-meta">
+                <span><strong>150,000</strong> orders</span>
+                <span class="lp-ds-conflicts">2 conflicts injected</span>
+              </div>
+            </div>
+            <button class="btn retail-btn btn-sm lp-ds-btn">🛍️ Scan Retail</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features + Conflict card -->
+      <section class="lp-features-section">
+        <div class="lp-features-left">
+          <h2 class="lp-section-h2 lp-left-align">Catch semantic drift before it impacts reporting.</h2>
+          <div class="lp-feat-grid">
+            <div class="lp-feat">
+              <div class="lp-feat-icon lp-feat-cyan">▶</div>
+              <h4>Zero-config demo</h4>
+              <p>Run immediately against bundled SQLite data. No DataHub setup needed.</p>
+            </div>
+            <div class="lp-feat">
+              <div class="lp-feat-icon lp-feat-blue">⬡</div>
+              <h4>DataHub-native</h4>
+              <p>Connects via GraphQL to trace real metadata lineage on your instance.</p>
+            </div>
+            <div class="lp-feat">
+              <div class="lp-feat-icon lp-feat-amber">◎</div>
+              <h4>Blast-radius severity</h4>
+              <p>Scores each conflict by downstream dashboards affected and dollar risk.</p>
+            </div>
+            <div class="lp-feat">
+              <div class="lp-feat-icon lp-feat-green">✦</div>
+              <h4>One-click fixes</h4>
+              <p>Broker agent proposes a canonical definition and writes it back automatically.</p>
+            </div>
+          </div>
+        </div>
+        <div class="lp-conflict-card">
+          <div class="lp-cc-header">
+            <div class="lp-cc-dot"></div>
+            <span class="lp-cc-title">CRITICAL CONFLICT DETECTED</span>
+            <span class="lp-cc-id">ID: CNFL-892</span>
+          </div>
+          <div class="lp-cc-body">
+            <div class="lp-cc-row">
+              <span class="lp-cc-label">Metric</span>
+              <code class="lp-cc-metric">billing_amount</code>
+            </div>
+            <div class="lp-cc-teams">
+              <div class="lp-cc-team">
+                <div class="lp-cc-team-name">CLINICAL_TEAM</div>
+                <div class="lp-cc-team-def">SUM(base_charge) + SUM(medication)</div>
+              </div>
+              <div class="lp-cc-team">
+                <div class="lp-cc-team-name">FINANCE_TEAM</div>
+                <div class="lp-cc-team-def">SUM(base_charge) − SUM(discounts)</div>
+              </div>
+            </div>
+            <div class="lp-cc-row">
+              <span class="lp-cc-label">Downstream impact</span>
+              <span class="lp-cc-impact">1,215 rows · $28.5M variance</span>
+            </div>
+            <div class="lp-cc-fix">
+              <div class="lp-cc-fix-label">✦ Proposed Canonical Definition</div>
+              <div class="lp-cc-fix-val">SUM(base_charge) + SUM(medication) − SUM(discounts)</div>
+              <button class="btn primary btn-sm lp-cc-approve" id="runDemo2">Approve &amp; Push to DataHub</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DataHub callout -->
+      <section class="lp-dh-section" id="lpDhSection">
+        <div class="lp-dh-card">
+          <div class="lp-dh-left">
+            <div class="lp-dh-badge">Native Integration</div>
+            <h2 class="lp-dh-h2">Bring your own graph.</h2>
+            <p class="lp-dh-body">Running DataHub in production? Point Rosetta at your GMS endpoint and let it trace lineage automatically — no access to underlying data required.</p>
+            <button class="link-btn" id="showTechFromLanding">View Technical Details →</button>
+          </div>
+          <div class="lp-dh-terminal">
+            <div class="lp-term-dots"><span></span><span></span><span></span></div>
+            <div class="lp-term-line lp-term-muted">$ export DATAHUB_GMS_URL="http://localhost:8080"</div>
+            <div class="lp-term-line lp-term-muted">$ export DATAHUB_TOKEN="your_token_here"</div>
+            <div class="lp-term-line lp-term-white">$ rosetta scan --mode=datahub --full</div>
+            <div class="lp-term-line lp-term-dim">&gt; Initializing Harvester Agent…</div>
+            <div class="lp-term-line lp-term-dim">&gt; Connected to DataHub v0.12.1</div>
+            <div class="lp-term-line lp-term-blue">&gt; Discovered 4,192 datasets</div>
+            <div class="lp-term-line lp-term-cyan">&gt; Building lineage graph…</div>
+            <div class="lp-term-line lp-term-blink">&gt; Scanning for semantic drift _</div>
+          </div>
+        </div>
+      </section>
+
     </div>
 
     <!-- ── STEP 1–5: Agent steps (content injected by JS after demo runs) ── -->
