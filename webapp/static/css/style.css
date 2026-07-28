@@ -27,10 +27,13 @@ body{
   padding:6px 12px;border-radius:8px;transition:color .15s,background .15s;
   white-space:nowrap;}
 .topbar-link:hover{color:var(--fg);background:rgba(255,255,255,.07)}
-.logo-btn{background:none;border:none;padding:0;cursor:pointer;border-radius:50%;
+.logo-btn{background:none;border:none;padding:0;cursor:pointer;border-radius:999px;
+  display:flex;align-items:center;gap:9px;
   transition:transform .15s,box-shadow .15s;}
-.logo-btn:hover{transform:scale(1.08);box-shadow:0 0 12px rgba(34,211,238,.4);}
-.logo{height:44px;width:44px;object-fit:cover;border-radius:50%;display:block;}
+.logo-btn:hover{transform:scale(1.04);box-shadow:0 0 12px rgba(34,211,238,.4);}
+.logo{height:36px;width:36px;object-fit:cover;border-radius:50%;display:block;}
+.logo-wordmark{font-size:17px;font-weight:800;letter-spacing:-.01em;color:var(--text);
+  white-space:nowrap}
 .mode{font-size:12px;font-weight:700;letter-spacing:.08em;padding:6px 14px;
   border-radius:20px;border:1px solid var(--line)}
 .mode.demo{color:var(--cyan);background:rgba(34,211,238,.08)}
