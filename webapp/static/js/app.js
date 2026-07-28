@@ -113,6 +113,7 @@ function gotoStep(n) {
   const wtProgress = $("#wtProgress");
   if (topbarNav) topbarNav.hidden = (n !== 0);
   if (wtProgress) wtProgress.hidden = (n === 0);
+  updateHomeBtn(n);
 
   // Nav bar
   const nav = $("#wtNav");
@@ -141,6 +142,7 @@ function showTech() {
   $("#walkthrough").hidden = true;
   const topbarNav = $("#topbarNav");
   if (topbarNav) topbarNav.hidden = true;
+  updateHomeBtn(currentStep);
   $("#techView").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -150,6 +152,7 @@ function showWalkthrough() {
   $("#walkthrough").hidden = false;
   const topbarNav = $("#topbarNav");
   if (topbarNav) topbarNav.hidden = (currentStep !== 0);
+  updateHomeBtn(currentStep);
 }
 
 
@@ -882,6 +885,89 @@ document.getElementById("showTechFromLanding")?.addEventListener("click", () => 
 });
 
 // Developer View toggle
+
+// ── DataHub Connect Modal ─────────────────────────────────────────────────────
+const dhModal   = document.getElementById("dhModal");
+const dhStatus  = document.getElementById("dhStatus");
+const dhSubmit  = document.getElementById("dhSubmitBtn");
+const dhBtn     = document.getElementById("openDhModal");
+
+function openDhModal() {
+  if (dhModal) { dhModal.hidden = false; document.body.style.overflow = "hidden"; }
+}
+function closeDhModal() {
+  if (dhModal) { dhModal.hidden = true; document.body.style.overflow = ""; }
+  if (dhStatus) { dhStatus.hidden = true; dhStatus.className = "dh-status"; }
+}
+function setDhStatus(msg, type) {
+  if (!dhStatus) return;
+  dhStatus.textContent = msg;
+  dhStatus.className = "dh-status " + type;
+  dhStatus.hidden = false;
+}
+
+document.getElementById("openDhModal")?.addEventListener("click", openDhModal);
+document.getElementById("closeDhModal")?.addEventListener("click", closeDhModal);
+document.getElementById("cancelDhModal")?.addEventListener("click", closeDhModal);
+dhModal?.addEventListener("click", e => { if (e.target === dhModal) closeDhModal(); });
+
+// Pre-fill Acryl demo instance URL
+document.getElementById("useDemoInstance")?.addEventListener("click", () => {
+  const urlInput = document.getElementById("dhGmsUrl");
+  if (urlInput) urlInput.value = "https://demo.datahubproject.io";
+  document.getElementById("dhToken")?.focus();
+});
+
+// Connect form submit
+document.getElementById("dhForm")?.addEventListener("submit", async e => {
+  e.preventDefault();
+  const gms_url = document.getElementById("dhGmsUrl")?.value.trim();
+  const token   = document.getElementById("dhToken")?.value.trim();
+  if (!gms_url) { setDhStatus("Please enter a GMS URL.", "err"); return; }
+  if (!token)   { setDhStatus("Please paste your access token.", "err"); return; }
+
+  setDhStatus("Connecting to DataHub…", "loading");
+  if (dhSubmit) { dhSubmit.disabled = true; dhSubmit.textContent = "Connecting…"; }
+
+  try {
+    const res  = await fetch("/api/datahub-connect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gms_url, token }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      setDhStatus("✓ Connected! Running live scan…", "ok");
+      // Update topbar badge + button
+      const badge = document.getElementById("modebadge");
+      if (badge) { badge.textContent = "LIVE · DataHub"; badge.className = "mode live"; }
+      if (dhBtn) { dhBtn.textContent = "✓ DataHub Connected"; dhBtn.classList.add("connected"); }
+      // Close modal and run live scan
+      setTimeout(() => {
+        closeDhModal();
+        run("/api/scan");
+      }, 900);
+    } else {
+      setDhStatus("✗ " + (data.error || "Connection failed."), "err");
+    }
+  } catch (err) {
+    setDhStatus("✗ Network error — could not reach the server.", "err");
+  } finally {
+    if (dhSubmit) { dhSubmit.disabled = false; dhSubmit.textContent = "Connect & Scan"; }
+  }
+});
+
+// ── Persistent Home button ────────────────────────────────────────────────────
+const topbarHomeBtn = document.getElementById("topbarHomeBtn");
+function updateHomeBtn(step) {
+  if (!topbarHomeBtn) return;
+  // Show "Home" whenever user is away from the landing page
+  topbarHomeBtn.classList.toggle("visible", step !== 0 || techVisible);
+}
+topbarHomeBtn?.addEventListener("click", () => {
+  if (techVisible) showWalkthrough();
+  gotoStep(0);
+});
 
 // Landing pipeline animation
 (function() {

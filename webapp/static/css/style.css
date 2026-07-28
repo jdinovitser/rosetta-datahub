@@ -62,6 +62,81 @@ body{
 .tagline{max-width:760px;margin:0 auto 28px;color:var(--muted);font-size:17px;line-height:1.6}
 .tagline em{color:var(--text);font-style:italic}
 
+/* ── Topbar home + DataHub connect buttons ─────────────────────────────────── */
+.topbar-home-btn{background:none;border:none;cursor:pointer;
+  font-size:12px;font-weight:600;color:var(--muted);
+  padding:6px 12px;border-radius:8px;transition:color .15s,background .15s;
+  white-space:nowrap;display:none}
+.topbar-home-btn.visible{display:block}
+.topbar-home-btn:hover{color:var(--text);background:rgba(255,255,255,.07)}
+.topbar-dh-btn{display:flex;align-items:center;gap:6px;
+  background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.25);
+  color:var(--cyan);font-size:12px;font-weight:700;letter-spacing:.03em;
+  padding:6px 14px;border-radius:20px;cursor:pointer;
+  transition:background .15s,box-shadow .15s;white-space:nowrap}
+.topbar-dh-btn:hover{background:rgba(34,211,238,.14);
+  box-shadow:0 0 12px rgba(34,211,238,.25)}
+.topbar-dh-btn.connected{background:rgba(48,164,108,.1);
+  border-color:rgba(48,164,108,.4);color:#30a46c}
+
+/* ── DataHub Connect Modal ──────────────────────────────────────────────────── */
+.dh-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);
+  backdrop-filter:blur(4px);z-index:1000;padding:20px;
+  display:none;align-items:center;justify-content:center}
+.dh-modal-overlay:not([hidden]){display:flex}
+.dh-modal{background:#0e1628;border:1px solid var(--line);border-radius:20px;
+  max-width:560px;width:100%;max-height:90vh;overflow-y:auto;
+  padding:32px;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.dh-modal-close{position:absolute;top:16px;right:16px;
+  background:none;border:none;color:var(--muted);font-size:16px;
+  cursor:pointer;padding:6px 8px;border-radius:8px;line-height:1;
+  transition:color .15s,background .15s}
+.dh-modal-close:hover{color:var(--text);background:rgba(255,255,255,.08)}
+.dh-modal-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:24px}
+.dh-modal-icon{width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2);
+  display:flex;align-items:center;justify-content:center;color:var(--cyan)}
+.dh-modal-title{font-size:20px;font-weight:800;color:var(--text);margin:0 0 4px}
+.dh-modal-subtitle{font-size:13px;color:var(--muted);margin:0}
+/* Quick-start */
+.dh-quickstart{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);
+  border-radius:12px;padding:16px;margin-bottom:24px}
+.dh-qs-badge{font-size:11px;font-weight:800;letter-spacing:.07em;
+  text-transform:uppercase;color:#818cf8;margin-bottom:6px}
+.dh-qs-desc{font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.5}
+.dh-qs-btn{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);
+  color:#a5b4fc;font-size:13px;font-weight:600;padding:8px 16px;
+  border-radius:8px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center}
+.dh-qs-btn:hover{background:rgba(99,102,241,.25);color:#e0e7ff}
+/* Steps */
+.dh-steps{margin:0 0 24px;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px}
+.dh-step{display:flex;align-items:flex-start;gap:12px}
+.dh-step-num{width:24px;height:24px;border-radius:50%;background:rgba(34,211,238,.12);
+  border:1px solid rgba(34,211,238,.25);color:var(--cyan);
+  font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px}
+.dh-step-body{font-size:13px;line-height:1.55;color:var(--muted)}
+.dh-step-body strong{color:var(--text);display:block;margin-bottom:2px;font-size:13px}
+.dh-link{color:var(--cyan);text-decoration:none}
+.dh-link:hover{text-decoration:underline}
+/* Form */
+.dh-form{display:flex;flex-direction:column;gap:16px}
+.dh-field{display:flex;flex-direction:column;gap:6px}
+.dh-label{font-size:12px;font-weight:700;color:var(--text);letter-spacing:.03em}
+.dh-input{background:rgba(255,255,255,.04);border:1px solid var(--line);
+  border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;
+  transition:border-color .15s,box-shadow .15s;outline:none;width:100%}
+.dh-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.dh-field-hint{font-size:11px;color:var(--muted)}
+.dh-form-actions{display:flex;gap:10px;align-items:center}
+.dh-submit{flex:1}
+.dh-cancel{flex:0}
+/* Status */
+.dh-status{padding:12px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-top:4px}
+.dh-status.ok{background:rgba(48,164,108,.1);border:1px solid rgba(48,164,108,.3);color:#30a46c}
+.dh-status.err{background:rgba(229,72,77,.08);border:1px solid rgba(229,72,77,.25);color:var(--crit)}
+.dh-status.loading{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15);color:var(--cyan)}
+
 /* ── NEW LANDING PAGE ──────────────────────────────────────────────────────── */
 
 /* Hero */

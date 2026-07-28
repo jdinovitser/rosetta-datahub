@@ -30,11 +30,88 @@
     </nav>
 
     <div class="topbar-right">
+      <button class="topbar-home-btn" id="topbarHomeBtn" title="Back to home">⌂ Home</button>
+      <button class="topbar-dh-btn" id="openDhModal">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M2 12c0 4 4.5 8 10 8s10-4 10-8"/><path d="M2 12c0-4 4.5-8 10-8s10 4 10 8"/></svg>
+        Connect DataHub
+      </button>
       <div class="mode {{ 'live' if live_mode else 'demo' }}" id="modebadge">
         {{ 'LIVE · DataHub' if live_mode else 'DEMO MODE · seed data' }}
       </div>
     </div>
   </header>
+
+  <!-- ── DataHub Connect Modal ──────────────────────────────────────────────── -->
+  <div class="dh-modal-overlay" id="dhModal" hidden>
+    <div class="dh-modal" role="dialog" aria-modal="true" aria-labelledby="dhModalTitle">
+      <button class="dh-modal-close" id="closeDhModal" aria-label="Close">✕</button>
+
+      <div class="dh-modal-header">
+        <div class="dh-modal-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M2 12c0 4 4.5 8 10 8s10-4 10-8"/><path d="M2 12c0-4 4.5-8 10-8s10 4 10 8"/></svg>
+        </div>
+        <div>
+          <h2 class="dh-modal-title" id="dhModalTitle">Connect to DataHub</h2>
+          <p class="dh-modal-subtitle">Run Rosetta against a real metadata graph — takes 60 seconds.</p>
+        </div>
+      </div>
+
+      <!-- Quick-start: Acryl Demo -->
+      <div class="dh-quickstart">
+        <div class="dh-qs-badge">✦ No DataHub? Use the free public demo instance</div>
+        <p class="dh-qs-desc">Acryl Data runs a public DataHub with real sample datasets. No credit card — just sign up free and grab a token.</p>
+        <button class="dh-qs-btn" id="useDemoInstance">Use demo.datahubproject.io →</button>
+      </div>
+
+      <!-- Steps -->
+      <ol class="dh-steps">
+        <li class="dh-step">
+          <div class="dh-step-num">1</div>
+          <div class="dh-step-body">
+            <strong>Open DataHub</strong>
+            <span>Go to <a href="https://demo.datahubproject.io" target="_blank" class="dh-link">demo.datahubproject.io</a> (or your own instance). Create a free account if needed.</span>
+          </div>
+        </li>
+        <li class="dh-step">
+          <div class="dh-step-num">2</div>
+          <div class="dh-step-body">
+            <strong>Generate a token</strong>
+            <span>Click your avatar → <em>Settings</em> → <em>Access Tokens</em> → <em>Generate New Token</em>. Copy it.</span>
+          </div>
+        </li>
+        <li class="dh-step">
+          <div class="dh-step-num">3</div>
+          <div class="dh-step-body">
+            <strong>Paste &amp; connect below</strong>
+            <span>Enter the GMS URL and your token, then hit Connect. Rosetta will verify the connection and run a live scan.</span>
+          </div>
+        </li>
+      </ol>
+
+      <!-- Form -->
+      <form class="dh-form" id="dhForm" autocomplete="off">
+        <div class="dh-field">
+          <label class="dh-label" for="dhGmsUrl">DataHub GMS URL</label>
+          <input class="dh-input" id="dhGmsUrl" type="url"
+                 placeholder="https://demo.datahubproject.io"
+                 value="https://demo.datahubproject.io">
+        </div>
+        <div class="dh-field">
+          <label class="dh-label" for="dhToken">Personal Access Token</label>
+          <input class="dh-input" id="dhToken" type="password"
+                 placeholder="eyJhbGciOiJIUzI1NiJ9…">
+          <div class="dh-field-hint">Paste the token you generated in Step 2.</div>
+        </div>
+        <div class="dh-form-actions">
+          <button type="submit" class="btn primary dh-submit" id="dhSubmitBtn">
+            Connect &amp; Scan
+          </button>
+          <button type="button" class="btn ghost dh-cancel" id="cancelDhModal">Cancel</button>
+        </div>
+        <div class="dh-status" id="dhStatus" hidden></div>
+      </form>
+    </div>
+  </div>
 
   <!-- ══════════════════════════════════════════════════════════════════════
        PRIMARY VIEW: Guided walkthrough
