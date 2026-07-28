@@ -38,14 +38,11 @@ function animateCount(el, to, opts = {}) {
    ══════════════════════════════════════════════════════════════════════════ */
 
 const STEP_LABELS = ["", "Discover", "Detect", "Impact", "Reconcile", "Write"];
-const JUDGE_DURATIONS = [0, 15000, 20000, 20000, 12000, 10000]; // ms per step
 
 let currentStep = 0;       // 0 = landing
 let demoData = null;
 let dashData = null;
 let stepsReady = false;
-let judgeTimer = null;
-let judgeMode = false;
 let techVisible = false;
 
 // Build the 5 progress dots in the topbar
@@ -150,29 +147,6 @@ function showWalkthrough() {
   btn.textContent = "Developer View";
 }
 
-/* ── Judge mode ─────────────────────────────────────────────────────────── */
-function startJudgeAutoPlay() {
-  judgeMode = true;
-  $("#stopJudgeBtn").hidden = false;
-
-  function advance() {
-    if (!judgeMode || currentStep >= 5) { stopJudge(); return; }
-    const next = currentStep + 1;
-    gotoStep(next);
-    if (next < 5) {
-      judgeTimer = setTimeout(advance, JUDGE_DURATIONS[next]);
-    }
-  }
-
-  judgeTimer = setTimeout(advance, JUDGE_DURATIONS[currentStep] || 15000);
-}
-
-function stopJudge() {
-  judgeMode = false;
-  if (judgeTimer) clearTimeout(judgeTimer);
-  judgeTimer = null;
-  $("#stopJudgeBtn").hidden = true;
-}
 
 /* ══════════════════════════════════════════════════════════════════════════
    STEP CONTENT BUILDERS
@@ -785,11 +759,9 @@ function setBadge(source) {
 
 async function run(endpoint, opts = {}) {
   const runBtn = $("#runDemo");
-  const judgeBtn = $("#judgeBtn");
   const healthBtn = $("#healthcareBtn");
   const retailBtn = $("#retailBtn");
   if (runBtn) runBtn.disabled = true;
-  if (judgeBtn) { judgeBtn.disabled = true; judgeBtn.textContent = "Loading…"; }
   if (healthBtn) { healthBtn.disabled = true; healthBtn.textContent = "Scanning…"; }
   if (retailBtn) { retailBtn.disabled = true; retailBtn.textContent = "Scanning…"; }
 
@@ -818,18 +790,12 @@ async function run(endpoint, opts = {}) {
     // Update mode badge
     setBadge(data.source || "demo");
 
-    if (opts.judgeMode) {
-      gotoStep(1);
-      startJudgeAutoPlay();
-    } else {
-      gotoStep(1);
-    }
+    gotoStep(1);
 
   } catch (e) {
     alert("Error running demo: " + e.message);
   } finally {
     if (runBtn) runBtn.disabled = false;
-    if (judgeBtn) { judgeBtn.disabled = false; judgeBtn.textContent = "🎯 90-Second Judge Demo"; }
     if (healthBtn) { healthBtn.disabled = false; healthBtn.textContent = "🏥 Live Healthcare Data"; }
     if (retailBtn) { retailBtn.disabled = false; retailBtn.textContent = "🛍️ Live Retail Data"; }
   }
@@ -857,11 +823,6 @@ buildProgressDots();
 // Run demo
 document.getElementById("runDemo")?.addEventListener("click", () => {
   run("/api/demo");
-});
-
-// Judge mode
-document.getElementById("judgeBtn")?.addEventListener("click", () => {
-  run("/api/demo", { judgeMode: true });
 });
 
 // Healthcare live data
@@ -911,17 +872,14 @@ document.getElementById("toggleTechBtn")?.addEventListener("click", () => {
 
 // Prev / Next navigation
 document.getElementById("prevBtn")?.addEventListener("click", () => {
-  stopJudge();
   if (currentStep > 0) gotoStep(currentStep - 1);
 });
 
 document.getElementById("homeBtn")?.addEventListener("click", () => {
-  stopJudge();
   gotoStep(0);
 });
 
 document.getElementById("nextBtn")?.addEventListener("click", () => {
-  stopJudge();
   if (currentStep < 5) {
     gotoStep(currentStep + 1);
     if (currentStep === 3) animateStep3();
@@ -929,7 +887,4 @@ document.getElementById("nextBtn")?.addEventListener("click", () => {
     showTech(); // "View Full Report" on step 5
   }
 });
-
-// Stop judge mode
-document.getElementById("stopJudgeBtn")?.addEventListener("click", stopJudge);
 

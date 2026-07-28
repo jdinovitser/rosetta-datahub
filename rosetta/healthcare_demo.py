@@ -1,4 +1,4 @@
-run r"""
+"""
 Healthcare demo mode for Rosetta.
 
 Runs the full five-agent pipeline against the real DataHub hackathon sample
