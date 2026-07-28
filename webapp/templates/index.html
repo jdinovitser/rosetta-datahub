@@ -16,13 +16,19 @@
     </button>
 
     <!-- Progress indicator (always visible; dims when on landing) -->
-    <nav class="wt-progress" id="wtProgress" aria-label="Demo progress">
+    <nav class="wt-progress" id="wtProgress" aria-label="Demo progress" hidden>
       <div class="wt-dots" id="wtDots"></div>
       <div class="wt-dot-labels" id="wtDotLabels"></div>
     </nav>
 
+    <nav class="topbar-nav" id="topbarNav">
+      <button class="topbar-link" id="navRunDemo">▶ Demo</button>
+      <button class="topbar-link" id="navHealthcare">🏥 Healthcare Scan</button>
+      <button class="topbar-link" id="navRetail">🛍️ Retail Scan</button>
+      <button class="topbar-link" id="navTechView">⚙ Technical View</button>
+    </nav>
+
     <div class="topbar-right">
-      <button class="btn ghost btn-sm" id="toggleTechBtn" hidden>Developer View</button>
       <div class="mode {{ 'live' if live_mode else 'demo' }}" id="modebadge">
         {{ 'LIVE · DataHub' if live_mode else 'DEMO MODE · seed data' }}
       </div>

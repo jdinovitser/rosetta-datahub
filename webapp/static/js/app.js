@@ -108,6 +108,12 @@ function gotoStep(n) {
     updateProgress(n);
   }
 
+  // Topbar nav visible on landing; progress dots visible during walkthrough
+  const topbarNav = $("#topbarNav");
+  const wtProgress = $("#wtProgress");
+  if (topbarNav) topbarNav.hidden = (n !== 0);
+  if (wtProgress) wtProgress.hidden = (n === 0);
+
   // Nav bar
   const nav = $("#wtNav");
   if (n === 0) {
@@ -133,9 +139,8 @@ function showTech() {
   techVisible = true;
   $("#techView").hidden = false;
   $("#walkthrough").hidden = true;
-  const btn = $("#toggleTechBtn");
-  btn.textContent = "← Back to Demo";
-  btn.hidden = false;
+  const topbarNav = $("#topbarNav");
+  if (topbarNav) topbarNav.hidden = true;
   $("#techView").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -143,8 +148,8 @@ function showWalkthrough() {
   techVisible = false;
   $("#techView").hidden = true;
   $("#walkthrough").hidden = false;
-  const btn = $("#toggleTechBtn");
-  btn.textContent = "Developer View";
+  const topbarNav = $("#topbarNav");
+  if (topbarNav) topbarNav.hidden = (currentStep !== 0);
 }
 
 
@@ -500,7 +505,7 @@ function populateSteps(data, dash) {
   buildProgressDots();
 
   // Show developer view toggle
-  $("#toggleTechBtn").hidden = false;
+  // (toggleTechBtn removed — nav now in topbar)
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -825,6 +830,24 @@ document.getElementById("runDemo")?.addEventListener("click", () => {
   run("/api/demo");
 });
 
+// Topbar nav shortcuts
+document.getElementById("navRunDemo")?.addEventListener("click", () => {
+  run("/api/demo");
+});
+document.getElementById("navHealthcare")?.addEventListener("click", () => {
+  run("/api/healthcare-scan");
+});
+document.getElementById("navRetail")?.addEventListener("click", () => {
+  run("/api/fiction-retail-scan");
+});
+document.getElementById("navTechView")?.addEventListener("click", () => {
+  if (!stepsReady) {
+    run("/api/demo").then(showTech);
+  } else {
+    showTech();
+  }
+});
+
 // Healthcare live data
 document.getElementById("healthcareBtn")?.addEventListener("click", () => {
   run("/api/healthcare-scan");
@@ -859,16 +882,6 @@ document.getElementById("showTechFromLanding")?.addEventListener("click", () => 
 });
 
 // Developer View toggle
-document.getElementById("toggleTechBtn")?.addEventListener("click", () => {
-  if (techVisible) showWalkthrough();
-  else {
-    if (!stepsReady) {
-      run("/api/demo").then(showTech);
-    } else {
-      showTech();
-    }
-  }
-});
 
 // Prev / Next navigation
 document.getElementById("prevBtn")?.addEventListener("click", () => {
