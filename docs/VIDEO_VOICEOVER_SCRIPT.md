@@ -26,8 +26,7 @@ Legend: **[VO]** = what you say. *(SCREEN)* = what is on screen.
 > each metric, then finds where two teams silently mean different things by the same
 > name."
 
-*(SCREEN: open the Rosetta web app on the landing view. Cursor hovers the "Run the
-five-agent demo" button.)*
+*(SCREEN: open the Rosetta web app on the landing page — dark hero, mascot, "Your teams define the same metric differently" headline, agent pipeline animation. Cursor moves toward the Healthcare dataset card.)*
 
 ---
 
@@ -39,9 +38,7 @@ five-agent demo" button.)*
 > radius, because a conflict on your board deck matters more than one on a scratch
 > table."
 
-*(SCREEN: click **Run the five-agent demo**. Counters animate to 3 Conflicts, 1 High,
-24 Assets, and the green **$1,080 Cost Avoided** stat. The interactive blast-radius graph
-draws itself; the red ML-model node pulses.)*
+*(SCREEN: click **🏥 Healthcare Scan** in the top nav. Progress dots animate: DISCOVER · DETECT · IMPACT · RECONCILE · WRITE. Counters animate to 3 Conflicts, 1 High, 24 Assets, and the green **$1,080 Cost Avoided** stat. The interactive blast-radius graph draws itself; the red ML-model node pulses.)*
 
 ---
 
@@ -52,8 +49,7 @@ draws itself; the red ML-model node pulses.)*
 > twelve analyst-hours of avoidable rework on the table. That's the language a
 > platform team actually acts on."
 
-*(SCREEN: hover the risk banner on the top conflict showing the cost-if-unreconciled
-line.)*
+*(SCREEN: hover the risk banner on the top conflict showing the cost-if-unreconciled line.)*
 
 ---
 
@@ -63,8 +59,7 @@ line.)*
 > clean before-and-after diff, and routes it to the real owners it pulled straight from
 > DataHub ownership metadata. A human approves. Nothing is ever silently overwritten."
 
-*(SCREEN: click **Reconcile** on the top conflict. The before, two orange definitions,
-resolves into a single green canonical term tagged "canonical.")*
+*(SCREEN: click **Next →** through to Step 4. The before, two orange definitions, resolves into a single green canonical term tagged "canonical.")*
 
 ---
 
@@ -75,8 +70,7 @@ resolves into a single green canonical term tagged "canonical.")*
 > history. The graph is now permanently smarter, and the next analyst, and the next
 > agent, inherit one agreed answer."
 
-*(SCREEN: the Writer step confirms upsert + link + deprecate. Click an **Export** chip to
-download the HTML report, proof of a real artifact.)*
+*(SCREEN: Step 5 checklist items tick off. Click **⚙ Technical View** in the top nav to show the export bar. Click an export chip to download the HTML report — proof of a real artifact.)*
 
 ---
 
@@ -86,8 +80,7 @@ download the HTML report, proof of a real artifact.)*
 > Skill any agent can call. Rosetta doesn't just answer questions. It makes sure your
 > whole company is asking the same one."
 
-*(SCREEN: terminal shows `pytest -q` → 32 passed. Cut to the skill file, then an end card
-with the repo URL and "Built on DataHub".)*
+*(SCREEN: terminal shows `pytest -q` → 32 passed. Cut to the skill file, then an end card with the repo URL and "Built on DataHub".)*
 
 ---
 

@@ -18,16 +18,16 @@ Pacing: ~140 words/min. Total script ≈ 415 spoken words = **~3:00 flat.**
 
 | ⏱ | SAY | DO |
 |---|-----|----|
-| **0:00** | *"Your CFO just reported revenue to the board."* | Open app. Landing page visible — Rosetta hero, three problem cards. |
-| **0:04** | *"But the revenue mart has 1,215 negative billing amounts hiding inside it — twenty-eight and a half million dollars of corrupted data."* | Point to the "$28M Hidden in Plain Sight" problem card. |
-| **0:12** | *"Meanwhile, your research team is training a patient-risk model on ages that go up to two hundred and eighty-five."* | Point to the "AI Models Train on Corrupt Data" card. |
+| **0:00** | *"Your CFO just reported revenue to the board."* | Open app. Landing page visible — dark hero, Rosetta mascot, bold headline "Your teams define the same metric differently", agent pipeline animation cycling across the five agents. |
+| **0:04** | *"But the revenue mart has 1,215 negative billing amounts hiding inside it — twenty-eight and a half million dollars of corrupted data."* | Scroll slightly to show the dataset cards section. |
+| **0:12** | *"Meanwhile, your research team is training a patient-risk model on ages that go up to two hundred and eighty-five."* | Point to the Healthcare dataset card. |
 | **0:18** | *"No errors. No alerts. Just wrong answers — quietly shipped."* | Let the screen breathe. |
-| **0:22** | *"This is what semantic inconsistency looks like in healthcare data. And it's happening inside your DataHub — right now."* | Pause on the hero title. |
+| **0:22** | *"This is what semantic inconsistency looks like in healthcare data. And it's happening inside your DataHub — right now."* | Pause on the hero headline. |
 | **0:28** | *"This is Rosetta."* | Gesture to the screen. |
 | | | |
-| **0:30** | *"Rosetta is a five-agent pipeline built natively on DataHub."* | Point to the five progress dots — DISCOVER · DETECT · IMPACT · RECONCILE · WRITE. |
-| **0:35** | *"It reads your entire graph, finds where teams silently disagree on meaning, maps how far that disagreement has already spread — and writes the truth back."* | Point to each dot in sequence. |
-| **0:45** | *"Let's run it on the real DataHub hackathon healthcare dataset — fifty-five thousand patient records."* | Click **🏥 Live Healthcare Data**. |
+| **0:30** | *"Rosetta is a five-agent pipeline built natively on DataHub."* | Point to the five agent nodes in the pipeline animation — Harvester, Detector, Blast Radius, Broker, Writer. |
+| **0:35** | *"It reads your entire graph, finds where teams silently disagree on meaning, maps how far that disagreement has already spread — and writes the truth back."* | Point to each node in sequence. |
+| **0:45** | *"Let's run it on the real DataHub hackathon healthcare dataset — fifty-five thousand patient records."* | Click **🏥 Healthcare Scan** in the top nav (or click the Healthcare dataset card and hit "Scan Healthcare"). Progress dots appear: DISCOVER · DETECT · IMPACT · RECONCILE · WRITE. |
 | | | |
 | **0:48** | *"Agent one — the Harvester — reads the DataHub graph."* | Step 1 appears. Watch numbers animate. |
 | **0:53** | *"Nine metric definitions. Three owning teams: clinical, finance, research. The pipeline flows from raw patients through staging into two downstream marts — billing and demographics."* | Point to each stat as it lands. |
@@ -51,9 +51,9 @@ Pacing: ~140 words/min. Total script ≈ 415 spoken words = **~3:00 flat.**
 | | | |
 | **2:24** | *"Agent five — the Writer — pushes the canonical GlossaryTerm back to DataHub."* | Step 5: checklist items tick off. |
 | **2:29** | *"Stale definition flagged. All three team owners notified. Conflict resolved. mart_billing and mart_demographics are now protected by the canonical constraint."* | Point to each checklist item as it completes. |
-| **2:37** | *"Every scan produces a full audit trail — JSON, CSV, Markdown, and a self-contained HTML report ready for compliance review."* | Click **Developer View**. Show export bar. Click one — show the download. |
+| **2:37** | *"Every scan produces a full audit trail — JSON, CSV, Markdown, and a self-contained HTML report ready for compliance review."* | Click **⚙ Technical View** in the top nav. Show export bar. Click one — show the download. |
 | | | |
-| **2:46** | *"Rosetta doesn't require a live DataHub to run. This demo ran entirely offline on a real sample dataset — fifty-five thousand records, real planted defects, real propagated errors."* | Return to landing hero. |
+| **2:46** | *"Rosetta doesn't require a live DataHub to run. This demo ran entirely offline on a real sample dataset — fifty-five thousand records, real planted defects, real propagated errors."* | Click **⌂ Home** in the top-right to return to the landing page. |
 | **2:54** | *"The data was never malicious."* | Pause. |
 | **2:57** | *"It just meant different things to different teams."* | Fade or cut. |
 
@@ -73,7 +73,8 @@ Pacing: ~140 words/min. Total script ≈ 415 spoken words = **~3:00 flat.**
 | Date swap issue | **277 negative length_of_stay values** in mart_billing from admission/discharge swap |
 | NULL names | **555 NULL patient names** — research cohort tracking broken |
 | Total assets at risk | **585** (scaled from real row counts) |
-| Does it need a live DataHub? | No — runs fully offline. Click **🏥 Live Healthcare Data** on the landing page |
+| Does it need a live DataHub? | No — runs fully offline. Click **🏥 Healthcare Scan** in the top nav. To use a live instance, click **Connect DataHub** → use the free Acryl demo at demo.datahubproject.io (takes ~60 sec to get a token) |
+| Can it run on retail data? | Yes — click **🛍️ Retail Scan** in the top nav for the Fiction Retail e-commerce dataset (150,000 orders, discount unit-convention conflict) |
 | Can it write back to real DataHub? | Yes — swap the SQLite source for the live DataHub client; the five agents are unchanged |
 | How is severity set? | Evidence-driven: row count and dollar impact, not just graph size |
 | Is anything AI-generated? | No LLM in the pipeline — deterministic graph traversal + structural analysis |
@@ -83,10 +84,9 @@ Pacing: ~140 words/min. Total script ≈ 415 spoken words = **~3:00 flat.**
 ## 🎬 Recording checklist
 
 - [ ] Browser at **1920 × 1080**, zoom **110%**
-- [ ] Click **🏥 Live Healthcare Data** (not "Run Rosetta Demo") — this tells the real story
+- [ ] Click **🏥 Healthcare Scan** in the top nav (not **▶ Run Demo** — the healthcare scan tells the real story)
 - [ ] Run the scan once before recording so the DB is warm (faster transitions)
 - [ ] Record audio separately, sync in post (kills keyboard + click noise)
 - [ ] Move mouse **slowly and deliberately** — fast mouse looks nervous
 - [ ] Zoom browser to **150%** during graph reveal (Step 3) for visual impact
-- [ ] Use the **🎯 90-Second Judge Demo** button as B-roll (auto-advances, no clicks needed)
-- [ ] Finish on the landing page hero — clean final frame for the thumbnail
+- [ ] Finish on the landing page hero (click **⌂ Home**) — clean final frame for the thumbnail
