@@ -391,9 +391,38 @@ function buildStep4(report) {
       </div>
     </div>
 
-    <div class="approval-row">
-      <span class="approval-note">⚠ Human approval required before writing to DataHub.</span>
-      <button class="btn primary approve-btn" id="approveBtn">✓ Approve Definition</button>
+    <div class="dh-write-callout">
+      <div class="dh-write-callout-header">
+        <span class="dh-write-callout-icon">⬆</span>
+        <span>WRITES TO DATAHUB ON APPROVAL</span>
+      </div>
+      <div class="dh-write-ops">
+        <div class="dh-write-op">
+          <span class="dh-write-op-icon">📝</span>
+          <div>
+            <div class="dh-write-op-label">Canonical GlossaryTerm created</div>
+            <div class="dh-write-op-sub">One authoritative definition stored in your DataHub glossary</div>
+          </div>
+        </div>
+        <div class="dh-write-op">
+          <span class="dh-write-op-icon">🔗</span>
+          <div>
+            <div class="dh-write-op-label">${(top || {}).blast_radius || 22} downstream assets linked</div>
+            <div class="dh-write-op-sub">Every dataset, dashboard, and column tagged to the canonical term</div>
+          </div>
+        </div>
+        <div class="dh-write-op">
+          <span class="dh-write-op-icon">🗑</span>
+          <div>
+            <div class="dh-write-op-label">Conflicting definitions deprecated</div>
+            <div class="dh-write-op-sub">Losing terms marked deprecated so teams stop using them</div>
+          </div>
+        </div>
+      </div>
+      <div class="dh-write-callout-footer">
+        <span class="dh-write-callout-note">⚠ Human approval required — Rosetta will not write without it.</span>
+        <button class="btn primary approve-btn" id="approveBtn">✓ Approve &amp; Write to DataHub</button>
+      </div>
     </div>
   </div>`;
 }
