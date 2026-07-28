@@ -440,6 +440,14 @@ body{
 .healthcare-btn:hover { filter: brightness(1.12); transform: translateY(-1px); }
 .healthcare-btn:disabled { opacity: .5; filter: none; transform: none; cursor: not-allowed; }
 
+/* Retail live data button */
+.retail-btn {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff; border: none; font-weight: 700;
+}
+.retail-btn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.retail-btn:disabled { opacity: .5; filter: none; transform: none; cursor: not-allowed; }
+
 /* Live-data row beneath primary CTAs */
 .live-data-row {
   display: flex; align-items: center; gap: 10px; justify-content: center;
@@ -451,6 +459,12 @@ body{
 .mode.live-healthcare {
   background: rgba(16,185,129,.15); border-color: rgba(16,185,129,.5);
   color: #34d399;
+}
+
+/* Fiction-retail badge variant */
+.mode.live-retail {
+  background: rgba(99,102,241,.15); border-color: rgba(99,102,241,.5);
+  color: #818cf8;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

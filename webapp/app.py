@@ -32,6 +32,7 @@ from rosetta import exporter
 from rosetta.datahub_client import RosettaDataHub, _HAS_SDK
 from rosetta.demo import run_demo
 from rosetta.healthcare_demo import run_healthcare_demo
+from rosetta.fiction_retail_demo import run_fiction_retail_demo
 from rosetta.orchestrator import build_report, run_scan
 from rosetta.intelligence import compute_executive_dashboard
 
@@ -53,6 +54,13 @@ def api_demo():
     global _LAST_REPORT
     result = run_demo()
     _LAST_REPORT = result["report"]
+    return jsonify(result)
+
+
+@app.route("/api/fiction-retail-scan")
+def api_fiction_retail_scan():
+    """Five-agent pipeline on the real Fiction Retail E-Commerce dataset."""
+    result = run_fiction_retail_demo()
     return jsonify(result)
 
 

@@ -774,6 +774,9 @@ function setBadge(source) {
   if (source === "healthcare") {
     badge.textContent = "LIVE · Healthcare DB";
     badge.className = "mode live-healthcare";
+  } else if (source === "fiction_retail") {
+    badge.textContent = "LIVE · Fiction Retail DB";
+    badge.className = "mode live-retail";
   } else {
     badge.textContent = "DEMO MODE · seed data";
     badge.className = "mode demo";
@@ -784,9 +787,11 @@ async function run(endpoint, opts = {}) {
   const runBtn = $("#runDemo");
   const judgeBtn = $("#judgeBtn");
   const healthBtn = $("#healthcareBtn");
+  const retailBtn = $("#retailBtn");
   if (runBtn) runBtn.disabled = true;
   if (judgeBtn) { judgeBtn.disabled = true; judgeBtn.textContent = "Loading…"; }
   if (healthBtn) { healthBtn.disabled = true; healthBtn.textContent = "Scanning…"; }
+  if (retailBtn) { retailBtn.disabled = true; retailBtn.textContent = "Scanning…"; }
 
   try {
     const [res, dashRes] = await Promise.all([
@@ -826,6 +831,7 @@ async function run(endpoint, opts = {}) {
     if (runBtn) runBtn.disabled = false;
     if (judgeBtn) { judgeBtn.disabled = false; judgeBtn.textContent = "🎯 90-Second Judge Demo"; }
     if (healthBtn) { healthBtn.disabled = false; healthBtn.textContent = "🏥 Live Healthcare Data"; }
+    if (retailBtn) { retailBtn.disabled = false; retailBtn.textContent = "🛍️ Live Retail Data"; }
   }
 }
 
@@ -861,6 +867,11 @@ document.getElementById("judgeBtn")?.addEventListener("click", () => {
 // Healthcare live data
 document.getElementById("healthcareBtn")?.addEventListener("click", () => {
   run("/api/healthcare-scan");
+});
+
+// Fiction-retail live data
+document.getElementById("retailBtn")?.addEventListener("click", () => {
+  run("/api/fiction-retail-scan");
 });
 
 // Read-only scan (in tech view)
