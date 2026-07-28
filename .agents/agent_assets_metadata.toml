@@ -1,0 +1,32 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "1lpqTHGEscCNHhNDFMrSg"
+uri = "file://devpost-media/architecture.png"
+type = "image"
+title = "1 · Architecture Diagram"
+
+[[outputs]]
+id = "Ej4V3J6_lYbmSEISfZC8i"
+uri = "file://devpost-media/hero-banner.png"
+type = "image"
+title = "2 · Hero / Cover Banner"
+
+[[outputs]]
+id = "V1R9OIl-h4kSWx36zNfNM"
+uri = "file://devpost-media/how-it-works.png"
+type = "image"
+title = "3 · How It Works (pipeline)"
+
+[[outputs]]
+id = "k58GzLP6gqIbV23fz--Wp"
+uri = "file://devpost-media/before-after.png"
+type = "image"
+title = "4 · Before & After"
+
+[[outputs]]
+id = "It0RdXwz1MwxKaHE1S13V"
+uri = "file://devpost-media/screenshot-landing.jpg"
+type = "image"
+title = "5 · App Screenshot — Landing"
