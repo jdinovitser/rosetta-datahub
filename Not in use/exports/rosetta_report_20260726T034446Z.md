@@ -1,0 +1,83 @@
+# Rosetta Semantic Consistency Report
+
+_Generated at 2026-07-26T03:44:46.068752+00:00_
+
+## Summary
+
+- **Total conflicts:** 5
+- **Critical:** 1
+- **High:** 1
+- **Downstream assets at risk:** 51
+- **Est. manual reconciliation cost avoided:** $2,295 (25.5 analyst-hours)
+
+## Conflicts
+
+### 1. `active_user` — silent_contradiction (CRITICAL)
+
+> 'Monthly Active Users' (finance) and 'Monthly Active Users' (marketing) share a name but compute differently (logic overlap 13%).
+
+- **Blast radius:** 22 downstream assets
+- **Confidence:** 0.933 · **Est. cost if unreconciled:** $990
+- **Risk:** A wrong 'active_user' silently feeds 15 decision surface(s) (11 dashboards, 4 models) across 2 teams.
+- **Logic similarity:** 0.133 · **Name similarity:** 1.0
+
+| Domain | Owner | Definition | Computation |
+| --- | --- | --- | --- |
+| finance | urn:li:corpGroup:finance-analytics | Users who completed at least one paid transaction in the trailing 30 days. | `COUNT(DISTINCT user_id) WHERE txn_amount > 0 AND event_date >= CURRENT_DATE - 30` |
+| marketing | urn:li:corpGroup:growth-marketing | Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline. | `COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false` |
+
+### 2. `arr` — silent_contradiction (MEDIUM)
+
+> 'Annual Recurring Revenue' (finance) and 'Annual Recurring Revenue' (sales) share a name but compute differently (logic overlap 10%).
+
+- **Blast radius:** 6 downstream assets
+- **Confidence:** 0.952 · **Est. cost if unreconciled:** $270
+- **Risk:** A wrong 'arr' silently feeds 3 decision surface(s) (3 dashboards, 0 models) across 2 teams.
+- **Logic similarity:** 0.097 · **Name similarity:** 1.0
+
+| Domain | Owner | Definition | Computation |
+| --- | --- | --- | --- |
+| finance | urn:li:corpGroup:finance-analytics | Sum of all active subscription MRR annualized, excluding one-time fees and professional services. | `SUM(monthly_subscription_amount * 12) WHERE subscription_status = 'active' AND revenue_type = 'recurring'` |
+| sales | urn:li:corpGroup:sales-ops | Total contract value of all active annual deals, including upsells and expansion revenue booked in period. | `SUM(contract_value) WHERE deal_type = 'annual' AND stage = 'closed_won' AND contract_status = 'active'` |
+
+### 3. `conversion_rate` — silent_contradiction (HIGH)
+
+> 'Conversion Rate' (marketing) and 'Conversion Rate' (product) share a name but compute differently (logic overlap 16%).
+
+- **Blast radius:** 11 downstream assets
+- **Confidence:** 0.92 · **Est. cost if unreconciled:** $495
+- **Risk:** A wrong 'conversion_rate' silently feeds 7 decision surface(s) (5 dashboards, 2 models) across 2 teams.
+- **Logic similarity:** 0.16 · **Name similarity:** 1.0
+
+| Domain | Owner | Definition | Computation |
+| --- | --- | --- | --- |
+| marketing | urn:li:corpGroup:growth-marketing | Percentage of website visitors who completed any tracked goal (signup, purchase, or trial) in the session. | `COUNT(DISTINCT goal_completions) / COUNT(DISTINCT sessions) * 100` |
+| product | urn:li:corpGroup:product-analytics | Percentage of trial users who converted to a paid plan within 14 days of signup. | `COUNT(DISTINCT user_id WHERE subscription_start <= trial_start + 14) / COUNT(DISTINCT trial_user_id) * 100` |
+
+### 4. `revenue` — silent_contradiction (MEDIUM)
+
+> 'Net Revenue' (finance) and 'Revenue' (sales) share a name but compute differently (logic overlap 16%).
+
+- **Blast radius:** 6 downstream assets
+- **Confidence:** 0.921 · **Est. cost if unreconciled:** $270
+- **Risk:** A wrong 'revenue' silently feeds 3 decision surface(s) (3 dashboards, 0 models) across 2 teams.
+- **Logic similarity:** 0.158 · **Name similarity:** 1.0
+
+| Domain | Owner | Definition | Computation |
+| --- | --- | --- | --- |
+| finance | urn:li:corpGroup:finance-analytics | Gross bookings minus refunds and chargebacks, recognized in the period. | `SUM(booking_amount) - SUM(refund_amount) - SUM(chargeback_amount)` |
+| sales | urn:li:corpGroup:sales-ops | Total value of closed-won deals booked in the period, before refunds. | `SUM(booking_amount) WHERE stage = 'closed_won'` |
+
+### 5. `customer_churn~attrition` — hidden_synonym (MEDIUM)
+
+> 'Churn Rate' and 'Customer Attrition' appear to be the same metric under different names (logic overlap 77%).
+
+- **Blast radius:** 6 downstream assets
+- **Confidence:** 0.808 · **Est. cost if unreconciled:** $270
+- **Risk:** A wrong 'customer_churn~attrition' silently feeds 4 decision surface(s) (4 dashboards, 0 models) across 2 teams.
+- **Logic similarity:** 0.769 · **Name similarity:** 0.0
+
+| Domain | Owner | Definition | Computation |
+| --- | --- | --- | --- |
+| product | urn:li:corpGroup:product-analytics | Share of paying customers who cancelled their subscription in the period. | `COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)` |
+| customer_success | urn:li:corpGroup:customer-success | Fraction of paying customers who cancelled their subscription during the period. | `COUNT(DISTINCT customer_id) WHERE subscription_status = 'cancelled' / COUNT(DISTINCT customer_id)` |
