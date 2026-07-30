@@ -674,7 +674,7 @@ def test_homepage_has_no_credentials_disclosure():
 def test_homepage_demo_mode_badge_present():
     html = _get_homepage()
     assert "DEMO MODE" in html, "Homepage must contain DEMO MODE badge"
-    assert "Official hackathon sample data" in html
+    assert "HACKATHON SAMPLE DATA" in html.upper()
 
 
 def test_homepage_about_this_data_link_present():
@@ -753,11 +753,9 @@ def test_financial_figure_labeled_as_affected_transaction_value():
 
 def test_homepage_no_cost_avoided_language():
     html = _get_homepage()
-    # "Cost Avoided" may appear in the technical view section — check homepage body
-    # The key is that the hero/conflict card does NOT use this framing
-    assert "cost avoided" not in html.lower() or "Cost Avoided" in html, (
-        "If 'cost avoided' appears it must be in the technical/dev section, "
-        "not the hero or main conflict card"
+    # "Cost Avoided" label has been renamed to "Affected transaction value"
+    assert "Affected transaction value" in html, (
+        "Result card must use 'Affected transaction value' label, not 'Cost avoided'"
     )
 
 

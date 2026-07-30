@@ -880,7 +880,7 @@ function setBadge(source) {
     badge.textContent = "LIVE · Fiction Retail DB";
     badge.className = "mode live-retail";
   } else {
-    badge.textContent = "DEMO MODE · Official hackathon sample data";
+    badge.textContent = "DEMO MODE · OFFICIAL HACKATHON SAMPLE DATA";
     badge.className = "mode demo";
   }
 }

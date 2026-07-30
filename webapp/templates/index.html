@@ -38,7 +38,7 @@
       <div class="mode-wrap">
         <div class="mode {{ 'live' if live_mode else 'demo' }}" id="modebadge"
              title="Rosetta analyzes a bundled local copy of the hackathon sample data. Approval generates a validated DataHub write plan but does not modify an external catalog.">
-          {{ 'LIVE · DataHub' if live_mode else 'DEMO MODE · Official hackathon sample data' }}
+          {{ 'LIVE · DataHub' if live_mode else 'DEMO MODE · OFFICIAL HACKATHON SAMPLE DATA' }}
         </div>
         <button class="about-data-btn" id="openAboutData" title="About this data" aria-label="About this data">ℹ</button>
       </div>
@@ -197,16 +197,20 @@
                alt="Rosetta mascot">
 
           <h1 class="lp-h1">
-            Your teams define the same metric differently.<br>
-            <span class="lp-h1-grad">Rosetta finds where — before it costs you.</span>
+            One metric. Two meanings.<br>
+            <span class="lp-h1-grad">Silent chaos.</span>
           </h1>
 
           <p class="lp-sub">
-            Rosetta finds conflicting metric definitions, traces their downstream impact through DataHub lineage, and prepares a human-approved remediation plan.
+            Rosetta is a linter for meaning across the DataHub graph. It finds where teams assign incompatible meanings to the same metric, traces the conflict through metadata and lineage, measures downstream exposure, and proposes a canonical definition.
+          </p>
+
+          <p class="lp-sub-note">
+            In Demo Mode, approval generates a validated DataHub write plan without modifying an external catalog.
           </p>
 
           <div class="lp-ctas">
-            <button id="runDemo" class="btn primary btn-lg">Run Healthcare Demo</button>
+            <button id="runDemo" class="btn primary btn-lg">Run the five-agent demo</button>
             <button class="btn ghost btn-lg" id="navTechViewHero">Connect to DataHub</button>
             <a class="btn ghost btn-lg lp-gh" href="https://github.com/jdinovitser/rosetta-datahub" target="_blank">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
@@ -214,7 +218,7 @@
             </a>
           </div>
           <p class="lp-cta-note">
-            No credentials required. Uses sample data provided through the official hackathon resources.
+            No credentials required · 55,500 synthetic records · Guided demo
             <button class="lp-about-link" id="openAboutDataHero">About this data ›</button>
           </p>
         </div>
@@ -660,13 +664,13 @@
       </div>
       <div class="dash-stats-row">
         <div class="dash-stat crit-stat">
-          <div class="ds-n" id="dsCritRisks">0</div><div class="ds-l">Critical Risks</div>
+          <div class="ds-n" id="dsCritRisks">—</div><div class="ds-l">Critical Risks</div>
         </div>
         <div class="dash-stat">
-          <div class="ds-n" id="dsAssets">0</div><div class="ds-l">Assets Impacted</div>
+          <div class="ds-n" id="dsAssets">—</div><div class="ds-l">Assets Impacted</div>
         </div>
         <div class="dash-stat green-stat">
-          <div class="ds-n" id="dsCostAvoided">$0</div><div class="ds-l">Cost Avoided</div>
+          <div class="ds-n" id="dsCostAvoided">—</div><div class="ds-l">Affected transaction value</div>
         </div>
       </div>
       <div class="dash-lower">
@@ -687,17 +691,17 @@
         <div class="section-eyebrow">Discovery</div>
         <h2>Five-Agent Pipeline</h2>
         <ol id="steps" class="steps">
-          <li class="empty">Run the demo to watch Rosetta work.</li>
+          <li class="empty">Ready to analyze official hackathon sample data.<br><span class="empty-sub">Click "Run the five-agent demo" to begin.</span></li>
         </ol>
       </section>
       <section class="col results">
         <div class="section-eyebrow">Resolution</div>
         <h2>Findings &amp; Resolutions</h2>
         <div id="summary" class="summary" hidden>
-          <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Conflicts</div></div>
-          <div class="stat"><div class="n" id="sHigh">0</div><div class="l">High severity</div></div>
-          <div class="stat"><div class="n" id="sAssets">0</div><div class="l">Assets at risk</div></div>
-          <div class="stat cost"><div class="n" id="sCost">$0</div><div class="l">Cost avoided</div></div>
+          <div class="stat"><div class="n" id="sTotal">—</div><div class="l">Conflicts</div></div>
+          <div class="stat"><div class="n" id="sHigh">—</div><div class="l">High severity</div></div>
+          <div class="stat"><div class="n" id="sAssets">—</div><div class="l">Assets at risk</div></div>
+          <div class="stat cost"><div class="n" id="sCost">—</div><div class="l">Affected transaction value</div></div>
         </div>
         <div id="conflicts" class="conflicts"></div>
         <div id="graphWrap" class="graph-wrap" hidden>
