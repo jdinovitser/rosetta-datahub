@@ -440,6 +440,103 @@
       </div>
     </section>
 
+    <!-- Data-to-governance pipeline -->
+    <section class="gov-pipeline-section">
+      <div class="section-eyebrow">Data Provenance</div>
+      <h2 class="gov-pipeline-title">From official DataHub sample data to semantic governance</h2>
+      <p class="gov-pipeline-sub">Every arrow below names what produced it — the hackathon dataset, DataHub metadata structures, Rosetta's analysis, or Rosetta's proposed output.</p>
+
+      <div class="gov-pipeline">
+
+        <div class="gov-step">
+          <div class="gov-step-num">1</div>
+          <div class="gov-step-body">
+            <div class="gov-step-name">Official hackathon dataset</div>
+            <div class="gov-step-desc">55,500 synthetic patient records across <code>raw_patients</code>, <code>staging_patients</code>, <code>mart_billing</code>, <code>mart_demographics</code>, and 3 normalisation views. Data anomalies are present at source — Rosetta does not modify the database.</div>
+            <div class="gov-step-tags">
+              <span class="gov-src gov-src-dataset">Official dataset</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gov-arrow">→</div>
+
+        <div class="gov-step">
+          <div class="gov-step-num">2</div>
+          <div class="gov-step-body">
+            <div class="gov-step-name">DataHub-compatible metadata graph</div>
+            <div class="gov-step-desc">Rosetta assigns DataHub URNs to every table, authors one <code>MetricDefinition</code> per (metric, team) pair, builds a lineage edge graph, and assigns <code>urn:li:glossaryTerm:*</code> and <code>urn:li:corpGroup:*</code> URNs — the same structures a live DataHub instance would expose.</div>
+            <div class="gov-step-tags">
+              <span class="gov-src gov-src-datahub">DataHub metadata structures</span>
+              <span class="gov-src gov-src-rosetta">Rosetta's analysis</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gov-arrow">→</div>
+
+        <div class="gov-step">
+          <div class="gov-step-num">3</div>
+          <div class="gov-step-body">
+            <div class="gov-step-name">Rosetta semantic analysis</div>
+            <div class="gov-step-desc"><code>detect_conflicts()</code> compares each definition pair by name similarity and logic similarity. Identifies <em>silent contradictions</em> (same name, incompatible logic) and <em>hidden synonyms</em> (different names, equivalent logic). Fully deterministic — no LLM.</div>
+            <div class="gov-step-tags">
+              <span class="gov-src gov-src-rosetta">Rosetta's analysis</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gov-arrow">→</div>
+
+        <div class="gov-step">
+          <div class="gov-step-num">4</div>
+          <div class="gov-step-body">
+            <div class="gov-step-name">Conflict evidence</div>
+            <div class="gov-step-desc">Bad-row counts queried directly from the hackathon DB at scan time: 1,215 negative billing rows ($28.4 M misreported), 832 invalid ages, 277 date-swapped LOS records, 555 null names. Rosetta scores severity from these counts.</div>
+            <div class="gov-step-tags">
+              <span class="gov-src gov-src-dataset">Official dataset</span>
+              <span class="gov-src gov-src-rosetta">Rosetta's analysis</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gov-arrow">→</div>
+
+        <div class="gov-step">
+          <div class="gov-step-num">5</div>
+          <div class="gov-step-body">
+            <div class="gov-step-name">Downstream lineage traversal</div>
+            <div class="gov-step-desc">Rosetta walks the lineage graph to find every dataset, dashboard, and ML model that carries contaminated values. In demo mode the graph is Rosetta's DataHub-style representation of the hackathon pipeline. In live mode it calls DataHub's lineage API directly.</div>
+            <div class="gov-step-tags">
+              <span class="gov-src gov-src-datahub">DataHub metadata structures</span>
+              <span class="gov-src gov-src-rosetta">Rosetta's analysis</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gov-arrow">→</div>
+
+        <div class="gov-step">
+          <div class="gov-step-num">6</div>
+          <div class="gov-step-body">
+            <div class="gov-step-name">Human-approved write plan</div>
+            <div class="gov-step-desc">After human approval, Rosetta generates <code>MetadataChangeProposal</code> operations: upsert a canonical <code>GlossaryTerm</code>, attach it to every affected asset, deprecate the conflicting terms. In demo mode the plan is shown but not submitted.</div>
+            <div class="gov-step-tags">
+              <span class="gov-src gov-src-output">Rosetta's proposed output</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /gov-pipeline -->
+
+      <div class="gov-pipeline-legend">
+        <span class="gov-src gov-src-dataset">Official dataset</span>
+        <span class="gov-src gov-src-datahub">DataHub metadata structures</span>
+        <span class="gov-src gov-src-rosetta">Rosetta's analysis</span>
+        <span class="gov-src gov-src-output">Rosetta's proposed output</span>
+      </div>
+    </section>
+
     <!-- Executive Dashboard -->
     <section class="dashboard-section" id="sectionIntelligence">
       <div class="dashboard-header">
