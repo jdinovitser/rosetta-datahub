@@ -213,6 +213,31 @@ body{
   border-top:1px solid rgba(255,255,255,.05)}
 .lp-arch-section{background:rgba(6,9,18,.5)}
 .lp-ba-section{background:rgba(10,6,18,.5)}
+/* ── Hero CTA note + About link ──────────────────────────────────────── */
+.lp-cta-note{font-size:13px;color:var(--muted);margin:10px 0 0;text-align:center;line-height:1.6}
+.lp-about-link{
+  background:none;border:none;cursor:pointer;
+  color:var(--cyan);font-size:13px;padding:0;
+  text-decoration:underline;text-decoration-style:dotted}
+.lp-about-link:hover{color:#fff;text-decoration:underline}
+.lp-about-link:focus-visible{outline:2px solid var(--cyan);border-radius:3px}
+
+/* ── How Rosetta Works — steps + paragraph ────────────────────────────── */
+.lp-hiw-steps{
+  list-style:none;padding:0;margin:24px auto 20px;
+  max-width:520px;display:flex;flex-direction:column;gap:12px;counter-reset:hiw}
+.lp-hiw-steps li{
+  display:flex;align-items:flex-start;gap:14px;
+  font-size:14px;color:var(--text);line-height:1.5}
+.lp-hiw-steps li::before{
+  counter-increment:hiw;content:counter(hiw);
+  flex:0 0 26px;height:26px;border-radius:50%;
+  background:var(--cyan);color:#000;font-weight:900;font-size:12px;
+  display:flex;align-items:center;justify-content:center}
+.lp-hiw-para{
+  font-size:14px;color:var(--muted);line-height:1.7;
+  max-width:540px;margin:0 auto 28px;text-align:center}
+
 /* ── Mode badge + about-data button ──────────────────────────────────── */
 .mode-wrap{display:flex;align-items:center;gap:4px}
 .about-data-btn{
@@ -262,6 +287,42 @@ body{
 .adm-footer{
   padding:14px 24px 20px;border-top:1px solid var(--line);
   display:flex;flex-wrap:wrap;gap:8px}
+
+/* ── About This Data modal — intro paragraph ─────────────────────────── */
+.adm-intro{
+  font-size:13px;color:var(--text);line-height:1.7;
+  margin:0 0 18px;padding:12px 14px;
+  background:rgba(34,211,238,.06);border-left:3px solid var(--cyan);border-radius:0 8px 8px 0}
+
+/* ── Step 4 — proposed operation badges ──────────────────────────────── */
+.wop-badge{
+  display:inline-block;font-size:9px;font-weight:800;letter-spacing:.08em;
+  padding:2px 7px;border-radius:20px;vertical-align:middle;margin-left:8px}
+.wop-badge.proposed{background:rgba(255,178,36,.15);color:var(--med)}
+
+/* ── Step 4 — demo mode plan note ────────────────────────────────────── */
+.write-demo-plan-note{
+  font-size:12px;color:var(--muted);margin:0 0 10px;line-height:1.5;
+  padding:8px 12px;background:rgba(255,255,255,.04);border-radius:8px;
+  border:1px solid var(--line)}
+
+/* ── Step 5 — demo status summary ────────────────────────────────────── */
+.write-demo-notice{
+  background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);
+  border-radius:12px;padding:18px 20px;margin:16px 0}
+.wdn-heading{font-size:15px;font-weight:800;color:var(--cyan);margin-bottom:10px}
+.wdn-text{font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 14px}
+.wdn-status-table{display:flex;flex-direction:column;gap:8px}
+.wdn-row{display:flex;align-items:center;gap:12px;font-size:13px}
+.wdn-label{flex:0 0 200px;color:var(--muted)}
+.wdn-val{font-weight:700;color:var(--text)}
+.wdn-green{color:var(--low)}
+.wdn-muted{color:var(--muted)}
+
+/* ── Step 5 — View Write Plan button ─────────────────────────────────── */
+.write-plan-btn{
+  font-size:12px;padding:6px 14px;border-radius:8px;font-weight:700;
+  text-decoration:none;vertical-align:middle}
 
 /* ── Data-to-governance pipeline section ──────────────────────────────── */
 .gov-pipeline-section{

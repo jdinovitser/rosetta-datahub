@@ -348,6 +348,7 @@ function buildStep3(report) {
 
 function buildStep4(report) {
   const top = (report.conflicts || [])[0];
+  const isLive = document.getElementById("modebadge")?.classList.contains("live");
   const rec = (top || {}).proposed_reconciliation || {};
   const before = rec.before || [];
   const after = rec.after || {};
@@ -394,34 +395,44 @@ function buildStep4(report) {
     <div class="dh-write-callout">
       <div class="dh-write-callout-header">
         <span class="dh-write-callout-icon">⬆</span>
-        <span>WRITES TO DATAHUB ON APPROVAL</span>
+        <span>${isLive ? "WRITES TO DATAHUB ON APPROVAL" : "PROPOSED DATAHUB WRITE OPERATIONS"}</span>
       </div>
       <div class="dh-write-ops">
         <div class="dh-write-op">
           <span class="dh-write-op-icon">📝</span>
           <div>
-            <div class="dh-write-op-label">Canonical GlossaryTerm created</div>
-            <div class="dh-write-op-sub">One authoritative definition stored in your DataHub glossary</div>
+            <div class="dh-write-op-label">
+              Canonical GlossaryTerm ${isLive ? "created" : "proposed"}
+              ${!isLive ? '<span class="wop-badge proposed">PROPOSED</span>' : ""}
+            </div>
+            <div class="dh-write-op-sub">${isLive ? "One authoritative definition stored in your DataHub glossary" : "One authoritative definition prepared for your DataHub glossary"}</div>
           </div>
         </div>
         <div class="dh-write-op">
           <span class="dh-write-op-icon">🔗</span>
           <div>
-            <div class="dh-write-op-label">${(top || {}).blast_radius || 22} downstream assets linked</div>
-            <div class="dh-write-op-sub">Every dataset, dashboard, and column tagged to the canonical term</div>
+            <div class="dh-write-op-label">
+              ${(top || {}).blast_radius || 22} downstream assets ${isLive ? "linked" : "identified for linking"}
+              ${!isLive ? '<span class="wop-badge proposed">PROPOSED</span>' : ""}
+            </div>
+            <div class="dh-write-op-sub">${isLive ? "Every dataset, dashboard, and column tagged to the canonical term" : "Every dataset, dashboard, and column identified for tagging"}</div>
           </div>
         </div>
         <div class="dh-write-op">
           <span class="dh-write-op-icon">🗑</span>
           <div>
-            <div class="dh-write-op-label">Conflicting definitions deprecated</div>
-            <div class="dh-write-op-sub">Losing terms marked deprecated so teams stop using them</div>
+            <div class="dh-write-op-label">
+              Conflicting definitions ${isLive ? "deprecated" : "flagged for deprecation"}
+              ${!isLive ? '<span class="wop-badge proposed">PROPOSED</span>' : ""}
+            </div>
+            <div class="dh-write-op-sub">${isLive ? "Losing terms marked deprecated so teams stop using them" : "Losing terms flagged so teams can stop using them after execution"}</div>
           </div>
         </div>
       </div>
       <div class="dh-write-callout-footer">
+        ${!isLive ? '<p class="write-demo-plan-note">Demo Mode: Approval will generate and validate the proposed DataHub operations. No external catalog will be modified.</p>' : ""}
         <span class="dh-write-callout-note">⚠ Human approval required — Rosetta will not write without it.</span>
-        <button class="btn primary approve-btn" id="approveBtn">✓ Approve &amp; Write to DataHub</button>
+        <button class="btn primary approve-btn" id="approveBtn">${isLive ? "✓ Approve &amp; Write to DataHub" : "✓ Approve &amp; Generate Write Plan"}</button>
       </div>
     </div>
   </div>`;
@@ -459,7 +470,14 @@ function buildStep5(data, writeResult) {
   } else {
     statusBanner = `
       <div class="write-demo-notice">
-        <strong>DEMO MODE · Official hackathon sample data</strong> — Connect DataHub above and approve to write this for real.
+        <div class="wdn-heading">Write plan generated &amp; validated</div>
+        <p class="wdn-text">Rosetta prepared the operations required to reconcile this conflict in a connected DataHub catalog. No external operations were executed in Demo Mode.</p>
+        <div class="wdn-status-table">
+          <div class="wdn-row"><span class="wdn-label">Human approval</span><span class="wdn-val wdn-green">Complete</span></div>
+          <div class="wdn-row"><span class="wdn-label">Write-plan validation</span><span class="wdn-val wdn-green">Passed</span></div>
+          <div class="wdn-row"><span class="wdn-label">External catalog modified</span><span class="wdn-val wdn-muted">No</span></div>
+          <div class="wdn-row"><span class="wdn-label">Target platform</span><span class="wdn-val">DataHub</span></div>
+        </div>
       </div>`;
   }
 
@@ -472,8 +490,8 @@ function buildStep5(data, writeResult) {
       <span class="agent-chip-icon">✅</span>
       <span>WRITER &nbsp;·&nbsp; AGENT 5 OF 5</span>
     </div>
-    <h2 class="step-title">Make the graph smarter</h2>
-    <p class="step-subtitle">Rosetta ${isLive ? "wrote" : "would write"} the canonical definition back to DataHub.</p>
+    <h2 class="step-title">${isLive ? "Make the graph smarter" : "Write plan approved and validated"}</h2>
+    <p class="step-subtitle">${isLive ? "Rosetta wrote the canonical definition back to DataHub." : "Rosetta prepared the operations required to reconcile this conflict in a connected DataHub catalog."}</p>
 
     ${statusBanner}
 
@@ -484,28 +502,35 @@ function buildStep5(data, writeResult) {
         </div>
       </div>
       <div class="wc-item"><span class="${chk(isLive)}">✓</span>
-        <div><b>Downstream assets ${isLive ? "linked" : "identified"}</b><br>
-        <span class="wc-sub">${linkMatch ? linkMatch[1] : blast} assets ${isLive ? "now point to the canonical term" : "would be updated"}</span>
+        <div><b>Downstream assets ${isLive ? "linked" : "identified for linking"}</b><br>
+        <span class="wc-sub">${linkMatch ? linkMatch[1] : blast} assets ${isLive ? "now point to the canonical term" : "ready for DataHub once approved and executed"}</span>
         </div>
       </div>
       <div class="wc-item"><span class="${chk(isLive)}">✓</span>
         <div><b>Conflicting definitions ${isLive ? "retired" : "flagged for retirement"}</b><br>
-        <span class="wc-sub">${depMatch ? depMatch[1] : "5"} losing term${depMatch && depMatch[1] === "1" ? "" : "s"} ${isLive ? "deprecated" : "would be deprecated"}</span>
+        <span class="wc-sub">${depMatch ? depMatch[1] : "5"} losing term${depMatch && depMatch[1] === "1" ? "" : "s"} ${isLive ? "deprecated" : "flagged for deprecation"}</span>
         </div>
       </div>
       <div class="wc-item"><span class="wc-check ai-check">🤖</span>
-        <div><b>Future AI agents inherit the truth</b><br>
+        <div><b>${isLive ? "Future AI agents inherit the truth" : "Connected agents can inherit the canonical definition after execution"}</b><br>
         <span class="wc-sub">${esc(name)} = one agreed definition across all teams</span>
         </div>
       </div>
     </div>
 
     <div class="write-exports">
-      <span class="exports-label">Download full report:</span>
-      <a class="chip" href="/api/export/json" target="_blank">JSON</a>
-      <a class="chip" href="/api/export/csv"  target="_blank">CSV</a>
-      <a class="chip" href="/api/export/md"   target="_blank">Markdown</a>
-      <a class="chip" href="/api/export/html" target="_blank">HTML</a>
+      ${!isLive ? `
+        <span class="exports-label">Write plan &amp; reports:</span>
+        <a class="btn ghost btn-sm write-plan-btn" href="/api/export/html" target="_blank">View Write Plan</a>
+        <a class="chip" href="/api/export/json" target="_blank">Download JSON</a>
+        <a class="chip" href="/api/export/md"   target="_blank">Download Audit Report</a>
+      ` : `
+        <span class="exports-label">Download full report:</span>
+        <a class="chip" href="/api/export/json" target="_blank">JSON</a>
+        <a class="chip" href="/api/export/csv"  target="_blank">CSV</a>
+        <a class="chip" href="/api/export/md"   target="_blank">Markdown</a>
+        <a class="chip" href="/api/export/html" target="_blank">HTML</a>
+      `}
     </div>
 
     <div class="write-closing">
@@ -588,11 +613,12 @@ function populateSteps(data, dash) {
             approveBtn.style.opacity = "1";
           }
         } else {
-          // Demo mode — visual simulation only
-          approveBtn.textContent = "✓ Approved";
+          // Demo mode — generate write plan, advance to step 5
+          approveBtn.textContent = "✓ Write plan generated";
           approveBtn.disabled = true;
           approveBtn.style.background = "var(--low)";
           _writeBackResult = null;
+          setTimeout(() => gotoStep(5), 900);
         }
       });
     }
@@ -1010,6 +1036,7 @@ const aboutModal = document.getElementById("aboutDataModal");
 function openAboutData()  { if (aboutModal) { aboutModal.hidden = false; document.body.style.overflow = "hidden"; } }
 function closeAboutData() { if (aboutModal) { aboutModal.hidden = true;  document.body.style.overflow = ""; } }
 document.getElementById("openAboutData")?.addEventListener("click", openAboutData);
+document.getElementById("openAboutDataHero")?.addEventListener("click", openAboutData);
 document.getElementById("closeAboutData")?.addEventListener("click", closeAboutData);
 aboutModal?.addEventListener("click", e => { if (e.target === aboutModal) closeAboutData(); });
 document.addEventListener("keydown", e => {

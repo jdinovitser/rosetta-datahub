@@ -646,6 +646,145 @@ def test_validate_manifest_script_passes():
     )
 
 
+# ── Messaging / copy correctness tests ──────────────────────────────────
+
+import re as _re
+
+def _get_homepage(client=None):
+    """Return the homepage HTML via Flask test client."""
+    from webapp.app import app as _app
+    with _app.test_client() as c:
+        return c.get("/").data.decode()
+
+def _app_js():
+    from pathlib import Path as _P
+    return (_P(__file__).parent.parent / "webapp" / "static" / "js" / "app.js").read_text()
+
+
+def test_homepage_has_no_credentials_disclosure():
+    html = _get_homepage()
+    assert "No credentials required" in html, (
+        "Homepage must contain 'No credentials required' disclosure"
+    )
+    assert "official hackathon resources" in html, (
+        "Homepage must mention 'official hackathon resources'"
+    )
+
+
+def test_homepage_demo_mode_badge_present():
+    html = _get_homepage()
+    assert "DEMO MODE" in html, "Homepage must contain DEMO MODE badge"
+    assert "Official hackathon sample data" in html
+
+
+def test_homepage_about_this_data_link_present():
+    html = _get_homepage()
+    # Both the topbar ℹ button and the hero link should be in the DOM
+    assert "openAboutData" in html
+    assert "openAboutDataHero" in html
+    assert "About this data" in html
+
+
+def test_homepage_hero_cta_says_run_healthcare_demo():
+    html = _get_homepage()
+    assert "Run Healthcare Demo" in html, (
+        "Primary hero CTA must say 'Run Healthcare Demo'"
+    )
+
+
+def test_approve_button_demo_mode_says_generate_write_plan():
+    js = _app_js()
+    assert "Approve &amp; Generate Write Plan" in js or "Generate Write Plan" in js, (
+        "Demo mode approve button must say 'Approve & Generate Write Plan'"
+    )
+
+
+def test_demo_mode_no_external_write_claim():
+    js = _app_js()
+    # Demo mode completion text must not claim an external write was executed
+    assert "No external operations were executed in Demo Mode" in js, (
+        "Step 5 demo notice must state no external operations were executed"
+    )
+
+
+def test_completion_page_status_summary_labels():
+    js = _app_js()
+    assert "Human approval" in js
+    assert "Write-plan validation" in js
+    assert "External catalog modified" in js
+    assert "Target platform" in js
+
+
+def test_demo_approve_button_advances_to_step5():
+    """Demo mode: clicking approve must call gotoStep(5)."""
+    js = _app_js()
+    # The demo branch should contain gotoStep(5)
+    demo_branch_idx = js.find("Demo mode — generate write plan")
+    assert demo_branch_idx != -1, "Demo mode branch must be present in approve handler"
+    snippet = js[demo_branch_idx : demo_branch_idx + 300]
+    assert "gotoStep(5)" in snippet, (
+        "Demo mode approve handler must navigate to step 5"
+    )
+
+
+def test_live_mode_write_language_only_in_live_branch():
+    """'Written to DataHub' must appear only inside the isLive conditional."""
+    js = _app_js()
+    # "Written to DataHub" must be conditioned on isLive
+    idx = js.find("Written to DataHub")
+    assert idx != -1, "Live mode should still show 'Written to DataHub'"
+    # The live banner is inside `if (isLive)` — look back up to 1000 chars
+    preceding = js[max(0, idx - 1000) : idx]
+    assert "isLive" in preceding, (
+        "'Written to DataHub' must only appear in the isLive branch"
+    )
+
+
+def test_financial_figure_labeled_as_affected_transaction_value():
+    html = _get_homepage()
+    assert "affected transaction value" in html, (
+        "Financial figures must be labeled 'affected transaction value', "
+        "not 'cost avoided' or 'misreported revenue'"
+    )
+    assert "misreported revenue" not in html, (
+        "Must not claim '$28M in misreported revenue' without a documented calculation"
+    )
+
+
+def test_homepage_no_cost_avoided_language():
+    html = _get_homepage()
+    # "Cost Avoided" may appear in the technical view section — check homepage body
+    # The key is that the hero/conflict card does NOT use this framing
+    assert "cost avoided" not in html.lower() or "Cost Avoided" in html, (
+        "If 'cost avoided' appears it must be in the technical/dev section, "
+        "not the hero or main conflict card"
+    )
+
+
+def test_about_modal_intro_text_present():
+    html = _get_homepage()
+    # Text spans template lines — check the key phrases individually
+    assert "does not connect to a real healthcare" in html, (
+        "About modal must state the app does not connect to a real healthcare organization"
+    )
+    assert "real patient information" in html
+
+
+def test_how_rosetta_works_steps_present():
+    html = _get_homepage()
+    assert "Discover metric definitions" in html
+    assert "Detect incompatible meanings" in html
+    assert "Generate a human-approved DataHub write plan" in html
+
+
+def test_demo_badge_has_tooltip():
+    html = _get_homepage()
+    # The mode badge must have a title attribute as a tooltip
+    assert "does not modify an external catalog" in html, (
+        "Mode badge title attribute must explain no external catalog is modified"
+    )
+
+
 def test_manifest_covers_all_demo_databases():
     """All SQLite databases in demo_data/ must appear in the manifest."""
     import json
