@@ -535,3 +535,100 @@ def test_executive_dashboard_scores_and_actions():
     assert dash["assets_impacted"] > 0
     actions = " ".join(a["action"] for a in dash["recommended_actions"])
     assert "owner" in actions.lower()  # missing-ownership action surfaces
+
+
+# ---------- input-manifest.json integrity ----------
+
+import hashlib as _hashlib
+from pathlib import Path as _Path
+
+_REPO_ROOT = _Path(__file__).resolve().parent.parent
+_MANIFEST  = _REPO_ROOT / "examples" / "input-manifest.json"
+
+_REQUIRED_ENTRY_KEYS = {
+    "relative_path", "source_dataset", "sha256",
+    "file_size_bytes", "fields_used_by_rosetta",
+    "transformations_applied", "original_or_modified",
+}
+
+
+def test_manifest_exists():
+    assert _MANIFEST.exists(), f"examples/input-manifest.json not found at {_MANIFEST}"
+
+
+def test_manifest_top_level_schema():
+    import json
+    m = json.loads(_MANIFEST.read_text())
+    assert "manifest_version" in m
+    assert "files" in m and isinstance(m["files"], list) and len(m["files"]) > 0
+    assert "validation_command" in m
+
+
+def test_manifest_entries_have_required_keys():
+    import json
+    m = json.loads(_MANIFEST.read_text())
+    for entry in m["files"]:
+        missing = _REQUIRED_ENTRY_KEYS - entry.keys()
+        assert not missing, (
+            f"Manifest entry for {entry.get('relative_path','?')} "
+            f"is missing keys: {missing}"
+        )
+
+
+def test_manifest_checksums_match_disk():
+    """Fail if any listed file has changed since the manifest was last generated."""
+    import json
+    m = json.loads(_MANIFEST.read_text())
+    mismatches = []
+    for entry in m["files"]:
+        path = _REPO_ROOT / entry["relative_path"]
+        if not path.exists():
+            mismatches.append(f"MISSING: {entry['relative_path']}")
+            continue
+        h = _hashlib.sha256(path.read_bytes()).hexdigest()
+        if h != entry["sha256"]:
+            mismatches.append(
+                f"CHECKSUM MISMATCH: {entry['relative_path']}\n"
+                f"  manifest: {entry['sha256']}\n"
+                f"  on disk:  {h}\n"
+                f"  Fix: python scripts/validate_manifest.py --regen"
+            )
+        sz = path.stat().st_size
+        if sz != entry["file_size_bytes"]:
+            mismatches.append(
+                f"SIZE MISMATCH: {entry['relative_path']} "
+                f"(manifest={entry['file_size_bytes']}, disk={sz})"
+            )
+    assert not mismatches, "\n".join(mismatches)
+
+
+def test_manifest_lists_healthcare_db():
+    import json
+    m = json.loads(_MANIFEST.read_text())
+    paths = [e["relative_path"] for e in m["files"]]
+    assert "demo_data/healthcare.db" in paths
+
+
+def test_manifest_healthcare_entry_has_anomaly_counts():
+    import json
+    m = json.loads(_MANIFEST.read_text())
+    hc = next(e for e in m["files"] if e["relative_path"] == "demo_data/healthcare.db")
+    counts = hc.get("anomalies_confirmed_present", {})
+    assert counts.get("negative_billing_amount_rows") == 1215
+    assert counts.get("null_name_rows") == 555
+    assert counts.get("invalid_age_rows") == 832
+    assert counts.get("date_swap_rows") == 277
+
+
+def test_validate_manifest_script_passes():
+    """Running the script with --check should exit 0 with current files."""
+    import subprocess, sys
+    script = _REPO_ROOT / "scripts" / "validate_manifest.py"
+    result = subprocess.run(
+        [sys.executable, str(script), "--check"],
+        capture_output=True, text=True
+    )
+    assert result.returncode == 0, (
+        f"validate_manifest.py --check exited {result.returncode}\n"
+        f"stdout: {result.stdout}\nstderr: {result.stderr}"
+    )

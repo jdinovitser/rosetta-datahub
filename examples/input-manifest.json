@@ -1,0 +1,134 @@
+{
+  "manifest_version": "1.0",
+  "description": "Machine-readable provenance record for every input file consumed by the Rosetta demo pipeline. Regenerate with: python scripts/validate_manifest.py --regen",
+  "generated_at": "2026-07-30T00:00:00Z",
+  "generator": "scripts/validate_manifest.py --regen",
+  "validation_command": "python scripts/validate_manifest.py",
+  "files": [
+    {
+      "relative_path": "demo_data/healthcare.db",
+      "description": "SQLite database containing the official Build with DataHub Agent Hackathon healthcare sample data. Four physical tables and three normalisation views. Rosetta opens this file read-only and never writes to it.",
+      "used_by_demo": ["healthcare"],
+      "source_dataset": "Official Build with DataHub Agent Hackathon sample data",
+      "source_url": "https://github.com/datahub-project/static-assets/tree/main/datasets/healthcare",
+      "license": "Not established",
+      "original_or_modified": "original",
+      "sha256": "287a47c53216c2322074ae802976c6c7196e2e17dc77272c6a6bd38af34ec488",
+      "file_size_bytes": 31084544,
+      "record_counts": {
+        "raw_patients": 55500,
+        "staging_patients": 55500,
+        "mart_billing": 55500,
+        "mart_demographics": 55500,
+        "views": ["v_staging_from_raw", "v_billing_from_staging", "v_demographics_from_staging"]
+      },
+      "fields_used_by_rosetta": {
+        "raw_patients": [
+          "name",
+          "age",
+          "billing_amount",
+          "date_of_admission",
+          "discharge_date",
+          "test_results"
+        ],
+        "staging_patients": [
+          "name",
+          "age",
+          "billing_amount",
+          "date_of_admission",
+          "discharge_date",
+          "test_results",
+          "test_results_clean"
+        ],
+        "mart_billing": [
+          "name",
+          "hospital",
+          "insurance_provider",
+          "billing_amount",
+          "date_of_admission",
+          "discharge_date",
+          "length_of_stay_days",
+          "medication"
+        ],
+        "mart_demographics": [
+          "name",
+          "age",
+          "gender",
+          "blood_type",
+          "medical_condition",
+          "hospital",
+          "test_results"
+        ]
+      },
+      "transformations_applied": "None. Rosetta issues read-only SELECT queries. No INSERT, UPDATE, DELETE, or DDL statements are executed against this file.",
+      "anomalies_confirmed_present": {
+        "negative_billing_amount_rows": 1215,
+        "negative_billing_amount_sum_abs_usd": 28478287.85,
+        "null_name_rows": 555,
+        "invalid_age_rows": 832,
+        "age_range_min": -88,
+        "age_range_max": 285,
+        "date_swap_rows": 277,
+        "negative_los_in_mart_billing": 277
+      }
+    },
+    {
+      "relative_path": "demo_data/lineage.json",
+      "description": "Downstream lineage graph used by the seed demo (active_user / revenue / arr scenario). Maps asset URNs to lists of downstream asset URNs, mirroring the DataHub lineage API response shape. Not used by the healthcare demo — the healthcare demo uses the _DOWNSTREAM dict in rosetta/healthcare_source.py.",
+      "used_by_demo": ["seed"],
+      "source_dataset": "Authored by Rosetta",
+      "source_url": null,
+      "license": "Apache-2.0",
+      "original_or_modified": "generated",
+      "sha256": "484758ad8ad3a97049ce98282e09944a09a301e28816c2313caa99a6eee51aa7",
+      "file_size_bytes": 4304,
+      "record_counts": {
+        "lineage_source_nodes": 21,
+        "total_downstream_edges": 41,
+        "note": "Excludes the _comment key. All URNs reference fictional Snowflake / Looker / Tableau / mlflow assets."
+      },
+      "fields_used_by_rosetta": [
+        "top-level keys (source asset URNs)",
+        "values (arrays of downstream asset URNs)"
+      ],
+      "transformations_applied": "Loaded into memory by RosettaDataHub._lineage_cache. No mutation."
+    },
+    {
+      "relative_path": "demo_data/seed_definitions.json",
+      "description": "Ten metric definitions for the seed demo (active_user, revenue, conversion_rate, arr, customer_churn, attrition, customer_ltv) representing how different business teams define the same SaaS metrics. Not used by the healthcare demo.",
+      "used_by_demo": ["seed"],
+      "source_dataset": "Authored by Rosetta",
+      "source_url": null,
+      "license": "Apache-2.0",
+      "original_or_modified": "generated",
+      "sha256": "43de45627a873eb8f6d7a6fd1606f0612bd1a3dc103e51b3c7ceb82168fa97e3",
+      "file_size_bytes": 10797,
+      "record_counts": {
+        "definition_objects": 16,
+        "unique_metric_names": 7,
+        "metric_names": [
+          "active_user",
+          "arr",
+          "attrition",
+          "conversion_rate",
+          "customer_churn",
+          "customer_ltv",
+          "revenue"
+        ]
+      },
+      "fields_used_by_rosetta": [
+        "name",
+        "display_name",
+        "domain",
+        "owner",
+        "definition_text",
+        "sql_logic",
+        "source_urns",
+        "term_urn",
+        "tags",
+        "last_modified"
+      ],
+      "transformations_applied": "Deserialized into MetricDefinition objects by RosettaDataHub.harvest_metric_definitions(). No mutation of the source file."
+    }
+  ]
+}
