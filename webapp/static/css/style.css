@@ -7,6 +7,7 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
+[hidden]{display:none!important}
 body{
   background:
     radial-gradient(1200px 600px at 80% -10%, rgba(99,102,241,.18), transparent 60%),
