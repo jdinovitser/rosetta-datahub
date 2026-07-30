@@ -332,25 +332,33 @@ body{
 .gov-pipeline-title{font-size:clamp(18px,2.4vw,26px);font-weight:800;color:#fff;margin:6px 0 8px}
 .gov-pipeline-sub{font-size:14px;color:var(--muted);max-width:680px;margin:0 0 36px;line-height:1.6}
 .gov-pipeline{
-  display:flex;align-items:flex-start;gap:0;
-  overflow-x:auto;padding-bottom:8px}
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  grid-template-rows:auto;
+  gap:12px;
+  align-items:start}
+/* hide the arrow DOM nodes — the numbered badges communicate order */
+.gov-arrow{display:none}
 .gov-step{
-  flex:1;min-width:180px;max-width:260px;
   background:var(--panel);border:1px solid var(--line);border-radius:14px;
-  padding:18px 16px 14px;position:relative}
+  padding:22px 16px 14px 16px;position:relative;min-width:0}
 .gov-step-num{
-  position:absolute;top:-13px;left:16px;
+  position:absolute;top:-12px;left:14px;
   background:var(--indigo);color:#fff;
   font-size:11px;font-weight:800;line-height:1;
-  padding:3px 9px;border-radius:20px}
+  padding:3px 9px;border-radius:20px;white-space:nowrap}
 .gov-step-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3}
 .gov-step-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px}
 .gov-step-desc code{font-size:11px;color:var(--cyan);background:rgba(34,211,238,.08);
   border-radius:4px;padding:1px 4px}
 .gov-step-tags{display:flex;flex-wrap:wrap;gap:4px}
-.gov-arrow{
-  flex-shrink:0;align-self:center;margin:0 6px;margin-top:14px;
-  color:var(--indigo);font-size:20px;font-weight:300;opacity:.7}
+/* ── Pipeline responsive breakpoints ─────────────────────────────────── */
+@media(max-width:1100px){
+  .gov-pipeline{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){
+  .gov-pipeline{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){
+  .gov-pipeline{grid-template-columns:1fr}}
 /* source attribution badges */
 .gov-src{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;
   text-transform:uppercase;padding:3px 8px;border-radius:20px;border:1px solid}
@@ -361,10 +369,6 @@ body{
 .gov-pipeline-legend{
   display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;padding-top:16px;
   border-top:1px solid var(--line)}
-@media(max-width:900px){
-  .gov-pipeline{flex-direction:column;align-items:stretch}
-  .gov-step{max-width:100%}
-  .gov-arrow{transform:rotate(90deg);align-self:flex-start;margin:4px 0 4px 20px}}
 /* ── Landing-page provenance strip ───────────────────────────────────── */
 .lp-provenance-section{padding:18px 32px;text-align:center;border-top:1px solid rgba(34,211,238,.08)}
 .lp-provenance-text{max-width:780px;margin:0 auto;font-size:13px;color:var(--text-muted,#8ea0c0);
