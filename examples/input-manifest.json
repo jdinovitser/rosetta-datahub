@@ -1,18 +1,23 @@
 {
-  "manifest_version": "1.0",
-  "description": "Machine-readable provenance record for every input file consumed by the Rosetta demo pipeline. Regenerate with: python scripts/validate_manifest.py --regen",
-  "generated_at": "2026-07-30T00:00:00Z",
+  "manifest_version": "1.1",
+  "description": "Machine-readable provenance record for every input file consumed by any Rosetta demo path. Regenerate and validate with: python scripts/validate_manifest.py --regen / --check",
+  "generated_at": "2026-07-30T21:05:34Z",
   "generator": "scripts/validate_manifest.py --regen",
   "validation_command": "python scripts/validate_manifest.py",
   "files": [
     {
       "relative_path": "demo_data/healthcare.db",
-      "description": "SQLite database containing the official Build with DataHub Agent Hackathon healthcare sample data. Four physical tables and three normalisation views. Rosetta opens this file read-only and never writes to it.",
-      "used_by_demo": ["healthcare"],
-      "source_dataset": "Official Build with DataHub Agent Hackathon sample data",
+      "description": "SQLite database used by the healthcare demo path. The developer commit message (ab334aaa) describes this as 'the real DataHub healthcare sample dataset (datasets/healthcare/healthcare.db \u2014 55,500 synthetic patient records)'. Rosetta opens this file read-only and never writes to it.",
+      "used_by_demo": [
+        "healthcare"
+      ],
+      "source_dataset": "DataHub sample data supplied through the official Build with DataHub Agent Hackathon resources",
       "source_url": "https://github.com/datahub-project/static-assets/tree/main/datasets/healthcare",
-      "license": "Not established",
+      "source_url_note": "URL referenced in rosetta/healthcare_source.py FileNotFoundError message and confirmed by developer commit message ab334aaa.",
+      "license": "Not established \u2014 no LICENSE file was bundled with the dataset",
       "original_or_modified": "original",
+      "git_commit_added": "ab334aaa3e72e2accf7b110f6325c0012e6501ff",
+      "git_commit_message": "feat: live healthcare data source from DataHub hackathon sample",
       "sha256": "287a47c53216c2322074ae802976c6c7196e2e17dc77272c6a6bd38af34ec488",
       "file_size_bytes": 31084544,
       "record_counts": {
@@ -20,7 +25,11 @@
         "staging_patients": 55500,
         "mart_billing": 55500,
         "mart_demographics": 55500,
-        "views": ["v_staging_from_raw", "v_billing_from_staging", "v_demographics_from_staging"]
+        "views": [
+          "v_staging_from_raw",
+          "v_billing_from_staging",
+          "v_demographics_from_staging"
+        ]
       },
       "fields_used_by_rosetta": {
         "raw_patients": [
@@ -60,32 +69,105 @@
           "test_results"
         ]
       },
-      "transformations_applied": "None. Rosetta issues read-only SELECT queries. No INSERT, UPDATE, DELETE, or DDL statements are executed against this file.",
-      "anomalies_confirmed_present": {
+      "transformations_applied": "None. All queries are read-only SELECT statements. No INSERT, UPDATE, DELETE, or DDL is executed.",
+      "anomalies_confirmed_by_sql": {
         "negative_billing_amount_rows": 1215,
         "negative_billing_amount_sum_abs_usd": 28478287.85,
         "null_name_rows": 555,
-        "invalid_age_rows": 832,
+        "invalid_age_rows_outside_0_120": 832,
         "age_range_min": -88,
         "age_range_max": 285,
         "date_swap_rows": 277,
         "negative_los_in_mart_billing": 277
-      }
+      },
+      "rosetta_constructed_on_top": [
+        "10 MetricDefinition objects (5 metrics \u00d7 2 teams each) in rosetta/healthcare_source.py",
+        "DataHub URN lineage graph (_DOWNSTREAM dict in rosetta/healthcare_source.py)",
+        "Glossary term URNs (e.g. urn:li:glossaryTerm:clinical.billing_amount)",
+        "Team ownership URNs (urn:li:corpGroup:clinical-team, finance-team, research-team)",
+        "Severity scores and blast-radius overrides in rosetta/healthcare_demo.py",
+        "Canonical proposals (rosetta/broker.py draft_proposal)"
+      ]
+    },
+    {
+      "relative_path": "demo_data/fiction_retail.db",
+      "description": "SQLite database used by the fiction-retail demo path. The source module (rosetta/fiction_retail_source.py) describes it as a 'Kaggle Fiction Retail E-Commerce dataset'. The git commit message (e8690934) does not name the original source. The exact external URL and license are not established from repository history. Rosetta opens this file read-only and never writes to it.",
+      "used_by_demo": [
+        "fiction_retail"
+      ],
+      "source_dataset": "Fiction Retail E-Commerce dataset \u2014 original source not established from repository history. Developer notes describe it as a Kaggle dataset; this has not been independently confirmed.",
+      "source_url": "Not established",
+      "source_url_note": "rosetta/fiction_retail_source.py references https://github.com/datahub-project/static-assets/tree/main/datasets/fiction-retail in its FileNotFoundError fallback; this URL has not been verified.",
+      "license": "Not established",
+      "original_or_modified": "original",
+      "git_commit_added": "e8690934dbd5ffc0ff45eb91f923fd255d28bab1",
+      "git_commit_message": "Fix: set _LAST_REPORT in fiction-retail scan + commit fiction_retail.db",
+      "sha256": "9f95373e46219e880ae54f995b6f2c2c439c3746e500e484fe3ab2bf9ac55754",
+      "file_size_bytes": 99655680,
+      "record_counts": {
+        "orders": 150000,
+        "order_items": 346202,
+        "customers": 50000,
+        "products": 5000,
+        "promotions": 200,
+        "inventory": 11476,
+        "shipments": 119936,
+        "returns": 11934,
+        "suppliers": 500,
+        "warehouses": 15
+      },
+      "fields_used_by_rosetta": {
+        "orders": [
+          "order_id",
+          "total_amount",
+          "promo_id",
+          "order_status"
+        ],
+        "order_items": [
+          "order_id",
+          "product_id",
+          "unit_price",
+          "discount_pct",
+          "quantity"
+        ],
+        "products": [
+          "product_id",
+          "name",
+          "category",
+          "price"
+        ],
+        "promotions": [
+          "promo_id",
+          "discount_pct"
+        ]
+      },
+      "transformations_applied": "None. All queries are read-only SELECT statements.",
+      "rosetta_constructed_on_top": [
+        "MetricDefinition objects in rosetta/fiction_retail_source.py",
+        "DataHub URN lineage graph (_DOWNSTREAM dict in rosetta/fiction_retail_source.py)",
+        "Glossary term URNs",
+        "Team ownership URNs",
+        "Severity scores",
+        "Canonical proposals (rosetta/broker.py draft_proposal)"
+      ]
     },
     {
       "relative_path": "demo_data/lineage.json",
-      "description": "Downstream lineage graph used by the seed demo (active_user / revenue / arr scenario). Maps asset URNs to lists of downstream asset URNs, mirroring the DataHub lineage API response shape. Not used by the healthcare demo — the healthcare demo uses the _DOWNSTREAM dict in rosetta/healthcare_source.py.",
-      "used_by_demo": ["seed"],
+      "description": "Downstream lineage graph used by the seed demo (active_user / revenue / arr scenario). Authored by Rosetta. All URNs reference fictional Snowflake / Looker / Tableau / mlflow assets. Not used by the healthcare or fiction-retail demos.",
+      "used_by_demo": [
+        "seed"
+      ],
       "source_dataset": "Authored by Rosetta",
       "source_url": null,
       "license": "Apache-2.0",
       "original_or_modified": "generated",
+      "git_commit_added": "f33b966ac5ac8fb4e0fd3cc7ace7c6098d48ef2a",
+      "git_commit_message": "Rosetta DataHub \u2014 hackathon-ready release",
       "sha256": "484758ad8ad3a97049ce98282e09944a09a301e28816c2313caa99a6eee51aa7",
       "file_size_bytes": 4304,
       "record_counts": {
         "lineage_source_nodes": 21,
-        "total_downstream_edges": 41,
-        "note": "Excludes the _comment key. All URNs reference fictional Snowflake / Looker / Tableau / mlflow assets."
+        "total_downstream_edges": 41
       },
       "fields_used_by_rosetta": [
         "top-level keys (source asset URNs)",
@@ -95,26 +177,21 @@
     },
     {
       "relative_path": "demo_data/seed_definitions.json",
-      "description": "Ten metric definitions for the seed demo (active_user, revenue, conversion_rate, arr, customer_churn, attrition, customer_ltv) representing how different business teams define the same SaaS metrics. Not used by the healthcare demo.",
-      "used_by_demo": ["seed"],
+      "description": "Metric definitions for the seed demo (active_user, revenue, arr, etc.). Authored by Rosetta. Not used by the healthcare or fiction-retail demos.",
+      "used_by_demo": [
+        "seed"
+      ],
       "source_dataset": "Authored by Rosetta",
       "source_url": null,
       "license": "Apache-2.0",
       "original_or_modified": "generated",
+      "git_commit_added": "f33b966ac5ac8fb4e0fd3cc7ace7c6098d48ef2a",
+      "git_commit_message": "Rosetta DataHub \u2014 hackathon-ready release",
       "sha256": "43de45627a873eb8f6d7a6fd1606f0612bd1a3dc103e51b3c7ceb82168fa97e3",
       "file_size_bytes": 10797,
       "record_counts": {
         "definition_objects": 16,
-        "unique_metric_names": 7,
-        "metric_names": [
-          "active_user",
-          "arr",
-          "attrition",
-          "conversion_rate",
-          "customer_churn",
-          "customer_ltv",
-          "revenue"
-        ]
+        "unique_metric_names": 7
       },
       "fields_used_by_rosetta": [
         "name",
@@ -128,7 +205,7 @@
         "tags",
         "last_modified"
       ],
-      "transformations_applied": "Deserialized into MetricDefinition objects by RosettaDataHub.harvest_metric_definitions(). No mutation of the source file."
+      "transformations_applied": "Deserialized into MetricDefinition objects by RosettaDataHub.harvest_metric_definitions(). No mutation."
     }
   ]
 }

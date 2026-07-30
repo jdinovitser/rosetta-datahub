@@ -213,6 +213,56 @@ body{
   border-top:1px solid rgba(255,255,255,.05)}
 .lp-arch-section{background:rgba(6,9,18,.5)}
 .lp-ba-section{background:rgba(10,6,18,.5)}
+/* ── Mode badge + about-data button ──────────────────────────────────── */
+.mode-wrap{display:flex;align-items:center;gap:4px}
+.about-data-btn{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:13px;padding:2px 5px;border-radius:6px;
+  transition:color .15s,background .15s;line-height:1}
+.about-data-btn:hover{color:var(--cyan);background:rgba(34,211,238,.1)}
+
+/* ── About This Data modal ───────────────────────────────────────────── */
+.adm-overlay{
+  position:fixed;inset:0;z-index:900;
+  background:rgba(7,11,23,.8);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.adm-panel{
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;
+  width:100%;max-width:560px;max-height:90vh;overflow-y:auto;
+  box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.adm-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;
+  background:var(--panel);z-index:1;border-radius:18px 18px 0 0}
+.adm-title{font-size:17px;font-weight:800;margin:0;color:var(--text)}
+.adm-close{
+  background:none;border:none;cursor:pointer;color:var(--muted);
+  font-size:16px;padding:4px 8px;border-radius:8px;transition:color .15s,background .15s}
+.adm-close:hover{color:var(--text);background:rgba(255,255,255,.08)}
+.adm-body{padding:20px 24px}
+.adm-section{margin-bottom:22px}
+.adm-section:last-child{margin-bottom:0}
+.adm-eyebrow{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:10px;padding:3px 10px;border-radius:20px;display:inline-block}
+.adm-eyebrow-blue{color:#60a5fa;background:rgba(96,165,250,.1)}
+.adm-eyebrow-amber{color:var(--med);background:rgba(255,178,36,.08)}
+.adm-eyebrow-cyan{color:var(--cyan);background:rgba(34,211,238,.08)}
+.adm-rows{display:flex;flex-direction:column;gap:8px}
+.adm-row{display:flex;gap:12px;font-size:13px;line-height:1.5}
+.adm-lbl{flex:0 0 72px;color:var(--muted);font-weight:600;padding-top:1px}
+.adm-val{flex:1;color:var(--text)}
+.adm-unset{color:var(--muted);font-style:italic}
+.adm-link{color:var(--cyan);text-decoration:none}
+.adm-link:hover{text-decoration:underline}
+.adm-desc{font-size:13px;color:var(--muted);margin:8px 0 10px;line-height:1.6}
+.adm-list{margin:0;padding-left:18px;font-size:13px;color:var(--text);
+  line-height:1.7;opacity:.85}
+.adm-list code{font-size:11px;color:var(--cyan);background:rgba(34,211,238,.08);
+  border-radius:4px;padding:1px 4px}
+.adm-footer{
+  padding:14px 24px 20px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:8px}
+
 /* ── Data-to-governance pipeline section ──────────────────────────────── */
 .gov-pipeline-section{
   padding:48px 32px 40px;border-top:1px solid var(--line);

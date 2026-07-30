@@ -1,11 +1,14 @@
 """
 Fiction-Retail data source for Rosetta.
 
-Reads the Kaggle Fiction Retail E-Commerce dataset (fiction_retail.db)
-directly from SQLite — no DataHub instance required. Queries real data to
-surface genuine quality conflicts that were deliberately planted in the
-dataset, then returns MetricDefinition objects that feed the existing
-five-agent Rosetta pipeline unchanged.
+Reads the Fiction Retail E-Commerce dataset (fiction_retail.db) directly from
+SQLite — no DataHub instance required. The original source of this dataset is
+not established from repository history; the source module originally described
+it as a Kaggle dataset but this has not been independently confirmed. See
+examples/input-manifest.json for the full provenance record.
+
+Returns MetricDefinition objects that feed the existing five-agent Rosetta
+pipeline unchanged.
 
 Dataset: 10 interconnected tables covering orders, customers, products,
 inventory, shipments, returns, promotions, warehouses and suppliers.

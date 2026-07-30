@@ -35,11 +35,65 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M2 12c0 4 4.5 8 10 8s10-4 10-8"/><path d="M2 12c0-4 4.5-8 10-8s10 4 10 8"/></svg>
         Connect DataHub
       </button>
-      <div class="mode {{ 'live' if live_mode else 'demo' }}" id="modebadge">
-        {{ 'LIVE · DataHub' if live_mode else 'DEMO MODE · Official hackathon sample data' }}
+      <div class="mode-wrap">
+        <div class="mode {{ 'live' if live_mode else 'demo' }}" id="modebadge">
+          {{ 'LIVE · DataHub' if live_mode else 'DEMO MODE · Official hackathon sample data' }}
+        </div>
+        <button class="about-data-btn" id="openAboutData" title="About this data" aria-label="About this data">ℹ</button>
       </div>
     </div>
   </header>
+
+  <!-- ── About This Data Modal ─────────────────────────────────────────────── -->
+  <div class="adm-overlay" id="aboutDataModal" hidden role="dialog" aria-modal="true" aria-labelledby="admTitle">
+    <div class="adm-panel">
+      <div class="adm-header">
+        <h2 class="adm-title" id="admTitle">About this data</h2>
+        <button class="adm-close" id="closeAboutData" aria-label="Close">✕</button>
+      </div>
+      <div class="adm-body">
+
+        <div class="adm-section">
+          <div class="adm-eyebrow adm-eyebrow-blue">🏥 Healthcare dataset</div>
+          <div class="adm-rows">
+            <div class="adm-row"><span class="adm-lbl">Source</span><span class="adm-val">DataHub sample data supplied through the official Build with DataHub Agent Hackathon resources</span></div>
+            <div class="adm-row"><span class="adm-lbl">URL</span><span class="adm-val"><a class="adm-link" href="https://github.com/datahub-project/static-assets/tree/main/datasets/healthcare" target="_blank" rel="noopener">datahub-project/static-assets</a></span></div>
+            <div class="adm-row"><span class="adm-lbl">Records</span><span class="adm-val">55,500 rows across 4 tables and 3 views — confirmed by direct SQL</span></div>
+            <div class="adm-row"><span class="adm-lbl">Modified?</span><span class="adm-val">No. Rosetta queries read-only. No inserts, updates, or deletes.</span></div>
+            <div class="adm-row"><span class="adm-lbl">License</span><span class="adm-val adm-unset">Not established — no LICENSE file is bundled with the dataset</span></div>
+          </div>
+        </div>
+
+        <div class="adm-section">
+          <div class="adm-eyebrow adm-eyebrow-amber">🛍️ Fiction Retail dataset</div>
+          <div class="adm-rows">
+            <div class="adm-row"><span class="adm-lbl">Source</span><span class="adm-val">Fiction Retail E-Commerce dataset. Developer notes describe it as a Kaggle dataset; the original URL is not confirmed from repository history.</span></div>
+            <div class="adm-row"><span class="adm-lbl">Records</span><span class="adm-val">150,000 orders across 10 tables — confirmed by direct SQL</span></div>
+            <div class="adm-row"><span class="adm-lbl">Modified?</span><span class="adm-val">No. Rosetta queries read-only.</span></div>
+            <div class="adm-row"><span class="adm-lbl">License</span><span class="adm-val adm-unset">Not established</span></div>
+          </div>
+        </div>
+
+        <div class="adm-section">
+          <div class="adm-eyebrow adm-eyebrow-cyan">⚙ What Rosetta constructs</div>
+          <p class="adm-desc">The following are <strong>not</strong> part of the source datasets — Rosetta authors them at scan time from the underlying table structure:</p>
+          <ul class="adm-list">
+            <li>MetricDefinition objects — one per (metric, team) pair — encoding how each team computes each metric</li>
+            <li>DataHub URN lineage graph (dataset → dataset → mart → view edges)</li>
+            <li>Glossary term URNs (<code>urn:li:glossaryTerm:*</code>) and team ownership URNs (<code>urn:li:corpGroup:*</code>)</li>
+            <li>Severity scores and blast-radius figures, derived from real bad-row counts</li>
+            <li>Canonical proposals and write-back operations</li>
+          </ul>
+        </div>
+
+      </div>
+      <div class="adm-footer">
+        <a class="chip" href="/api/export/json" target="_blank">Export full report (JSON)</a>
+        <a class="chip" href="https://github.com/jdinovitser/rosetta-datahub/blob/main/DATA_PROVENANCE.md" target="_blank" rel="noopener">DATA_PROVENANCE.md</a>
+        <a class="chip" href="https://github.com/jdinovitser/rosetta-datahub/blob/main/examples/input-manifest.json" target="_blank" rel="noopener">input-manifest.json</a>
+      </div>
+    </div>
+  </div>
 
   <!-- ── DataHub Connect Modal ──────────────────────────────────────────────── -->
   <div class="dh-modal-overlay" id="dhModal" hidden>

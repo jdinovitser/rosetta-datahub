@@ -22,12 +22,88 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
+_DEMO_PROVENANCE: dict[str, dict] = {
+    "healthcare": {
+        "generator": "Rosetta — https://github.com/jdinovitser/rosetta-datahub",
+        "demo_mode": True,
+        "dataset": "DataHub sample data supplied through the official Build with DataHub Agent Hackathon resources (healthcare.db)",
+        "source_url": "https://github.com/datahub-project/static-assets/tree/main/datasets/healthcare",
+        "git_commit_added": "ab334aaa3e72e2accf7b110f6325c0012e6501ff",
+        "statement": "Generated in DEMO MODE against official hackathon sample data. Rosetta queries this file read-only. No real patient or personal information is used.",
+        "rosetta_constructed": [
+            "MetricDefinition pairs (rosetta/healthcare_source.py)",
+            "DataHub URN lineage graph (_DOWNSTREAM dict)",
+            "Glossary term URNs (urn:li:glossaryTerm:*)",
+            "Team ownership URNs (urn:li:corpGroup:*)",
+            "Severity scores and blast-radius overrides",
+            "Canonical proposals (rosetta/broker.py)",
+        ],
+        "not_established": [
+            "License of the source dataset",
+            "Whether anomalies were intentionally planted or naturally present in the source",
+        ],
+        "full_provenance": "DATA_PROVENANCE.md",
+        "manifest": "examples/input-manifest.json",
+    },
+    "fiction_retail": {
+        "generator": "Rosetta — https://github.com/jdinovitser/rosetta-datahub",
+        "demo_mode": True,
+        "dataset": "Fiction Retail E-Commerce dataset (fiction_retail.db — 150,000 orders across 10 tables)",
+        "source_url": "Not established — developer notes describe this as a Kaggle dataset; not independently confirmed from repository history",
+        "git_commit_added": "e8690934dbd5ffc0ff45eb91f923fd255d28bab1",
+        "statement": "Generated in DEMO MODE. Rosetta queries this file read-only.",
+        "rosetta_constructed": [
+            "MetricDefinition pairs (rosetta/fiction_retail_source.py)",
+            "DataHub URN lineage graph",
+            "Glossary term URNs",
+            "Team ownership URNs",
+            "Severity scores",
+            "Canonical proposals (rosetta/broker.py)",
+        ],
+        "not_established": [
+            "Original source URL",
+            "License",
+            "Whether data is synthetic",
+        ],
+        "full_provenance": "DATA_PROVENANCE.md",
+        "manifest": "examples/input-manifest.json",
+    },
+}
+
+_LIVE_PROVENANCE = {
+    "generator": "Rosetta — https://github.com/jdinovitser/rosetta-datahub",
+    "demo_mode": False,
+    "statement": "Generated against a live DataHub instance. Data source is the connected DataHub graph.",
+    "rosetta_constructed": [
+        "Conflict analysis (rosetta/detector.py)",
+        "Blast-radius walk (rosetta/orchestrator.py)",
+        "Canonical proposals (rosetta/broker.py)",
+    ],
+}
+
+
+def _provenance_for(report: dict) -> dict:
+    return _DEMO_PROVENANCE.get(report.get("source", ""), _LIVE_PROVENANCE)
+
+
 def to_json(report: dict) -> str:
-    return json.dumps(report, indent=2)
+    out = dict(report)
+    out["rosetta_provenance"] = _provenance_for(report)
+    return json.dumps(out, indent=2)
 
 
 def to_csv(report: dict) -> str:
     buf = io.StringIO()
+    prov = _provenance_for(report)
+    buf.write("# ROSETTA PROVENANCE\n")
+    buf.write(f"# Dataset: {prov.get('dataset', 'Live DataHub scan')}\n")
+    buf.write(f"# Source URL: {prov.get('source_url', 'Connected DataHub instance')}\n")
+    buf.write(f"# Statement: {prov['statement']}\n")
+    buf.write(f"# Rosetta-constructed: {'; '.join(prov.get('rosetta_constructed', []))}\n")
+    if prov.get("not_established"):
+        buf.write(f"# Not established: {'; '.join(prov['not_established'])}\n")
+    buf.write(f"# Full provenance: {prov.get('full_provenance','DATA_PROVENANCE.md')} | {prov.get('manifest','examples/input-manifest.json')}\n")
+    buf.write("#\n")
     writer = csv.writer(buf)
     writer.writerow(
         [
@@ -133,6 +209,25 @@ def to_markdown(report: dict) -> str:
             sql = d["sql_logic"].replace("|", "\\|")
             lines.append(f"| {d['domain']} | {d['owner']} | {defn} | `{sql}` |")
         lines.append("")
+    prov = _provenance_for(report)
+    lines += [
+        "",
+        "---",
+        "",
+        "## Data Provenance",
+        "",
+        f"- **Dataset:** {prov.get('dataset', 'Live DataHub scan')}",
+        f"- **Source URL:** {prov.get('source_url', 'Connected DataHub instance')}",
+        f"- **Statement:** {prov['statement']}",
+        f"- **Rosetta-constructed:** {', '.join(prov.get('rosetta_constructed', []))}",
+    ]
+    if prov.get("not_established"):
+        lines.append(f"- **Not established:** {'; '.join(prov['not_established'])}")
+    lines += [
+        f"- **Full provenance:** `{prov.get('full_provenance','DATA_PROVENANCE.md')}`"
+        f" · `{prov.get('manifest','examples/input-manifest.json')}`",
+        "",
+    ]
     return "\n".join(lines)
 
 

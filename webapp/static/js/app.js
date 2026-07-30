@@ -1005,6 +1005,17 @@ document.getElementById("closeDhModal")?.addEventListener("click", closeDhModal)
 document.getElementById("cancelDhModal")?.addEventListener("click", closeDhModal);
 dhModal?.addEventListener("click", e => { if (e.target === dhModal) closeDhModal(); });
 
+// ── About This Data modal ────────────────────────────────────────────────
+const aboutModal = document.getElementById("aboutDataModal");
+function openAboutData()  { if (aboutModal) { aboutModal.hidden = false; document.body.style.overflow = "hidden"; } }
+function closeAboutData() { if (aboutModal) { aboutModal.hidden = true;  document.body.style.overflow = ""; } }
+document.getElementById("openAboutData")?.addEventListener("click", openAboutData);
+document.getElementById("closeAboutData")?.addEventListener("click", closeAboutData);
+aboutModal?.addEventListener("click", e => { if (e.target === aboutModal) closeAboutData(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && aboutModal && !aboutModal.hidden) closeAboutData();
+});
+
 // Pre-fill Acryl demo instance URL
 document.getElementById("useDemoInstance")?.addEventListener("click", () => {
   const urlInput = document.getElementById("dhGmsUrl");

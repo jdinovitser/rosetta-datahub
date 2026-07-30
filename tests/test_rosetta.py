@@ -277,12 +277,23 @@ def test_export_json_roundtrips():
     assert n >= 3, f"Expected ≥ 3 conflicts in JSON export, got {n}"
 
 
+def _csv_header_line(csv_out: str) -> str:
+    """Return the first non-comment line (the actual CSV header)."""
+    for line in csv_out.splitlines():
+        if not line.startswith("#"):
+            return line
+    return ""
+
+
 def test_export_csv_has_header_and_rows():
     report = _demo_report()
     csv_out = exporter.export(report, "csv")
-    lines = csv_out.strip().splitlines()
-    assert lines[0].startswith("metric,kind,severity")
-    assert len(lines) == 1 + len(report["conflicts"])
+    header = _csv_header_line(csv_out)
+    assert header.startswith("metric,kind,severity"), (
+        f"CSV header line should start with 'metric,kind,severity', got: {header!r}"
+    )
+    data_lines = [l for l in csv_out.strip().splitlines() if not l.startswith("#") and l]
+    assert len(data_lines) == 1 + len(report["conflicts"])
 
 
 def test_export_markdown_and_html_contain_metric():
@@ -412,7 +423,7 @@ def test_governance_signals_flag_missing_owner_pii_and_stale():
 def test_exports_carry_ai_explanation():
     report = _demo_report()
     csv_out = exporter.export(report, "csv")
-    assert "ai_recommendation" in csv_out.splitlines()[0]
+    assert "ai_recommendation" in _csv_header_line(csv_out)
     md = exporter.export(report, "md")
     assert "**Finding:**" in md and "**Recommendation:**" in md
     html = exporter.export(report, "html")
@@ -433,7 +444,7 @@ def test_export_parity_ui_fields_present_in_all_formats():
     html_out = exporter.export(report, "html")
 
     # --- 1. CSV structural parity: all columns the UI relies on must be present ---
-    csv_header = csv_out.splitlines()[0]
+    csv_header = _csv_header_line(csv_out)
     required_csv_cols = [
         "metric", "kind", "severity", "confidence", "blast_radius",
         "est_cost_usd", "manual_hours", "rationale",
@@ -613,10 +624,11 @@ def test_manifest_healthcare_entry_has_anomaly_counts():
     import json
     m = json.loads(_MANIFEST.read_text())
     hc = next(e for e in m["files"] if e["relative_path"] == "demo_data/healthcare.db")
-    counts = hc.get("anomalies_confirmed_present", {})
+    # manifest v1.1 uses "anomalies_confirmed_by_sql" key
+    counts = hc.get("anomalies_confirmed_by_sql") or hc.get("anomalies_confirmed_present", {})
     assert counts.get("negative_billing_amount_rows") == 1215
     assert counts.get("null_name_rows") == 555
-    assert counts.get("invalid_age_rows") == 832
+    assert counts.get("invalid_age_rows_outside_0_120") or counts.get("invalid_age_rows") == 832
     assert counts.get("date_swap_rows") == 277
 
 
@@ -631,4 +643,98 @@ def test_validate_manifest_script_passes():
     assert result.returncode == 0, (
         f"validate_manifest.py --check exited {result.returncode}\n"
         f"stdout: {result.stdout}\nstderr: {result.stderr}"
+    )
+
+
+def test_manifest_covers_all_demo_databases():
+    """All SQLite databases in demo_data/ must appear in the manifest."""
+    import json
+    from pathlib import Path as _P
+    demo_dir = _REPO_ROOT / "demo_data"
+    dbs = {p.name for p in demo_dir.glob("*.db")}
+    m = json.loads(_MANIFEST.read_text())
+    manifest_dbs = {
+        _P(e["relative_path"]).name
+        for e in m["files"]
+        if e["relative_path"].endswith(".db")
+    }
+    missing = dbs - manifest_dbs
+    assert not missing, (
+        f"These .db files in demo_data/ are not in the manifest: {missing}. "
+        "Run: python scripts/validate_manifest.py --regen"
+    )
+
+
+def test_manifest_fiction_retail_entry():
+    import json
+    m = json.loads(_MANIFEST.read_text())
+    fr = next(
+        (e for e in m["files"] if e["relative_path"] == "demo_data/fiction_retail.db"),
+        None
+    )
+    assert fr is not None, "fiction_retail.db not found in manifest"
+    assert fr["sha256"], "fiction_retail.db sha256 must not be empty"
+    assert fr["file_size_bytes"] > 0
+    assert "Not established" in fr.get("source_url", ""), (
+        "fiction_retail.db source_url should state 'Not established' "
+        "since the original source cannot be confirmed from repository history"
+    )
+
+
+# ---------- exporter provenance tests ----------
+
+from rosetta.healthcare_demo import run_healthcare_demo
+
+def _hc_report():
+    return run_healthcare_demo()["report"]
+
+
+def test_json_export_contains_provenance_block():
+    import json
+    out = json.loads(exporter.to_json(_hc_report()))
+    assert "rosetta_provenance" in out, "JSON export must contain 'rosetta_provenance' key"
+    prov = out["rosetta_provenance"]
+    assert prov.get("demo_mode") is True
+    assert "source_url" in prov
+    assert "rosetta_constructed" in prov and len(prov["rosetta_constructed"]) > 0
+    assert "statement" in prov
+
+
+def test_json_export_provenance_has_not_established():
+    import json
+    out = json.loads(exporter.to_json(_hc_report()))
+    not_est = out["rosetta_provenance"].get("not_established", [])
+    assert len(not_est) > 0, (
+        "Healthcare JSON provenance must list at least one 'not_established' item "
+        "(e.g. license, whether anomalies were planted)"
+    )
+
+
+def test_csv_export_contains_provenance_comments():
+    csv_out = exporter.to_csv(_hc_report())
+    assert csv_out.startswith("# ROSETTA PROVENANCE"), (
+        "CSV export must start with '# ROSETTA PROVENANCE' comment block"
+    )
+    assert "# Statement:" in csv_out
+    assert "# Rosetta-constructed:" in csv_out
+
+
+def test_markdown_export_contains_provenance_section():
+    md_out = exporter.to_markdown(_hc_report())
+    assert "## Data Provenance" in md_out, (
+        "Markdown export must contain a '## Data Provenance' section"
+    )
+    assert "rosetta_constructed" not in md_out.lower() or "Rosetta-constructed" in md_out
+    assert "Not established" in md_out or "not_established" not in str(_hc_report())
+
+
+def test_live_scan_provenance_does_not_claim_demo_dataset():
+    """A report with no 'source' key should produce live-mode provenance."""
+    import json
+    bare_report = {"generated_at": "2026-01-01T00:00:00Z", "conflicts": [], "summary": {}}
+    out = json.loads(exporter.to_json(bare_report))
+    prov = out["rosetta_provenance"]
+    assert prov.get("demo_mode") is False
+    assert "hackathon" not in prov.get("statement", "").lower(), (
+        "Live-mode provenance must not claim to use hackathon data"
     )

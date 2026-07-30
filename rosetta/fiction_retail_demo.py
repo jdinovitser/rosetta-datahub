@@ -1,7 +1,7 @@
 """
 Fiction-Retail demo mode for Rosetta.
 
-Runs the full five-agent pipeline against the Kaggle Fiction Retail
+Runs the full five-agent pipeline against the Fiction Retail
 E-Commerce dataset (fiction_retail.db — 150,000 orders across 10 tables
 with deliberately planted quality issues). Returns the same
 steps+report+proposals shape as run_demo() so the frontend renders it
