@@ -8,7 +8,7 @@ A five-agent semantic consistency engine for DataHub. Finds where teams silently
 python webapp/app.py   # → http://localhost:5000
 ```
 
-The app runs **fully offline** (zero config, zero API keys) using seed data in `demo_data/`. Set `DATAHUB_GMS_URL` and `DATAHUB_GMS_TOKEN` to connect to a live DataHub instance.
+The app runs **fully offline** (zero config, zero API keys) against DataHub sample data provided through the official Build with DataHub Agent Hackathon resources (`demo_data/`). Set `DATAHUB_GMS_URL` and `DATAHUB_GMS_TOKEN` to connect to a live DataHub instance.
 
 ## Stack
 
@@ -49,7 +49,7 @@ docs/                  SETUP, DEMO_SCRIPT, DEPLOYMENT_GUIDE, etc.
 | Endpoint | What it does |
 |---|---|
 | `GET /api/demo` | Full narrated five-agent walkthrough |
-| `GET /api/scan` | Read-only scan (live DataHub or seed data) |
+| `GET /api/scan` | Read-only scan (live DataHub or hackathon sample data) |
 | `GET /api/dashboard` | Executive Data Intelligence Dashboard (scores + actions) |
 | `GET /api/export/<fmt>` | Export last report as `json`, `csv`, `md`, or `html` |
 | `GET /api/graph` | Blast-radius graph for top conflict |

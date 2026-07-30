@@ -8,10 +8,10 @@ A tiny Flask server that:
   - exports the last report as json/csv/md/html        GET  /api/export/<fmt>
   - returns executive intelligence dashboard           GET  /api/dashboard
 
-It runs with ZERO configuration (uses the offline seed data) so anyone can
-open the deployed URL and click "Run Demo". If you set DATAHUB_GMS_URL and
-DATAHUB_GMS_TOKEN, the /api/scan endpoint will talk to your live instance
-instead of the seed data.
+It runs with ZERO configuration against DataHub sample data provided through
+the official Build with DataHub Agent Hackathon resources. If you set
+DATAHUB_GMS_URL and DATAHUB_GMS_TOKEN, the /api/scan endpoint will talk to
+your live DataHub instance instead.
 
 Run locally:   python webapp/app.py       ->  http://localhost:5000
 On Replit:     the .replit file runs this automatically.
@@ -160,7 +160,7 @@ def api_write_back():
 
 @app.route("/api/scan")
 def api_scan():
-    """Read-only scan. Uses live DataHub if configured, else seed data."""
+    """Read-only scan. Uses live DataHub if configured, else hackathon sample data."""
     global _LAST_REPORT, _LAST_PROPOSALS
     gms_url = _active_gms_url()
     token = _active_token()

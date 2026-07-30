@@ -42,7 +42,7 @@ Proposes the fix. Waits for a human to approve. Then writes the truth back to Da
 | **0:00** | *"Twenty-eight million, four hundred and seventy-eight thousand dollars."* | Landing page. Dark hero. Mascot. Bold headline: **"Your teams define the same metric differently."** | Open app. Stand still. Say nothing else for two seconds. |
 | **0:06** | *"That's not a budget. That's corrupted revenue sitting in this hospital's billing mart right now — because the clinical team and the finance team define 'billing amount' differently. No pipeline failed. No alert fired. The data just quietly disagrees with itself."* | Same hero. | Pause. Let it settle. |
 | **0:17** | *"Meanwhile, the research team is training a patient-risk model on ages that go up to two hundred and eighty-five. Same source column. No range constraint on their side. Eight hundred and thirty-two impossible ages — and the model is learning from every one of them."* | Scroll down slightly — 🏥 Healthcare dataset card comes into view. | Point to the card. |
-| **0:26** | *"Five conflicts. Fifty-five thousand patient records. No errors anywhere in the pipeline."* | Healthcare card. | Pause. |
+| **0:26** | *"Five conflicts. Fifty-five thousand records in the hackathon sample dataset. No errors anywhere in the pipeline."* | Healthcare card. | Pause. |
 | **0:30** | *"This is Rosetta."* | Gesture to the mascot and the headline. | — |
 | **0:32** | *"Five agents. One pipeline. It reads the DataHub graph, finds every place teams silently disagree on meaning, maps exactly how far the damage has already spread — and writes the canonical fix straight back."* | — | Click **🏥 Healthcare Scan** in the top nav. Progress bar fires: **DISCOVER · DETECT · IMPACT · RECONCILE · WRITE** |
 
@@ -127,7 +127,7 @@ Proposes the fix. Waits for a human to approve. Then writes the truth back to Da
 
 | What judges will ask | Your answer |
 |----------------------|-------------|
-| What dataset is this? | DataHub hackathon healthcare sample — 55,500 synthetic patient records structured like a real hospital system |
+| What dataset is this? | Official Build with DataHub hackathon sample data — 55,500 synthetic patient records. No real patient or personal information is used. |
 | How many conflicts found? | **5** — 1 critical, 2 high, 2 medium |
 | What is the critical conflict? | **billing_amount** — clinical records all charges including reversals; finance requires positive amounts only |
 | How many bad rows? | **1,215 negative billing rows** · **$28,478,287** in misreported revenue in mart_billing |
@@ -137,7 +137,7 @@ Proposes the fix. Waits for a human to approve. Then writes the truth back to Da
 | What about patient ages? | **832 impossible ages** (−88 to 285) — clinical has no range constraint, research requires 0–120. A model is training on this |
 | Length of stay? | **277 negative inpatient days** in mart_billing — finance defined LOS as discharge minus admission in whole days without direction; clinical computed it the other way |
 | NULL patient names? | **555 NULL names** — clinical allows NULL for anonymous patients; research requires non-NULL for cohort tracking. Research cohort is silently broken |
-| Does it need a live DataHub? | **No.** Runs fully offline on bundled SQLite. Click **🏥 Healthcare Scan** anytime. For live: **Connect DataHub** → use Acryl demo at demo.datahubproject.io (token in ~60 sec) |
+| Does it need a live DataHub? | **No.** Runs locally against DataHub sample data provided for the hackathon. Click **🏥 Healthcare Scan** anytime. For live: **Connect DataHub** → use Acryl demo at demo.datahubproject.io (token in ~60 sec) |
 | How is severity ranked? | Evidence-driven — row count × dollar impact × blast radius. Not manually assigned |
 | Any LLM in the pipeline? | **None.** Fully deterministic structural graph traversal. Works offline. Always reproducible. No hallucination risk |
 | Can it write back for real? | Yes — connect a live DataHub, approve in Step 4, and Rosetta upserts the canonical GlossaryTerm, links downstream assets, and deprecates conflicting terms. Live |

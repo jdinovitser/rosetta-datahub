@@ -459,7 +459,7 @@ function buildStep5(data, writeResult) {
   } else {
     statusBanner = `
       <div class="write-demo-notice">
-        <strong>DEMO MODE</strong> — Connect DataHub above and approve to write this for real.
+        <strong>DEMO MODE · Official hackathon sample data</strong> — Connect DataHub above and approve to write this for real.
       </div>`;
   }
 
@@ -854,7 +854,7 @@ function setBadge(source) {
     badge.textContent = "LIVE · Fiction Retail DB";
     badge.className = "mode live-retail";
   } else {
-    badge.textContent = "DEMO MODE · seed data";
+    badge.textContent = "DEMO MODE · Official hackathon sample data";
     badge.className = "mode demo";
   }
 }

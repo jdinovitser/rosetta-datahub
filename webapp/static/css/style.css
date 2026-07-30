@@ -213,6 +213,10 @@ body{
   border-top:1px solid rgba(255,255,255,.05)}
 .lp-arch-section{background:rgba(6,9,18,.5)}
 .lp-ba-section{background:rgba(10,6,18,.5)}
+.lp-provenance-section{padding:18px 32px;text-align:center;border-top:1px solid rgba(34,211,238,.08)}
+.lp-provenance-text{max-width:780px;margin:0 auto;font-size:13px;color:var(--text-muted,#8ea0c0);
+  line-height:1.6}
+.lp-provenance-text strong{color:rgba(226,232,240,.7)}
 .lp-section-sub code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
   font-size:.9em;color:var(--cyan);background:rgba(34,211,238,.08);
   padding:1px 6px;border-radius:5px}

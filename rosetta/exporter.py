@@ -231,7 +231,8 @@ def to_html(report: dict) -> str:
     <div class="stat"><div class="n">{s.get('assets_at_risk',0)}</div><div class="l">Assets at risk</div></div>
   </div>
   {''.join(cards)}
-  <footer>Rosetta · the linter for meaning across your DataHub graph · Apache-2.0</footer>
+  <footer>Rosetta · the linter for meaning across your DataHub graph · Apache-2.0<br>
+  <small style="color:var(--muted);font-size:11px">Demo data: DataHub sample data supplied through the official Build with DataHub Agent Hackathon resources. No real patient or personal information is used.</small></footer>
 </body></html>"""
 
 

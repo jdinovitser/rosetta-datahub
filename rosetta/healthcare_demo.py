@@ -1,12 +1,16 @@
 """
 Healthcare demo mode for Rosetta.
 
-Runs the full five-agent pipeline against the real DataHub hackathon sample
-dataset (healthcare.db — 55,500 synthetic patient records with deliberately
-planted quality issues). Returns the same steps+report+proposals shape as
-run_demo() so the frontend renders it without modification.
+Runs the full five-agent pipeline against the DataHub sample data supplied
+through the official Build with DataHub Agent Hackathon resources
+(healthcare.db — 55,500 synthetic patient records). Rosetta converts the
+supplied metadata and scenarios into a reproducible local evaluation graph.
+No real patient or personal information is used.
 
-Real issues in this dataset (planted by the dataset authors):
+Returns the same steps+report+proposals shape as run_demo() so the frontend
+renders it without modification.
+
+Issues present in the hackathon sample data:
   • 1,215 negative billing amounts propagated into mart_billing
   • 277 date-swapped admissions causing negative length_of_stay in mart_billing
   • 832 impossible patient ages (−88 to 285) in mart_demographics
@@ -188,7 +192,7 @@ def run_healthcare_demo() -> dict:
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "source": "healthcare",
-        "dataset": "DataHub Hackathon Sample — Healthcare Pipeline (55,500 patient records)",
+        "dataset": "Official Build with DataHub Hackathon Sample — Healthcare Pipeline (55,500 synthetic patient records). No real patient or personal information is used.",
         "summary": {
             "total_conflicts": len(conflicts),
             "critical": sum(c.severity == "critical" for c in conflicts),

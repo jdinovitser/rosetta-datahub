@@ -36,7 +36,7 @@
         Connect DataHub
       </button>
       <div class="mode {{ 'live' if live_mode else 'demo' }}" id="modebadge">
-        {{ 'LIVE · DataHub' if live_mode else 'DEMO MODE · seed data' }}
+        {{ 'LIVE · DataHub' if live_mode else 'DEMO MODE · Official hackathon sample data' }}
       </div>
     </div>
   </header>
@@ -191,13 +191,13 @@
       <!-- No DataHub? No problem. -->
       <section class="lp-nodh-section">
         <h2 class="lp-section-h2">No DataHub? No problem.</h2>
-        <p class="lp-section-sub">Run the agents against a pre-configured local SQLite dataset to see how Rosetta catches semantic drift.</p>
+        <p class="lp-section-sub">No account or credentials required. Rosetta runs locally against DataHub sample data provided for the hackathon.</p>
         <div class="lp-dataset-cards">
           <div class="lp-dataset-card lp-hc" id="healthcareBtn">
             <div class="lp-ds-icon">🏥</div>
             <div class="lp-ds-body">
               <h3>Healthcare Network</h3>
-              <p>Patient records, billing anomalies, and clinical/finance definition conflicts.</p>
+              <p>Hackathon sample data: billing anomalies and clinical/finance definition conflicts across a synthetic healthcare pipeline.</p>
               <div class="lp-ds-meta">
                 <span><strong>55,500</strong> records</span>
                 <span class="lp-ds-conflicts">4 conflicts injected</span>
@@ -228,7 +228,7 @@
             <div class="lp-feat">
               <div class="lp-feat-icon lp-feat-cyan">▶</div>
               <h4>Zero-config demo</h4>
-              <p>Run immediately against bundled SQLite data. No DataHub setup needed.</p>
+              <p>No account or credentials required. Rosetta runs locally against DataHub sample data provided for the hackathon.</p>
             </div>
             <div class="lp-feat">
               <div class="lp-feat-icon lp-feat-blue">⬡</div>
@@ -279,6 +279,16 @@
             </div>
           </div>
         </div>
+      </section>
+
+      <!-- Data provenance -->
+      <section class="lp-provenance-section">
+        <p class="lp-provenance-text">
+          This demonstration uses DataHub sample data supplied through the official
+          <strong>Build with DataHub Agent Hackathon</strong> resources. Rosetta converts the supplied
+          metadata and scenarios into a reproducible local evaluation graph.
+          No real patient or personal information is used.
+        </p>
       </section>
 
       <!-- DataHub callout -->

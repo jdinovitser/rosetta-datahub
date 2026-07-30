@@ -1,11 +1,12 @@
 """
 Healthcare data source for Rosetta.
 
-Reads the DataHub hackathon sample dataset (datasets/healthcare/healthcare.db)
-directly from SQLite — no DataHub instance required. Queries real data to
-surface genuine quality conflicts that were deliberately planted by the dataset
-authors, then returns MetricDefinition objects that feed the existing
-five-agent Rosetta pipeline unchanged.
+Reads DataHub sample data supplied through the official Build with DataHub
+Agent Hackathon resources (healthcare.db) directly from SQLite — no DataHub
+instance required. Rosetta converts the supplied metadata and scenarios into a
+reproducible local evaluation graph. No real patient or personal information
+is used. Returns MetricDefinition objects that feed the existing five-agent
+Rosetta pipeline unchanged.
 
 Pipeline topology (from add_lineage.py):
     raw_patients → staging_patients → mart_billing
