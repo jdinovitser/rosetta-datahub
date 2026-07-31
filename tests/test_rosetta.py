@@ -666,8 +666,8 @@ def test_homepage_has_no_credentials_disclosure():
     assert "No credentials required" in html, (
         "Homepage must contain 'No credentials required' disclosure"
     )
-    assert "official hackathon resources" in html, (
-        "Homepage must mention 'official hackathon resources'"
+    assert "no account or credentials are required" in html, (
+        "Homepage must disclose no account or credentials are required"
     )
 
 

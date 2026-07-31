@@ -244,7 +244,7 @@
             <div class="lp-feat">
               <div class="lp-feat-icon lp-feat-green">✦</div>
               <h4>Human-approved fix</h4>
-              <p>Broker agent proposes a canonical GlossaryTerm. You approve — Rosetta writes it back.</p>
+              <p>The Broker proposes a canonical GlossaryTerm. You approve, and Rosetta generates a validated DataHub write plan.</p>
             </div>
             <div class="lp-feat">
               <div class="lp-feat-icon lp-feat-blue">▶</div>
@@ -322,7 +322,7 @@
       <!-- ④ TRY IT YOURSELF: dataset cards -->
       <section class="lp-nodh-section">
         <h2 class="lp-section-h2">Try it — no credentials needed.</h2>
-        <p class="lp-section-sub">Choose a sample dataset below. Rosetta runs locally against official hackathon resources — no account needed.</p>
+        <p class="lp-section-sub">Choose a sample dataset below. Rosetta runs locally, so no account or credentials are required.</p>
         <div class="lp-dataset-cards">
           <div class="lp-dataset-card lp-hc" id="healthcareBtn">
             <div class="lp-ds-icon">🏥</div>
@@ -331,7 +331,7 @@
               <p>Hackathon sample data: billing anomalies and clinical/finance definition conflicts across a synthetic healthcare pipeline.</p>
               <div class="lp-ds-meta">
                 <span><strong>55,500</strong> records</span>
-                <span class="lp-ds-conflicts">4 conflicts injected</span>
+                <span class="lp-ds-conflicts">5 conflicts detected</span>
               </div>
             </div>
             <button class="btn healthcare-btn btn-sm lp-ds-btn">🏥 Scan Healthcare</button>
@@ -343,7 +343,7 @@
               <p>E-commerce orders where marketing and logistics disagree on key metrics.</p>
               <div class="lp-ds-meta">
                 <span><strong>150,000</strong> orders</span>
-                <span class="lp-ds-conflicts">2 conflicts injected</span>
+                <span class="lp-ds-conflicts">2 conflicts detected</span>
               </div>
             </div>
             <button class="btn retail-btn btn-sm lp-ds-btn">🛍️ Scan Retail</button>
@@ -411,7 +411,7 @@
         <div class="lp-img-section-inner">
           <div class="lp-section-badge-sm">System Design</div>
           <h2 class="lp-section-h2">System Architecture</h2>
-          <p class="lp-section-sub lp-section-sub-center">DataHub is both the source and the destination — Rosetta reads the metadata graph, reasons over it, and writes the canonical fix straight back.</p>
+          <p class="lp-section-sub lp-section-sub-center">DataHub provides the metadata context Rosetta analyzes. Rosetta reasons over the graph and generates approved operations for applying the canonical fix in a connected DataHub environment.</p>
           <div class="lp-diagram-wrap">
             <img src="{{ url_for('static', filename='img/architecture.png') }}"
                  alt="Rosetta system architecture diagram" class="lp-diagram-img">
@@ -436,7 +436,7 @@
       <div class="wt-loading"><span class="spin">⟳</span> Drafting reconciliation…</div>
     </div>
     <div class="wt-step" id="wtStep5">
-      <div class="wt-loading"><span class="spin">⟳</span> Writing back to DataHub…</div>
+      <div class="wt-loading"><span class="spin">⟳</span> Generating validated DataHub write plan…</div>
     </div>
 
     <!-- ── Bottom nav bar ─────────────────────────────────────────────────── -->
