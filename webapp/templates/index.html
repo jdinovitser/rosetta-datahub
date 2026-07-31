@@ -351,52 +351,7 @@
         </div>
       </section>
 
-      <!-- ⑤ HOW IT WORKS: steps + diagram -->
-      <section class="lp-img-section">
-        <div class="lp-img-section-inner">
-          <div class="lp-section-badge-sm">How It Works</div>
-          <h2 class="lp-section-h2">From raw metadata to a write-ready fix.</h2>
-          <ol class="lp-hiw-steps">
-            <li>Harvest metric definitions and lineage edges from DataHub</li>
-            <li>Detect incompatible meanings across teams</li>
-            <li>Trace blast radius — every downstream asset exposed</li>
-            <li>Broker proposes a canonical GlossaryTerm definition</li>
-            <li>Human approves → Rosetta generates a DataHub write plan</li>
-          </ol>
-          <div class="lp-diagram-wrap">
-            <img src="{{ url_for('static', filename='img/how-it-works.png') }}"
-                 alt="How Rosetta Works — five-agent pipeline" class="lp-diagram-img">
-          </div>
-        </div>
-      </section>
-
-      <!-- ⑥ BEFORE & AFTER -->
-      <section class="lp-img-section lp-ba-section">
-        <div class="lp-img-section-inner">
-          <div class="lp-section-badge-sm">The Problem &amp; The Fix</div>
-          <h2 class="lp-section-h2">Three teams. Three definitions. One conflict resolved.</h2>
-          <p class="lp-section-sub lp-section-sub-center">Before Rosetta: three teams silently disagree on <code>billing_amount</code>, landing 1,215 bad rows and $28.48M in affected transaction value in the sample dataset. After: one canonical GlossaryTerm proposed for DataHub, all downstream assets identified for alignment.</p>
-          <div class="lp-diagram-wrap">
-            <img src="{{ url_for('static', filename='img/before-after.png') }}"
-                 alt="Before and after Rosetta resolves the billing_amount conflict" class="lp-diagram-img">
-          </div>
-        </div>
-      </section>
-
-      <!-- ⑦ ARCHITECTURE -->
-      <section class="lp-img-section lp-arch-section">
-        <div class="lp-img-section-inner">
-          <div class="lp-section-badge-sm">System Design</div>
-          <h2 class="lp-section-h2">System Architecture</h2>
-          <p class="lp-section-sub lp-section-sub-center">DataHub is both the source and the destination — Rosetta reads the metadata graph, reasons over it, and writes the canonical fix straight back.</p>
-          <div class="lp-diagram-wrap">
-            <img src="{{ url_for('static', filename='img/architecture.png') }}"
-                 alt="Rosetta system architecture diagram" class="lp-diagram-img">
-          </div>
-        </div>
-      </section>
-
-      <!-- ⑧ DATAHUB LIVE-MODE CALLOUT -->
+      <!-- ⑤ NATIVE INTEGRATION CALLOUT -->
       <section class="lp-dh-section" id="lpDhSection">
         <div class="lp-dh-card">
           <div class="lp-dh-left">
@@ -415,6 +370,51 @@
             <div class="lp-term-line lp-term-blue">&gt; Discovered 4,192 datasets</div>
             <div class="lp-term-line lp-term-cyan">&gt; Building lineage graph…</div>
             <div class="lp-term-line lp-term-blink">&gt; Scanning for semantic drift _</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑥ BEFORE & AFTER -->
+      <section class="lp-img-section lp-ba-section">
+        <div class="lp-img-section-inner">
+          <div class="lp-section-badge-sm">The Problem &amp; The Fix</div>
+          <h2 class="lp-section-h2">Three teams. Three definitions. One conflict resolved.</h2>
+          <p class="lp-section-sub lp-section-sub-center">Before Rosetta: three teams silently disagree on <code>billing_amount</code>, landing 1,215 bad rows and $28.48M in affected transaction value in the sample dataset. After: one canonical GlossaryTerm proposed for DataHub, all downstream assets identified for alignment.</p>
+          <div class="lp-diagram-wrap">
+            <img src="{{ url_for('static', filename='img/before-after.png') }}"
+                 alt="Before and after Rosetta resolves the billing_amount conflict" class="lp-diagram-img">
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑦ HOW IT WORKS: steps + diagram -->
+      <section class="lp-img-section">
+        <div class="lp-img-section-inner">
+          <div class="lp-section-badge-sm">How It Works</div>
+          <h2 class="lp-section-h2">From raw metadata to a write-ready fix.</h2>
+          <ol class="lp-hiw-steps">
+            <li>Harvest metric definitions and lineage edges from DataHub</li>
+            <li>Detect incompatible meanings across teams</li>
+            <li>Trace blast radius — every downstream asset exposed</li>
+            <li>Broker proposes a canonical GlossaryTerm definition</li>
+            <li>Human approves → Rosetta generates a DataHub write plan</li>
+          </ol>
+          <div class="lp-diagram-wrap">
+            <img src="{{ url_for('static', filename='img/how-it-works.png') }}"
+                 alt="How Rosetta Works — five-agent pipeline" class="lp-diagram-img">
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑧ ARCHITECTURE -->
+      <section class="lp-img-section lp-arch-section">
+        <div class="lp-img-section-inner">
+          <div class="lp-section-badge-sm">System Design</div>
+          <h2 class="lp-section-h2">System Architecture</h2>
+          <p class="lp-section-sub lp-section-sub-center">DataHub is both the source and the destination — Rosetta reads the metadata graph, reasons over it, and writes the canonical fix straight back.</p>
+          <div class="lp-diagram-wrap">
+            <img src="{{ url_for('static', filename='img/architecture.png') }}"
+                 alt="Rosetta system architecture diagram" class="lp-diagram-img">
           </div>
         </div>
       </section>
