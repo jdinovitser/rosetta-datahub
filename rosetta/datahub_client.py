@@ -191,6 +191,66 @@ class RosettaDataHub:
                     frontier.append(child)
         return {"nodes": list(nodes.values()), "edges": edges}
 
+    # ---------- VERIFY (post-write confirmation) ----------
+
+    def read_glossary_term(self, term_urn: str) -> dict | None:
+        """Re-read a GlossaryTerm entity and return its observed attributes.
+
+        Used by verify_proposal() to confirm a write actually applied.
+        Returns None if the entity cannot be read or does not exist.
+        """
+        if not _HAS_SDK:
+            return None
+        try:
+            term = self.client.entities.get(GlossaryTermUrn.from_string(term_urn))
+            if term is None:
+                return None
+            result: dict = {"urn": term_urn, "exists": True}
+            # Definition may be on different attributes depending on SDK version
+            for attr in ("definition", "description", "doc"):
+                val = getattr(term, attr, None)
+                if val:
+                    result["definition"] = str(val)
+                    break
+            # Deprecated flag
+            for attr in ("deprecated", "is_deprecated"):
+                val = getattr(term, attr, None)
+                if val is not None:
+                    result["deprecated"] = bool(val)
+                    break
+            return result
+        except Exception:
+            return None
+
+    def read_asset_term_urns(self, asset_urn: str) -> list[str]:
+        """Return the glossary term URNs currently attached to a dataset.
+
+        Used by verify_proposal() to confirm that attach_term_to_asset applied.
+        Returns an empty list if the entity cannot be read.
+        """
+        if not _HAS_SDK:
+            return []
+        try:
+            dataset = self.client.entities.get(DatasetUrn.from_string(asset_urn))
+            if dataset is None:
+                return []
+            # SDK versions differ on attribute name
+            for attr in ("glossary_terms", "terms", "glossaryTerms"):
+                raw = getattr(dataset, attr, None)
+                if raw is None:
+                    continue
+                urns: list[str] = []
+                for t in raw:
+                    if isinstance(t, str):
+                        urns.append(t)
+                    else:
+                        urn = getattr(t, "urn", None) or getattr(t, "term_urn", None)
+                        urns.append(str(urn) if urn else str(t))
+                return urns
+            return []
+        except Exception:
+            return []
+
     # ---------- WRITE (the loop that compounds) ----------
     def write_canonical_term(
         self, term_id: str, display_name: str, definition: str

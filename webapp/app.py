@@ -31,7 +31,7 @@ import urllib.error
 from flask import Flask, Response, jsonify, render_template, request, session
 
 from rosetta import exporter
-from rosetta.broker import ApprovalToken, Proposal, apply_proposal
+from rosetta.broker import ApprovalToken, Proposal, apply_proposal, verify_proposal
 from rosetta.datahub_client import RosettaDataHub, _HAS_SDK
 from rosetta.demo import run_demo
 from rosetta.healthcare_demo import run_healthcare_demo
@@ -216,7 +216,13 @@ def api_write_back():
         dh = RosettaDataHub()
         result = apply_proposal(dh, proposal, approval)
         _LAST_APPROVAL_TOKEN = None   # single-use: consumed after execution
-        return jsonify({"ok": True, "result": result})
+
+        # Post-write verification: re-read each affected entity and compare
+        # to the approved plan.  Failure here doesn't undo the write but is
+        # surfaced clearly in the UI and the audit record.
+        verification = verify_proposal(dh, proposal, result).to_dict()
+
+        return jsonify({"ok": True, "result": result, "verification": verification})
     except ValueError as exc:
         return jsonify({"ok": False, "error": str(exc)}), 403
     except Exception as exc:  # noqa: BLE001

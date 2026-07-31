@@ -744,8 +744,9 @@ def test_live_mode_write_language_only_in_live_branch():
     # "Written to DataHub" must be conditioned on isLive
     idx = js.find("Written to DataHub")
     assert idx != -1, "Live mode should still show 'Written to DataHub'"
-    # The live banner is inside `if (isLive)` — look back up to 1000 chars
-    preceding = js[max(0, idx - 1000) : idx]
+    # The live banner is inside `if (isLive)` — look back up to 3500 chars
+    # (window grew because the verification banner code now precedes the text)
+    preceding = js[max(0, idx - 3500) : idx]
     assert "isLive" in preceding, (
         "'Written to DataHub' must only appear in the isLive branch"
     )
@@ -1157,3 +1158,131 @@ def test_demo_mode_write_back_blocked_by_missing_gms():
     assert not data["ok"], "Write-back must not succeed without a live DataHub connection"
     # Clean up
     app_module._LAST_APPROVAL_TOKEN = None
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# POST-WRITE VERIFICATION TESTS  (Item 6 of the implementation brief)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+from rosetta.broker import (
+    VERIFICATION_FAILED, VERIFIED, PARTIALLY_VERIFIED, NOT_EXECUTED,
+    VerificationResult, verify_proposal,
+)
+
+
+def _make_proposal_for_verify():
+    """Conflict + proposal fixture for verification tests."""
+    conflict = _make_conflict()
+    return draft_proposal(conflict)
+
+
+def _mock_dh_all_pass(proposal):
+    """Return a mock RosettaDataHub where all read methods report success."""
+    from unittest.mock import MagicMock
+    dh = MagicMock()
+    term_urn = f"urn:li:glossaryTerm:{proposal.term_id}"
+    dh.read_glossary_term.return_value = {"urn": term_urn, "exists": True, "deprecated": False}
+    # Canonical term exists; deprecated terms are marked deprecated
+    def _read_term(urn):
+        if urn == term_urn:
+            return {"urn": urn, "exists": True, "deprecated": False}
+        return {"urn": urn, "exists": True, "deprecated": True}
+    dh.read_glossary_term.side_effect = _read_term
+    dh.read_asset_term_urns.return_value = [term_urn]
+    return dh
+
+
+def _write_result(proposal):
+    return {"canonical_term": f"urn:li:glossaryTerm:{proposal.term_id}"}
+
+
+def test_verify_proposal_all_pass_returns_verified():
+    """When all sampled entities reflect the write plan, status is VERIFIED."""
+    p = _make_proposal_for_verify()
+    dh = _mock_dh_all_pass(p)
+    result = verify_proposal(dh, p, _write_result(p))
+    assert result.status == VERIFIED
+    assert result.passed_checks == result.total_checks
+    assert result.total_checks >= 1
+
+
+def test_verify_proposal_empty_write_result_returns_not_executed():
+    """An empty write_result dict must return NOT_EXECUTED."""
+    from unittest.mock import MagicMock
+    p = _make_proposal_for_verify()
+    result = verify_proposal(MagicMock(), p, {})
+    assert result.status == NOT_EXECUTED
+    assert result.total_checks == 0
+
+
+def test_verify_proposal_term_missing_returns_failed():
+    """If the canonical term cannot be read from DataHub, fail the check."""
+    from unittest.mock import MagicMock
+    p = _make_proposal_for_verify()
+    dh = MagicMock()
+    dh.read_glossary_term.return_value = None   # term not found
+    dh.read_asset_term_urns.return_value = []
+    result = verify_proposal(dh, p, _write_result(p))
+    # At least the term-exists check fails
+    term_checks = [c for c in result.checks if c.operation == "upsert_glossary_term"]
+    assert term_checks, "Expected at least one upsert_glossary_term check"
+    assert not term_checks[0].passed
+
+
+def test_verify_proposal_partial_pass_returns_partially_verified():
+    """Term exists but assets not linked → PARTIALLY_VERIFIED."""
+    from unittest.mock import MagicMock
+    p = _make_proposal_for_verify()
+    dh = MagicMock()
+    term_urn = f"urn:li:glossaryTerm:{p.term_id}"
+    # Term exists, but assets return empty term list
+    def _read_term(urn):
+        if urn == term_urn:
+            return {"urn": urn, "exists": True, "deprecated": False}
+        return {"urn": urn, "exists": True, "deprecated": False}  # not deprecated yet
+    dh.read_glossary_term.side_effect = _read_term
+    dh.read_asset_term_urns.return_value = []  # canonical term not found on assets
+    result = verify_proposal(dh, p, _write_result(p))
+    # Term check passes, asset checks fail → PARTIALLY_VERIFIED (if there are assets)
+    if p.affected_assets:
+        assert result.status == PARTIALLY_VERIFIED
+    else:
+        # No assets to check → depends only on term and deprecated checks
+        assert result.status in (VERIFIED, PARTIALLY_VERIFIED, VERIFICATION_FAILED)
+
+
+def test_verify_result_to_dict_shape():
+    """VerificationResult.to_dict() must include required keys."""
+    from rosetta.broker import VerificationCheck
+    check = VerificationCheck(
+        operation="upsert_glossary_term",
+        target_urn="urn:li:glossaryTerm:x",
+        expected="exists",
+        observed="exists",
+        passed=True,
+    )
+    vr = VerificationResult(
+        status=VERIFIED, total_checks=1, passed_checks=1, checks=[check]
+    )
+    d = vr.to_dict()
+    assert d["status"] == VERIFIED
+    assert d["totalChecks"] == 1
+    assert d["passedChecks"] == 1
+    assert len(d["checks"]) == 1
+    assert d["checks"][0]["operation"] == "upsert_glossary_term"
+    assert d["checks"][0]["passed"] is True
+
+
+def test_verify_caps_asset_sample():
+    """Verification must read at most _VERIFY_ASSET_SAMPLE assets."""
+    from rosetta.broker import _VERIFY_ASSET_SAMPLE
+    from unittest.mock import MagicMock, call
+    p = _make_proposal_for_verify()
+    # Force many affected assets
+    p.affected_assets = [f"urn:li:dataset:ds_{i}" for i in range(20)]
+    dh = _mock_dh_all_pass(p)
+    verify_proposal(dh, p, _write_result(p))
+    asset_calls = dh.read_asset_term_urns.call_count
+    assert asset_calls <= _VERIFY_ASSET_SAMPLE, (
+        f"Verification read {asset_calls} assets; must cap at {_VERIFY_ASSET_SAMPLE}"
+    )

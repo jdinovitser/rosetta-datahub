@@ -403,6 +403,35 @@ body{
 .copy-btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .copy-btn.copied{border-color:var(--low);color:var(--low)}
 
+/* ── Step 5 — Post-write verification banner (Connected Mode only) ───────── */
+.verification-banner{
+  display:flex;align-items:flex-start;gap:14px;
+  border-radius:12px;padding:14px 18px;margin:12px 0;border:1px solid}
+.vrf-ok  {background:rgba(48,164,108,.07);border-color:rgba(48,164,108,.3)}
+.vrf-warn{background:rgba(251,191,36,.06);border-color:rgba(251,191,36,.3)}
+.vrf-fail{background:rgba(239,68,68,.07); border-color:rgba(239,68,68,.3)}
+.vrf-muted{background:rgba(142,160,192,.06);border-color:var(--line)}
+.vrf-icon{font-size:20px;flex-shrink:0;margin-top:1px;line-height:1}
+.vrf-body{flex:1;min-width:0}
+.vrf-title{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.vrf-ok   .vrf-title{color:var(--low)}
+.vrf-warn .vrf-title{color:#fbbf24}
+.vrf-fail .vrf-title{color:var(--crit)}
+.vrf-muted .vrf-title{color:var(--muted)}
+.vrf-detail{font-size:12px;color:#ccd9f0;line-height:1.5}
+.vrf-checks{margin-top:10px;display:flex;flex-direction:column;gap:7px}
+.vrf-check{display:flex;align-items:flex-start;gap:8px}
+.vrf-check-icon{
+  width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:800}
+.vrf-check-pass{background:rgba(48,164,108,.2);color:var(--low)}
+.vrf-check-fail{background:rgba(239,68,68,.2);color:var(--crit)}
+.vrf-check-body{flex:1;min-width:0}
+.vrf-check-op{font-size:11px;font-weight:700;color:var(--cyan);font-family:ui-monospace,monospace}
+.vrf-check-urn{font-size:10.5px;color:var(--muted);font-family:ui-monospace,monospace;word-break:break-all;margin:1px 0}
+.vrf-check-obs{font-size:11px;color:#ccd9f0;line-height:1.4}
+
 /* ── Dataset card provenance badges ───────────────────────────────────── */
 .lp-ds-provenance-row{margin-top:6px}
 .lp-ds-provenance{

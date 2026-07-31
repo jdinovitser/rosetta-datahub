@@ -91,9 +91,10 @@ let demoData = null;
 let dashData = null;
 let stepsReady = false;
 let techVisible = false;
-let _writeBackResult = null;    // set after a successful live write-back
-let _demoApprovalData = null;  // { plan_id, approved_at } set after /api/approve in demo mode
-let _currentPlanJson = "";     // populated by buildStep5 for copy/download buttons
+let _writeBackResult       = null;  // set after a successful live write-back
+let _writeBackVerification = null;  // set after write-back; VerificationResult dict or null
+let _demoApprovalData      = null;  // { plan_id, approved_at } set after /api/approve in demo mode
+let _currentPlanJson       = "";    // populated by buildStep5 for copy/download buttons
 
 // Build the 5 progress dots in the topbar
 function buildProgressDots() {
@@ -521,6 +522,43 @@ function buildStep5(data, writeResult) {
     const termId     = termUrn.split(":").pop() || termUrn;
     const linked     = (writeResult.linked_assets || []).length;
     const deprecated = (writeResult.deprecated_terms || []).length;
+
+    // Post-write verification badge
+    const vrf = _writeBackVerification;
+    let vrfBanner = "";
+    if (vrf) {
+      const vstatus  = vrf.status || "VERIFICATION_FAILED";
+      const vpassed  = vrf.passedChecks ?? 0;
+      const vtotal   = vrf.totalChecks  ?? 0;
+      const vrfMeta  = {
+        VERIFIED:            { icon: "✓", label: "VERIFIED",            cls: "vrf-ok"   },
+        PARTIALLY_VERIFIED:  { icon: "⚠", label: "PARTIALLY VERIFIED",  cls: "vrf-warn" },
+        VERIFICATION_FAILED: { icon: "✗", label: "VERIFICATION FAILED",  cls: "vrf-fail" },
+        NOT_EXECUTED:        { icon: "—", label: "NOT EXECUTED",          cls: "vrf-muted"},
+      };
+      const m = vrfMeta[vstatus] || vrfMeta.VERIFICATION_FAILED;
+
+      const checkRows = (vrf.checks || []).map(c => `
+        <div class="vrf-check">
+          <span class="vrf-check-icon ${c.passed ? "vrf-check-pass" : "vrf-check-fail"}">${c.passed ? "✓" : "✗"}</span>
+          <div class="vrf-check-body">
+            <span class="vrf-check-op">${esc(c.operation)}</span>
+            <div class="vrf-check-urn">${esc(c.targetUrn)}</div>
+            <div class="vrf-check-obs">${esc(c.observed)}</div>
+          </div>
+        </div>`).join("");
+
+      vrfBanner = `
+        <div class="verification-banner ${m.cls}" role="status" aria-label="Verification status: ${vstatus}">
+          <span class="vrf-icon" aria-hidden="true">${m.icon}</span>
+          <div class="vrf-body">
+            <div class="vrf-title">${m.label}</div>
+            <div class="vrf-detail">${vpassed} of ${vtotal} post-write check${vtotal !== 1 ? "s" : ""} passed — DataHub entities re-read and compared to the approved plan.</div>
+            ${checkRows ? `<div class="vrf-checks" aria-label="Individual checks">${checkRows}</div>` : ""}
+          </div>
+        </div>`;
+    }
+
     statusBanner = `
       <div class="write-live-banner">
         <span class="wlb-icon">✓</span>
@@ -528,7 +566,8 @@ function buildStep5(data, writeResult) {
           <div class="wlb-title">Written to DataHub</div>
           <div class="wlb-detail">Term <code>${esc(termId)}</code> created · ${linked} asset${linked !== 1 ? "s" : ""} linked · ${deprecated} definition${deprecated !== 1 ? "s" : ""} deprecated</div>
         </div>
-      </div>`;
+      </div>
+      ${vrfBanner}`;
   } else {
     statusBanner = `
       <div class="write-demo-notice">
@@ -722,7 +761,8 @@ function populateSteps(data, dash) {
               approveBtn.textContent = "✓ Written to DataHub";
               approveBtn.style.background = "var(--low)";
               approveBtn.style.opacity = "1";
-              _writeBackResult = data.result;
+              _writeBackResult       = data.result;
+              _writeBackVerification = data.verification || null;
               setTimeout(() => gotoStep(5), 900);
             } else {
               approveBtn.disabled = false;

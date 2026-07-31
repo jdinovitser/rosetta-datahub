@@ -27,6 +27,18 @@ from dataclasses import dataclass, field
 from .datahub_client import MetricDefinition, RosettaDataHub
 from .detector import Conflict
 
+# Verification status constants (Connected Mode only)
+VERIFIED            = "VERIFIED"
+PARTIALLY_VERIFIED  = "PARTIALLY_VERIFIED"
+VERIFICATION_FAILED = "VERIFICATION_FAILED"
+NOT_EXECUTED        = "NOT_EXECUTED"
+
+# Cap how many assets / deprecated terms we re-read during verification.
+# A full re-read could be slow on large graphs; a representative sample is
+# enough to confirm the write applied correctly.
+_VERIFY_ASSET_SAMPLE = 3
+_VERIFY_DEPRECATE_SAMPLE = 3
+
 
 # ── Data classes ──────────────────────────────────────────────────────────────
 
@@ -248,6 +260,134 @@ def proposal_diff(conflict: Conflict, proposal: Proposal) -> dict:
             "status": "canonical",
         },
     }
+
+
+# ── Post-write verification (Connected Mode only) ────────────────────────────
+
+@dataclass
+class VerificationCheck:
+    operation: str
+    target_urn: str
+    expected: str
+    observed: str
+    passed: bool
+
+    def to_dict(self) -> dict:
+        return {
+            "operation": self.operation,
+            "targetUrn": self.target_urn,
+            "expected": self.expected,
+            "observed": self.observed,
+            "passed": self.passed,
+        }
+
+
+@dataclass
+class VerificationResult:
+    """Result of re-reading DataHub entities after apply_proposal()."""
+    status: str          # VERIFIED | PARTIALLY_VERIFIED | VERIFICATION_FAILED | NOT_EXECUTED
+    total_checks: int
+    passed_checks: int
+    checks: list[VerificationCheck]
+
+    def to_dict(self) -> dict:
+        return {
+            "status": self.status,
+            "totalChecks": self.total_checks,
+            "passedChecks": self.passed_checks,
+            "checks": [c.to_dict() for c in self.checks],
+        }
+
+
+def verify_proposal(
+    dh: RosettaDataHub,
+    proposal: Proposal,
+    write_result: dict,
+) -> VerificationResult:
+    """Re-read each affected DataHub entity and compare to the approved plan.
+
+    Called after apply_proposal() in Connected Mode.  A representative sample
+    (capped by _VERIFY_ASSET_SAMPLE / _VERIFY_DEPRECATE_SAMPLE) is checked so
+    that verification is fast even on large graphs.
+
+    Returns VERIFIED when every sampled check passes, PARTIALLY_VERIFIED when
+    some pass, VERIFICATION_FAILED when none pass, or NOT_EXECUTED if the
+    write_result is empty.
+    """
+    if not write_result:
+        return VerificationResult(
+            status=NOT_EXECUTED, total_checks=0, passed_checks=0, checks=[]
+        )
+
+    checks: list[VerificationCheck] = []
+    canonical_term_urn = write_result.get(
+        "canonical_term", f"urn:li:glossaryTerm:{proposal.term_id}"
+    )
+
+    # ── Check 1: canonical GlossaryTerm exists ────────────────────────────
+    term_data = dh.read_glossary_term(canonical_term_urn)
+    term_exists = bool(term_data and term_data.get("exists"))
+    checks.append(VerificationCheck(
+        operation="upsert_glossary_term",
+        target_urn=canonical_term_urn,
+        expected="exists",
+        observed="exists" if term_exists else "missing",
+        passed=term_exists,
+    ))
+
+    # ── Check 2: sample of affected assets has the canonical term ─────────
+    sampled_assets = proposal.affected_assets[:_VERIFY_ASSET_SAMPLE]
+    for asset_urn in sampled_assets:
+        attached = dh.read_asset_term_urns(asset_urn)
+        has_term = any(
+            canonical_term_urn in u or proposal.term_id in u for u in attached
+        )
+        checks.append(VerificationCheck(
+            operation="attach_term_to_asset",
+            target_urn=asset_urn,
+            expected=f"has_term:{canonical_term_urn}",
+            observed=(
+                f"found: {', '.join(attached[:2]) or 'none'}"
+                + (" …" if len(attached) > 2 else "")
+            ),
+            passed=has_term,
+        ))
+
+    # ── Check 3: sample of deprecated terms is marked deprecated ─────────
+    sampled_deprecated = proposal.deprecated_terms[:_VERIFY_DEPRECATE_SAMPLE]
+    for dep_urn in sampled_deprecated:
+        dep_data = dh.read_glossary_term(dep_urn)
+        is_deprecated = bool(dep_data and dep_data.get("deprecated"))
+        checks.append(VerificationCheck(
+            operation="deprecate_term",
+            target_urn=dep_urn,
+            expected="deprecated=True",
+            observed=(
+                f"deprecated={dep_data.get('deprecated')}"
+                if dep_data else "unreadable"
+            ),
+            passed=is_deprecated,
+        ))
+
+    # ── Aggregate ─────────────────────────────────────────────────────────
+    total  = len(checks)
+    passed = sum(1 for c in checks if c.passed)
+
+    if total == 0:
+        status = NOT_EXECUTED
+    elif passed == total:
+        status = VERIFIED
+    elif passed > 0:
+        status = PARTIALLY_VERIFIED
+    else:
+        status = VERIFICATION_FAILED
+
+    return VerificationResult(
+        status=status,
+        total_checks=total,
+        passed_checks=passed,
+        checks=checks,
+    )
 
 
 # ── Write execution (Connected Mode only) ────────────────────────────────────
