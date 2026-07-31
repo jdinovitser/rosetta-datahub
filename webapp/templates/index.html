@@ -183,7 +183,7 @@
     <!-- ── STEP 0: Landing ──────────────────────────────────────────────── -->
     <div class="wt-step active" id="wtStep0">
 
-      <!-- Hero -->
+      <!-- ① HERO: What it is + primary CTA -->
       <section class="lp-hero">
         <div class="lp-glow"></div>
         <div class="lp-hero-inner">
@@ -191,10 +191,6 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M2 12c0 4 4.5 8 10 8s10-4 10-8"/><path d="M2 12c0-4 4.5-8 10-8s10 4 10 8"/></svg>
             DataHub Agent Hackathon 2026
           </div>
-
-          <img class="lp-sticker"
-               src="{{ url_for('static', filename='img/mascot-sticker.png') }}"
-               alt="Rosetta mascot">
 
           <h1 class="lp-h1">
             One metric. Two meanings.<br>
@@ -224,92 +220,32 @@
         </div>
       </section>
 
-      <!-- Agent pipeline -->
-      <section class="lp-pipeline-section">
-        <div class="lp-pipeline" id="lpPipeline">
-          <div class="lp-agent active" data-idx="0">
-            <div class="lp-agent-icon">🧲</div>
-            <div class="lp-agent-name">Harvester</div>
-          </div>
-          <div class="lp-connector"><div class="lp-flow"></div></div>
-          <div class="lp-agent" data-idx="1">
-            <div class="lp-agent-icon">🔍</div>
-            <div class="lp-agent-name">Detector</div>
-          </div>
-          <div class="lp-connector"><div class="lp-flow"></div></div>
-          <div class="lp-agent" data-idx="2">
-            <div class="lp-agent-icon">💥</div>
-            <div class="lp-agent-name">Blast Radius</div>
-          </div>
-          <div class="lp-connector"><div class="lp-flow"></div></div>
-          <div class="lp-agent" data-idx="3">
-            <div class="lp-agent-icon">🤝</div>
-            <div class="lp-agent-name">Broker</div>
-          </div>
-          <div class="lp-connector"><div class="lp-flow"></div></div>
-          <div class="lp-agent" data-idx="4">
-            <div class="lp-agent-icon">✅</div>
-            <div class="lp-agent-name">Writer</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- No DataHub? No problem. -->
-      <section class="lp-nodh-section">
-        <h2 class="lp-section-h2">No DataHub? No problem.</h2>
-        <p class="lp-section-sub">No account or credentials required. Rosetta runs locally against DataHub sample data provided for the hackathon.</p>
-        <div class="lp-dataset-cards">
-          <div class="lp-dataset-card lp-hc" id="healthcareBtn">
-            <div class="lp-ds-icon">🏥</div>
-            <div class="lp-ds-body">
-              <h3>Healthcare Network</h3>
-              <p>Hackathon sample data: billing anomalies and clinical/finance definition conflicts across a synthetic healthcare pipeline.</p>
-              <div class="lp-ds-meta">
-                <span><strong>55,500</strong> records</span>
-                <span class="lp-ds-conflicts">4 conflicts injected</span>
-              </div>
-            </div>
-            <button class="btn healthcare-btn btn-sm lp-ds-btn">🏥 Scan Healthcare</button>
-          </div>
-          <div class="lp-dataset-card lp-rt" id="retailBtn">
-            <div class="lp-ds-icon">🛍️</div>
-            <div class="lp-ds-body">
-              <h3>Fiction Retail Co.</h3>
-              <p>E-commerce orders where marketing and logistics disagree on key metrics.</p>
-              <div class="lp-ds-meta">
-                <span><strong>150,000</strong> orders</span>
-                <span class="lp-ds-conflicts">2 conflicts injected</span>
-              </div>
-            </div>
-            <button class="btn retail-btn btn-sm lp-ds-btn">🛍️ Scan Retail</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Features + Conflict card -->
+      <!-- ② THE PROBLEM, CONCRETELY: real conflict from the dataset -->
       <section class="lp-features-section">
         <div class="lp-features-left">
-          <h2 class="lp-section-h2 lp-left-align">Catch semantic drift before it impacts reporting.</h2>
+          <div class="lp-section-badge-sm">The Problem</div>
+          <h2 class="lp-section-h2 lp-left-align">Here's what a semantic conflict looks like.</h2>
+          <p class="lp-section-sub">Two teams define the same metric differently inside DataHub. Nobody notices. Downstream reports silently diverge. Rosetta finds it, measures it, and proposes the fix.</p>
           <div class="lp-feat-grid">
             <div class="lp-feat">
-              <div class="lp-feat-icon lp-feat-cyan">▶</div>
-              <h4>Zero-config demo</h4>
-              <p>No account or credentials required. Rosetta runs locally against DataHub sample data provided for the hackathon.</p>
-            </div>
-            <div class="lp-feat">
-              <div class="lp-feat-icon lp-feat-blue">⬡</div>
+              <div class="lp-feat-icon lp-feat-cyan">⬡</div>
               <h4>DataHub-native</h4>
-              <p>Connects via GraphQL to trace real metadata lineage on your instance.</p>
+              <p>Reads URNs, lineage edges, and glossary terms directly from the DataHub metadata graph.</p>
             </div>
             <div class="lp-feat">
               <div class="lp-feat-icon lp-feat-amber">◎</div>
-              <h4>Blast-radius severity</h4>
-              <p>Scores each conflict by downstream dashboards affected and dollar risk.</p>
+              <h4>Blast-radius scoring</h4>
+              <p>Traces every downstream dashboard, ML model, and dataset touched by the conflict.</p>
             </div>
             <div class="lp-feat">
               <div class="lp-feat-icon lp-feat-green">✦</div>
-              <h4>One-click fixes</h4>
-              <p>Broker agent proposes a canonical definition and writes it back automatically.</p>
+              <h4>Human-approved fix</h4>
+              <p>Broker agent proposes a canonical GlossaryTerm. You approve — Rosetta writes it back.</p>
+            </div>
+            <div class="lp-feat">
+              <div class="lp-feat-icon lp-feat-blue">▶</div>
+              <h4>No LLM, fully deterministic</h4>
+              <p>Conflict detection uses logic-similarity comparison — reproducible and auditable every time.</p>
             </div>
           </div>
         </div>
@@ -347,17 +283,116 @@
         </div>
       </section>
 
-      <!-- Data provenance -->
-      <section class="lp-provenance-section">
-        <p class="lp-provenance-text">
-          This demonstration uses DataHub sample data supplied through the official
-          <strong>Build with DataHub Agent Hackathon</strong> resources. Rosetta converts the supplied
-          metadata and scenarios into a reproducible local evaluation graph.
-          No real patient or personal information is used.
-        </p>
+      <!-- ③ HOW IT SOLVES IT: five-agent pipeline -->
+      <section class="lp-pipeline-section">
+        <div class="lp-section-eyebrow-center">Five Agents · One Pipeline</div>
+        <h2 class="lp-section-h2 lp-section-h2-center">Rosetta runs five specialised agents end-to-end.</h2>
+        <div class="lp-pipeline" id="lpPipeline">
+          <div class="lp-agent active" data-idx="0">
+            <div class="lp-agent-icon">🧲</div>
+            <div class="lp-agent-name">Harvester</div>
+          </div>
+          <div class="lp-connector"><div class="lp-flow"></div></div>
+          <div class="lp-agent" data-idx="1">
+            <div class="lp-agent-icon">🔍</div>
+            <div class="lp-agent-name">Detector</div>
+          </div>
+          <div class="lp-connector"><div class="lp-flow"></div></div>
+          <div class="lp-agent" data-idx="2">
+            <div class="lp-agent-icon">💥</div>
+            <div class="lp-agent-name">Blast Radius</div>
+          </div>
+          <div class="lp-connector"><div class="lp-flow"></div></div>
+          <div class="lp-agent" data-idx="3">
+            <div class="lp-agent-icon">🤝</div>
+            <div class="lp-agent-name">Broker</div>
+          </div>
+          <div class="lp-connector"><div class="lp-flow"></div></div>
+          <div class="lp-agent" data-idx="4">
+            <div class="lp-agent-icon">✅</div>
+            <div class="lp-agent-name">Writer</div>
+          </div>
+        </div>
       </section>
 
-      <!-- DataHub callout -->
+      <!-- ④ TRY IT YOURSELF: dataset cards -->
+      <section class="lp-nodh-section">
+        <h2 class="lp-section-h2">Try it — no credentials needed.</h2>
+        <p class="lp-section-sub">Choose a sample dataset below. Rosetta runs locally against official hackathon resources — no account needed.</p>
+        <div class="lp-dataset-cards">
+          <div class="lp-dataset-card lp-hc" id="healthcareBtn">
+            <div class="lp-ds-icon">🏥</div>
+            <div class="lp-ds-body">
+              <h3>Healthcare Network</h3>
+              <p>Hackathon sample data: billing anomalies and clinical/finance definition conflicts across a synthetic healthcare pipeline.</p>
+              <div class="lp-ds-meta">
+                <span><strong>55,500</strong> records</span>
+                <span class="lp-ds-conflicts">4 conflicts injected</span>
+              </div>
+            </div>
+            <button class="btn healthcare-btn btn-sm lp-ds-btn">🏥 Scan Healthcare</button>
+          </div>
+          <div class="lp-dataset-card lp-rt" id="retailBtn">
+            <div class="lp-ds-icon">🛍️</div>
+            <div class="lp-ds-body">
+              <h3>Fiction Retail Co.</h3>
+              <p>E-commerce orders where marketing and logistics disagree on key metrics.</p>
+              <div class="lp-ds-meta">
+                <span><strong>150,000</strong> orders</span>
+                <span class="lp-ds-conflicts">2 conflicts injected</span>
+              </div>
+            </div>
+            <button class="btn retail-btn btn-sm lp-ds-btn">🛍️ Scan Retail</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑤ HOW IT WORKS: steps + diagram -->
+      <section class="lp-img-section">
+        <div class="lp-img-section-inner">
+          <div class="lp-section-badge-sm">How It Works</div>
+          <h2 class="lp-section-h2">From raw metadata to a write-ready fix.</h2>
+          <ol class="lp-hiw-steps">
+            <li>Harvest metric definitions and lineage edges from DataHub</li>
+            <li>Detect incompatible meanings across teams</li>
+            <li>Trace blast radius — every downstream asset exposed</li>
+            <li>Broker proposes a canonical GlossaryTerm definition</li>
+            <li>Human approves → Rosetta generates a DataHub write plan</li>
+          </ol>
+          <div class="lp-diagram-wrap">
+            <img src="{{ url_for('static', filename='img/how-it-works.png') }}"
+                 alt="How Rosetta Works — five-agent pipeline" class="lp-diagram-img">
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑥ BEFORE & AFTER -->
+      <section class="lp-img-section lp-ba-section">
+        <div class="lp-img-section-inner">
+          <div class="lp-section-badge-sm">The Problem &amp; The Fix</div>
+          <h2 class="lp-section-h2">Three teams. Three definitions. One conflict resolved.</h2>
+          <p class="lp-section-sub lp-section-sub-center">Before Rosetta: three teams silently disagree on <code>billing_amount</code>, landing 1,215 bad rows and $28.48M in affected transaction value in the sample dataset. After: one canonical GlossaryTerm proposed for DataHub, all downstream assets identified for alignment.</p>
+          <div class="lp-diagram-wrap">
+            <img src="{{ url_for('static', filename='img/before-after.png') }}"
+                 alt="Before and after Rosetta resolves the billing_amount conflict" class="lp-diagram-img">
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑦ ARCHITECTURE -->
+      <section class="lp-img-section lp-arch-section">
+        <div class="lp-img-section-inner">
+          <div class="lp-section-badge-sm">System Design</div>
+          <h2 class="lp-section-h2">System Architecture</h2>
+          <p class="lp-section-sub lp-section-sub-center">DataHub is both the source and the destination — Rosetta reads the metadata graph, reasons over it, and writes the canonical fix straight back.</p>
+          <div class="lp-diagram-wrap">
+            <img src="{{ url_for('static', filename='img/architecture.png') }}"
+                 alt="Rosetta system architecture diagram" class="lp-diagram-img">
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑧ DATAHUB LIVE-MODE CALLOUT -->
       <section class="lp-dh-section" id="lpDhSection">
         <div class="lp-dh-card">
           <div class="lp-dh-left">
@@ -380,72 +415,13 @@
         </div>
       </section>
 
-      <!-- Architecture diagram -->
-      <section class="lp-img-section lp-arch-section">
-        <div class="lp-img-section-inner">
-          <div class="lp-section-badge-sm">System Design</div>
-          <h2 class="lp-section-h2">System Architecture</h2>
-          <p class="lp-section-sub lp-section-sub-center">DataHub is both the source and the destination — Rosetta reads the metadata graph, reasons over it, and writes the canonical fix straight back.</p>
-          <div class="lp-diagram-wrap">
-            <img src="{{ url_for('static', filename='img/architecture.png') }}"
-                 alt="Rosetta system architecture diagram" class="lp-diagram-img">
-          </div>
-        </div>
+      <!-- ⑨ MASCOT / STICKER (decorative closer) -->
+      <section class="lp-sticker-section">
+        <img class="lp-sticker-lg"
+             src="{{ url_for('static', filename='img/mascot-sticker.png') }}"
+             alt="Rosetta — AI Data Steward for DataHub">
+        <p class="lp-sticker-caption">Rosetta · AI Data Steward for DataHub</p>
       </section>
-
-      <!-- How It Works -->
-      <section class="lp-img-section">
-        <div class="lp-img-section-inner">
-          <div class="lp-section-badge-sm">Five Agents · One Pipeline</div>
-          <h2 class="lp-section-h2">How Rosetta Works</h2>
-          <ol class="lp-hiw-steps">
-            <li>Discover metric definitions in DataHub metadata</li>
-            <li>Detect incompatible meanings</li>
-            <li>Trace downstream impact through lineage</li>
-            <li>Propose a canonical definition</li>
-            <li>Generate a human-approved DataHub write plan</li>
-          </ol>
-          <p class="lp-hiw-para">
-            Rosetta is a semantic-consistency agent for DataHub. Using sample datasets provided
-            through the official hackathon resources, Rosetta discovers where teams assign
-            incompatible meanings to the same metric, traces each conflict through the metadata
-            and lineage graph, measures downstream exposure, and proposes a canonical definition.
-            The public demonstration requires no credentials. In Demo Mode, human approval
-            generates a validated DataHub write plan without modifying an external catalog.
-          </p>
-          <div class="lp-diagram-wrap">
-            <img src="{{ url_for('static', filename='img/how-it-works.png') }}"
-                 alt="How Rosetta Works — five-agent pipeline" class="lp-diagram-img">
-          </div>
-        </div>
-      </section>
-
-      <!-- Semantic conflict graph showcase -->
-      <section class="lp-img-section lp-graph-showcase">
-        <div class="lp-img-section-inner">
-          <div class="lp-section-badge-sm">Knowledge Graph · Blast Radius</div>
-          <h2 class="lp-section-h2">The metadata graph Rosetta navigates</h2>
-          <p class="lp-section-sub lp-section-sub-center">Every node is a dataset, term, or downstream asset. Every edge is a dependency. Rosetta walks this graph to find exactly where meaning diverges — and how far the damage has spread.</p>
-          <div class="lp-diagram-wrap">
-            <img src="{{ url_for('static', filename='img/hero-banner.png') }}"
-                 alt="Rosetta semantic conflict knowledge graph" class="lp-diagram-img">
-          </div>
-        </div>
-      </section>
-
-      <!-- Before & After -->
-      <section class="lp-img-section lp-ba-section">
-        <div class="lp-img-section-inner">
-          <div class="lp-section-badge-sm">The Problem &amp; The Fix</div>
-          <h2 class="lp-section-h2">Three teams. Three definitions. One conflict resolved.</h2>
-          <p class="lp-section-sub lp-section-sub-center">Before Rosetta: three teams silently disagree on <code>billing_amount</code>, landing 1,215 bad rows and $28.48M in affected transaction value in the sample dataset. After: one canonical GlossaryTerm proposed for DataHub, all downstream assets identified for alignment.</p>
-          <div class="lp-diagram-wrap">
-            <img src="{{ url_for('static', filename='img/before-after.png') }}"
-                 alt="Before and after Rosetta resolves the billing_amount conflict" class="lp-diagram-img">
-          </div>
-        </div>
-      </section>
-
 
     </div>
 

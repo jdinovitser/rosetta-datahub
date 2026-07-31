@@ -770,9 +770,9 @@ def test_about_modal_intro_text_present():
 
 def test_how_rosetta_works_steps_present():
     html = _get_homepage()
-    assert "Discover metric definitions" in html
     assert "Detect incompatible meanings" in html
-    assert "Generate a human-approved DataHub write plan" in html
+    assert "DataHub write plan" in html
+    assert "canonical" in html.lower()
 
 
 def test_demo_badge_has_tooltip():
