@@ -10,7 +10,13 @@ from __future__ import annotations
 
 import pytest
 
-from rosetta.broker import apply_proposal, draft_proposal
+from rosetta.broker import (
+    ApprovalToken,
+    Proposal,
+    apply_proposal,
+    draft_proposal,
+    generate_write_plan,
+)
 from rosetta.datahub_client import MetricDefinition, RosettaDataHub
 from rosetta.detector import (
     Conflict,
@@ -209,7 +215,12 @@ def test_apply_proposal_writes_back(monkeypatch):
     ]
     c = detect_conflicts(defs)[0]
     p = draft_proposal(c)
-    audit = apply_proposal(dh, p)
+    # apply_proposal now requires an explicit approval token
+    token = ApprovalToken(
+        plan_id=p.plan_id, conflict_id=p.term_id,
+        approved_at="2026-07-31T00:00:00Z", mode="live"
+    )
+    audit = apply_proposal(dh, p, token)
     assert audit["canonical_term"].startswith("urn:li:glossaryTerm:")
     assert set(audit["linked_assets"]) == {"a", "b", "c"}
     assert dh.client.entities.upserted  # canonical term was written
@@ -718,10 +729,10 @@ def test_completion_page_status_summary_labels():
 def test_demo_approve_button_advances_to_step5():
     """Demo mode: clicking approve must call gotoStep(5)."""
     js = _app_js()
-    # The demo branch should contain gotoStep(5)
-    demo_branch_idx = js.find("Demo mode — generate write plan")
+    # The demo branch calls /api/approve then advances to step 5
+    demo_branch_idx = js.find("Demo mode — call /api/approve")
     assert demo_branch_idx != -1, "Demo mode branch must be present in approve handler"
-    snippet = js[demo_branch_idx : demo_branch_idx + 300]
+    snippet = js[demo_branch_idx : demo_branch_idx + 1200]
     assert "gotoStep(5)" in snippet, (
         "Demo mode approve handler must navigate to step 5"
     )
@@ -875,3 +886,274 @@ def test_live_scan_provenance_does_not_claim_demo_dataset():
     assert "hackathon" not in prov.get("statement", "").lower(), (
         "Live-mode provenance must not claim to use hackathon data"
     )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# APPROVAL-SAFETY TESTS  (Items 4 & 5 of the implementation brief)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _make_conflict():
+    """Minimal conflict fixture used by safety tests."""
+    a = mk("revenue", "finance", "urn:li:corpGroup:finance",
+           "Total billed amount", "SUM(charge)", ["urn:li:dataset:ds_a"])
+    b = mk("revenue", "marketing", "urn:li:corpGroup:marketing",
+           "Net recognised revenue", "SUM(net)", ["urn:li:dataset:ds_b"],
+           term="urn:li:glossaryTerm:revenue_mkt")
+    return Conflict(
+        metric="revenue", kind="silent_contradiction", severity="high",
+        confidence=0.9, blast_radius=5,
+        logic_sim=0.2, name_sim=0.9,
+        definitions=[a, b], impacted_assets=[], impact_graph={}
+    )
+
+
+# ── draft_proposal helpers ────────────────────────────────────────────────────
+
+def test_draft_proposal_generates_plan_id():
+    """plan_id must be a non-empty deterministic hex string."""
+    conflict = _make_conflict()
+    p = draft_proposal(conflict)
+    assert p.plan_id, "plan_id must not be empty"
+    assert len(p.plan_id) == 16, f"expected 16-char hex, got {len(p.plan_id)}"
+    # Re-draft from the same conflict → same plan_id
+    p2 = draft_proposal(conflict)
+    assert p.plan_id == p2.plan_id, "plan_id must be deterministic"
+
+
+def test_plan_id_changes_if_assets_change():
+    """Different affected assets → different plan_id."""
+    conflict = _make_conflict()
+    p1 = draft_proposal(conflict)
+    # Temporarily add extra source_urn to first definition to change the plan
+    conflict.definitions[0].source_urns.append("urn:li:dataset:extra")
+    p2 = draft_proposal(conflict)
+    assert p1.plan_id != p2.plan_id, "plan_id must change when affected assets change"
+    conflict.definitions[0].source_urns.pop()  # restore
+
+
+# ── generate_write_plan ───────────────────────────────────────────────────────
+
+def test_generate_write_plan_structure():
+    """Write plan must include required schema fields."""
+    p = draft_proposal(_make_conflict())
+    plan = generate_write_plan(p)
+    assert plan["mode"] == "demo"
+    assert plan["status"] == "validated_not_executed"
+    assert plan["planId"] == p.plan_id
+    assert isinstance(plan["operations"], list)
+    assert len(plan["operations"]) >= 1  # at minimum the upsert op
+
+
+def test_generate_write_plan_operations_are_not_executed():
+    """All operations must have executionStatus='not_executed' in demo plan."""
+    p = draft_proposal(_make_conflict())
+    plan = generate_write_plan(p)
+    for op in plan["operations"]:
+        assert op["executionStatus"] == "not_executed", (
+            f"Op {op['sequence']} ({op['action']}) must not be marked executed"
+        )
+
+
+def test_generate_write_plan_operations_all_validated():
+    """All operations must have validationStatus='passed'."""
+    p = draft_proposal(_make_conflict())
+    plan = generate_write_plan(p)
+    for op in plan["operations"]:
+        assert op["validationStatus"] == "passed"
+
+
+def test_write_plan_contains_upsert_op():
+    """Plan must include at least one upsert_glossary_term operation."""
+    p = draft_proposal(_make_conflict())
+    plan = generate_write_plan(p)
+    actions = [op["action"] for op in plan["operations"]]
+    assert "upsert_glossary_term" in actions
+
+
+def test_write_plan_sequence_starts_at_1():
+    """Operations must be numbered starting from 1."""
+    p = draft_proposal(_make_conflict())
+    ops = generate_write_plan(p)["operations"]
+    assert ops[0]["sequence"] == 1
+
+
+# ── ApprovalToken validation ──────────────────────────────────────────────────
+
+def test_approval_token_valid_for_matching_plan():
+    """A token with the correct plan_id must not raise."""
+    p = draft_proposal(_make_conflict())
+    token = ApprovalToken(
+        plan_id=p.plan_id,
+        conflict_id=p.term_id,
+        approved_at="2026-07-31T12:00:00Z",
+        mode="live",
+    )
+    token.validate_for(p)   # must not raise
+
+
+def test_approval_token_empty_plan_id_rejected():
+    """A token with an empty plan_id must raise ValueError."""
+    p = draft_proposal(_make_conflict())
+    bad_token = ApprovalToken(plan_id="", conflict_id="x", approved_at="t", mode="live")
+    with pytest.raises(ValueError, match="explicit approval is required"):
+        bad_token.validate_for(p)
+
+
+def test_approval_token_wrong_plan_id_rejected():
+    """A token for a different plan must raise ValueError."""
+    p = draft_proposal(_make_conflict())
+    wrong_token = ApprovalToken(
+        plan_id="0000000000000000",
+        conflict_id=p.term_id,
+        approved_at="2026-07-31T12:00:00Z",
+        mode="live",
+    )
+    with pytest.raises(ValueError, match="not for the current plan"):
+        wrong_token.validate_for(p)
+
+
+# ── apply_proposal enforcement ────────────────────────────────────────────────
+
+def test_apply_proposal_requires_approval_token():
+    """apply_proposal must raise when approval is None."""
+    from unittest.mock import MagicMock
+    p = draft_proposal(_make_conflict())
+    mock_dh = MagicMock()
+    with pytest.raises((ValueError, TypeError)):
+        apply_proposal(mock_dh, p, None)
+
+
+def test_apply_proposal_rejects_wrong_plan_id():
+    """apply_proposal must raise ValueError when plan_id does not match."""
+    from unittest.mock import MagicMock
+    p = draft_proposal(_make_conflict())
+    bad_token = ApprovalToken(
+        plan_id="0000000000000000",
+        conflict_id=p.term_id,
+        approved_at="2026-07-31T12:00:00Z",
+        mode="live",
+    )
+    mock_dh = MagicMock()
+    with pytest.raises(ValueError, match="not for the current plan"):
+        apply_proposal(mock_dh, p, bad_token)
+
+
+def test_apply_proposal_succeeds_with_valid_token():
+    """apply_proposal must call DataHub write methods when token is valid."""
+    from unittest.mock import MagicMock
+    p = draft_proposal(_make_conflict())
+    token = ApprovalToken(
+        plan_id=p.plan_id,
+        conflict_id=p.term_id,
+        approved_at="2026-07-31T12:00:00Z",
+        mode="live",
+    )
+    mock_dh = MagicMock()
+    mock_dh.write_canonical_term.return_value = f"urn:li:glossaryTerm:{p.term_id}"
+
+    result = apply_proposal(mock_dh, p, token)
+
+    mock_dh.write_canonical_term.assert_called_once()
+    assert "canonical_term" in result
+    assert result["plan_id"] == p.plan_id
+    assert result["approved_at"] == "2026-07-31T12:00:00Z"
+
+
+# ── Demo result includes write plan ──────────────────────────────────────────
+
+def test_demo_proposals_include_plan_id():
+    """run_demo() proposals must each have a non-empty plan_id."""
+    from rosetta.demo import run_demo
+    result = run_demo()
+    for p in result.get("proposals", []):
+        assert p.get("plan_id"), f"Proposal for {p.get('term_id')} missing plan_id"
+
+
+def test_demo_proposals_include_write_plan():
+    """run_demo() proposals must include a write_plan with operations."""
+    from rosetta.demo import run_demo
+    result = run_demo()
+    assert result["proposals"], "Expected at least one proposal"
+    wp = result["proposals"][0].get("write_plan")
+    assert wp is not None, "First proposal must include write_plan"
+    assert wp["status"] == "validated_not_executed"
+    assert isinstance(wp["operations"], list)
+    assert len(wp["operations"]) >= 1
+
+
+def test_demo_write_plan_never_executed():
+    """No demo write_plan operation may have executionStatus != 'not_executed'."""
+    from rosetta.demo import run_demo
+    result = run_demo()
+    for prop in result.get("proposals", []):
+        wp = prop.get("write_plan", {})
+        for op in wp.get("operations", []):
+            assert op["executionStatus"] == "not_executed", (
+                f"Demo op {op['action']} must not be executed"
+            )
+
+
+# ── Flask approval endpoint ───────────────────────────────────────────────────
+
+def _flask_client():
+    """Return a Flask test client (reuses the same pattern as _get_homepage)."""
+    from webapp.app import app as _app
+    _app.config["TESTING"] = True
+    return _app.test_client()
+
+
+def test_approve_endpoint_returns_plan_id():
+    """POST /api/approve must return ok=True and a plan_id after a demo scan."""
+    import webapp.app as app_module
+    # Seed the proposal cache by running the demo endpoint
+    with _flask_client() as c:
+        c.get("/api/demo")
+        resp = c.post("/api/approve")
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["ok"] is True
+    assert data["plan_id"], "plan_id must not be empty"
+    # Clean up
+    app_module._LAST_APPROVAL_TOKEN = None
+
+
+def test_approve_endpoint_without_scan_returns_400():
+    """POST /api/approve with no cached scan must return 400."""
+    import webapp.app as app_module
+    original = app_module._LAST_PROPOSALS
+    app_module._LAST_PROPOSALS = []
+    try:
+        with _flask_client() as c:
+            resp = c.post("/api/approve")
+        assert resp.status_code == 400
+        data = resp.get_json()
+        assert not data["ok"]
+    finally:
+        app_module._LAST_PROPOSALS = original
+
+
+def test_write_back_requires_approval():
+    """POST /api/write-back without a prior /api/approve must return 403."""
+    import webapp.app as app_module
+    with _flask_client() as c:
+        c.get("/api/demo")          # seed proposals
+        app_module._LAST_APPROVAL_TOKEN = None   # ensure no token
+        resp = c.post("/api/write-back")
+    assert resp.status_code in (400, 403)
+    data = resp.get_json()
+    assert not data["ok"], "Write-back must be blocked without an approval token"
+
+
+def test_demo_mode_write_back_blocked_by_missing_gms():
+    """In Demo Mode (no GMS URL) write-back must be blocked even after approval."""
+    import webapp.app as app_module
+    with _flask_client() as c:
+        c.get("/api/demo")   # seed proposals
+        c.post("/api/approve")  # create a demo-mode token
+        resp = c.post("/api/write-back")
+    # Must fail — no live GMS URL is configured in the test environment
+    assert resp.status_code in (400, 403, 500)
+    data = resp.get_json()
+    assert not data["ok"], "Write-back must not succeed without a live DataHub connection"
+    # Clean up
+    app_module._LAST_APPROVAL_TOKEN = None

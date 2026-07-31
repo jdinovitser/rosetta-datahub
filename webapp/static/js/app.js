@@ -34,6 +34,53 @@ function animateCount(el, to, opts = {}) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
+   WRITE-PLAN JSON PANEL HELPERS  (called via onclick from buildStep5 HTML)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+function togglePlanJson() {
+  const wrap = document.getElementById("planJsonWrap");
+  const btn  = document.getElementById("planJsonToggle");
+  if (!wrap) return;
+  const open = wrap.classList.toggle("open");
+  if (btn) {
+    btn.setAttribute("aria-expanded", String(open));
+    btn.querySelector("span").textContent =
+      (open ? "▲" : "▶") + " Machine-readable plan (JSON)";
+  }
+}
+
+async function copyWritePlan() {
+  if (!_currentPlanJson) return;
+  const btn = document.getElementById("copyPlanBtn");
+  const done = () => {
+    if (btn) { btn.textContent = "✓ Copied"; btn.classList.add("copied"); }
+    setTimeout(() => { if (btn) { btn.textContent = "Copy JSON"; btn.classList.remove("copied"); } }, 2000);
+  };
+  try {
+    await navigator.clipboard.writeText(_currentPlanJson);
+    done();
+  } catch (_) {
+    // fallback for browsers without clipboard API
+    const ta = Object.assign(document.createElement("textarea"), {
+      value: _currentPlanJson, style: "position:fixed;opacity:0"
+    });
+    document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+    document.body.removeChild(ta); done();
+  }
+}
+
+function downloadWritePlan() {
+  if (!_currentPlanJson) return;
+  const blob = new Blob([_currentPlanJson], { type: "application/json" });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement("a"), {
+    href: url, download: "rosetta-write-plan.json"
+  });
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
    WALKTHROUGH STATE MACHINE
    ══════════════════════════════════════════════════════════════════════════ */
 
@@ -44,7 +91,9 @@ let demoData = null;
 let dashData = null;
 let stepsReady = false;
 let techVisible = false;
-let _writeBackResult = null;  // set after a successful live write-back
+let _writeBackResult = null;    // set after a successful live write-back
+let _demoApprovalData = null;  // { plan_id, approved_at } set after /api/approve in demo mode
+let _currentPlanJson = "";     // populated by buildStep5 for copy/download buttons
 
 // Build the 5 progress dots in the topbar
 function buildProgressDots() {
@@ -446,18 +495,31 @@ function buildStep5(data, writeResult) {
   const linkMatch   = detail.match(/link them to (\d+)/);
   const depMatch    = detail.match(/deprecate (\d+)/);
 
-  const top = (report.conflicts || [])[0];
+  const top   = (report.conflicts || [])[0];
   const blast = (top || {}).blast_radius || 22;
-  const name = friendlyMetric((top || {}).metric || "Active User");
+  const name  = friendlyMetric((top || {}).metric || "Active User");
 
   const isLive = writeResult != null;
 
-  // Status banner
+  // ── Write plan from proposals ─────────────────────────────────────────
+  const firstProposal = ((data.proposals || [])[0]) || {};
+  const writePlan     = firstProposal.write_plan || null;
+
+  // Build JSON string (side-effect: update module var so copy/download work)
+  if (writePlan && !isLive) {
+    const planForDisplay = JSON.parse(JSON.stringify(writePlan));
+    if (_demoApprovalData) {
+      planForDisplay.approval.approvedAt = _demoApprovalData.approved_at;
+    }
+    _currentPlanJson = JSON.stringify(planForDisplay, null, 2);
+  }
+
+  // ── Status banner ─────────────────────────────────────────────────────
   let statusBanner;
   if (isLive) {
-    const termUrn   = writeResult.canonical_term || "";
-    const termId    = termUrn.split(":").pop() || termUrn;
-    const linked    = (writeResult.linked_assets || []).length;
+    const termUrn    = writeResult.canonical_term || "";
+    const termId     = termUrn.split(":").pop() || termUrn;
+    const linked     = (writeResult.linked_assets || []).length;
     const deprecated = (writeResult.deprecated_terms || []).length;
     statusBanner = `
       <div class="write-live-banner">
@@ -481,6 +543,58 @@ function buildStep5(data, writeResult) {
       </div>`;
   }
 
+  // ── Operations panel (demo mode only) ─────────────────────────────────
+  let opsPanel = "";
+  if (!isLive && writePlan && (writePlan.operations || []).length) {
+    const ops       = writePlan.operations;
+    const upsertOps = ops.filter(o => o.action === "upsert_glossary_term");
+    const attachOps = ops.filter(o => o.action === "attach_term_to_asset");
+    const deprecOps = ops.filter(o => o.action === "deprecate_term");
+
+    const opCard = (op, extra) => `
+      <div class="wp-op-row" role="listitem">
+        <div class="wp-op-seq" aria-hidden="true">${op.sequence}</div>
+        <div class="wp-op-body">
+          <div class="wp-op-action">${esc(op.action)}</div>
+          <div class="wp-op-urn">${esc(op.targetUrn)}${extra > 0 ? ` <span class="wp-op-more">+&nbsp;${extra}&nbsp;more</span>` : ""}</div>
+          <div class="wp-op-reason">${esc(op.reason)}</div>
+          <div class="wp-op-status">
+            <span class="wp-op-badge validated">✓ Validated</span>
+            <span class="wp-op-badge not-executed">Not Executed</span>
+          </div>
+        </div>
+      </div>`;
+
+    opsPanel = `
+      <div class="wp-ops-panel" role="list" aria-label="Proposed DataHub operations">
+        <div class="wp-ops-heading">Proposed DataHub operations</div>
+        ${upsertOps.map(op => opCard(op, 0)).join("")}
+        ${attachOps.length ? opCard(attachOps[0], attachOps.length - 1) : ""}
+        ${deprecOps.length ? opCard(deprecOps[0], deprecOps.length - 1) : ""}
+      </div>`;
+  }
+
+  // ── Machine-readable JSON panel (demo mode only) ─────────────────────
+  let jsonPanel = "";
+  if (!isLive && _currentPlanJson) {
+    jsonPanel = `
+      <div class="wp-json-panel">
+        <button class="wp-json-toggle" id="planJsonToggle"
+          onclick="togglePlanJson()" aria-expanded="false" aria-controls="planJsonWrap">
+          <span>▶ Machine-readable plan (JSON)</span>
+          <span class="wp-json-toggle-hint">view &amp; copy</span>
+        </button>
+        <div class="wp-json-code-wrap" id="planJsonWrap" role="region" aria-label="Write plan JSON">
+          <pre class="wp-json-code" tabindex="0">${esc(_currentPlanJson)}</pre>
+        </div>
+        <div class="wp-json-actions">
+          <button class="copy-btn" id="copyPlanBtn" onclick="copyWritePlan()">Copy JSON</button>
+          <button class="copy-btn" onclick="downloadWritePlan()">⬇ Download JSON</button>
+          <a class="copy-btn" href="/api/export/md" target="_blank" rel="noopener">⬇ Download Audit Report</a>
+        </div>
+      </div>`;
+  }
+
   const chk = (live) => `wc-check${live ? "" : " sim"}`;
 
   return `
@@ -493,7 +607,17 @@ function buildStep5(data, writeResult) {
     <h2 class="step-title">${isLive ? "Make the graph smarter" : "Write plan approved and validated"}</h2>
     <p class="step-subtitle">${isLive ? "Rosetta wrote the canonical definition back to DataHub." : "Rosetta prepared the operations required to reconcile this conflict in a connected DataHub catalog."}</p>
 
+    ${!isLive ? `
+    <div class="validated-badge" role="status" aria-label="Status: validated, not executed">
+      <span class="vb-dot" aria-hidden="true"></span>
+      <span>VALIDATED</span>
+      <span class="vb-sep" aria-hidden="true">·</span>
+      <span class="vb-ne">NOT EXECUTED</span>
+    </div>` : ""}
+
     ${statusBanner}
+    ${opsPanel}
+    ${jsonPanel}
 
     <div class="write-checklist">
       <div class="wc-item"><span class="${chk(isLive)}">✓</span>
@@ -613,10 +737,22 @@ function populateSteps(data, dash) {
             approveBtn.style.opacity = "1";
           }
         } else {
-          // Demo mode — generate write plan, advance to step 5
-          approveBtn.textContent = "✓ Write plan generated";
+          // Demo mode — call /api/approve to register approval token, then advance
+          approveBtn.textContent = "Validating plan…";
           approveBtn.disabled = true;
+          approveBtn.style.opacity = "0.75";
+          try {
+            const approveRes  = await fetch("/api/approve", { method: "POST" });
+            const approveData = await approveRes.json();
+            if (approveData.ok) {
+              _demoApprovalData = { plan_id: approveData.plan_id, approved_at: approveData.approved_at };
+            }
+          } catch (_) {
+            // endpoint unreachable — still advance; approvedAt will be null in JSON
+          }
+          approveBtn.textContent = "✓ Write plan validated";
           approveBtn.style.background = "var(--low)";
+          approveBtn.style.opacity = "1";
           _writeBackResult = null;
           setTimeout(() => gotoStep(5), 900);
         }

@@ -31,7 +31,7 @@ import urllib.error
 from flask import Flask, Response, jsonify, render_template, request, session
 
 from rosetta import exporter
-from rosetta.broker import Proposal, apply_proposal
+from rosetta.broker import ApprovalToken, Proposal, apply_proposal
 from rosetta.datahub_client import RosettaDataHub, _HAS_SDK
 from rosetta.demo import run_demo
 from rosetta.healthcare_demo import run_healthcare_demo
@@ -45,6 +45,7 @@ app.secret_key = os.environ.get("SESSION_SECRET", "rosetta-dev-secret")
 # Cache the most recent report + proposals so export and write-back have something to serve.
 _LAST_REPORT: dict = {}
 _LAST_PROPOSALS: list = []
+_LAST_APPROVAL_TOKEN: dict | None = None  # set by /api/approve, consumed by /api/write-back
 
 
 def _active_gms_url() -> str:
@@ -123,11 +124,57 @@ def api_healthcare_scan():
     return jsonify(result)
 
 
+@app.route("/api/approve", methods=["POST"])
+def api_approve():
+    """Create an approval token for the current write plan.
+
+    Demo Mode:      creates token, returns plan_id + approved_at; no DataHub
+                    write ever follows — approval is for the validated plan only.
+    Connected Mode: creates token so /api/write-back can validate it before
+                    executing.  Token is plan-specific and single-use.
+    """
+    global _LAST_APPROVAL_TOKEN
+    if not _LAST_PROPOSALS:
+        return jsonify({"ok": False, "error": "No scan results. Run a scan first."}), 400
+
+    p_dict  = _LAST_PROPOSALS[0]
+    plan_id = p_dict.get("plan_id", "")
+    if not plan_id:
+        return jsonify({"ok": False, "error": "Plan ID not available. Re-run the scan."}), 400
+
+    from datetime import datetime, timezone
+    approved_at = datetime.now(timezone.utc).isoformat()
+    mode = "live" if _active_gms_url() else "demo"
+
+    _LAST_APPROVAL_TOKEN = {
+        "plan_id":     plan_id,
+        "conflict_id": p_dict.get("term_id", ""),
+        "approved_at": approved_at,
+        "mode":        mode,
+    }
+    return jsonify({"ok": True, "plan_id": plan_id, "approved_at": approved_at, "mode": mode})
+
+
 @app.route("/api/write-back", methods=["POST"])
 def api_write_back():
-    """Apply the top-conflict proposal to a live DataHub instance."""
+    """Apply the top-conflict proposal to a live DataHub instance.
+
+    Requires an explicit approval token (from /api/approve) whose plan_id
+    matches the current proposal.  Demo Mode is blocked here even if somehow
+    a token were present, because there is no live GMS URL.
+    """
+    global _LAST_APPROVAL_TOKEN
     if not _LAST_PROPOSALS:
         return jsonify({"ok": False, "error": "No scan results to write back. Run a scan first."}), 400
+
+    if not _LAST_APPROVAL_TOKEN:
+        return jsonify({
+            "ok": False,
+            "error": (
+                "Execution blocked: explicit approval is required for this write plan. "
+                "Click 'Approve & Generate Write Plan' first."
+            ),
+        }), 403
 
     gms_url = _active_gms_url()
     token   = _active_token()
@@ -135,6 +182,13 @@ def api_write_back():
         return jsonify({"ok": False, "error": "No live DataHub connection. Use Connect DataHub first."}), 400
     if not _HAS_SDK:
         return jsonify({"ok": False, "error": "DataHub SDK not available in this environment."}), 500
+
+    # Belt-and-suspenders: block Demo Mode tokens even if a GMS URL appears later
+    if _LAST_APPROVAL_TOKEN.get("mode") == "demo":
+        return jsonify({
+            "ok": False,
+            "error": "Execution blocked: this approval was issued in Demo Mode and cannot authorise a live write.",
+        }), 403
 
     p_dict = _LAST_PROPOSALS[0]
     proposal = Proposal(
@@ -144,6 +198,14 @@ def api_write_back():
         approvers=p_dict.get("approvers", []),
         deprecated_terms=p_dict.get("deprecated_terms", []),
         affected_assets=p_dict.get("affected_assets", []),
+        plan_id=p_dict.get("plan_id", ""),
+    )
+
+    approval = ApprovalToken(
+        plan_id=_LAST_APPROVAL_TOKEN["plan_id"],
+        conflict_id=_LAST_APPROVAL_TOKEN["conflict_id"],
+        approved_at=_LAST_APPROVAL_TOKEN["approved_at"],
+        mode=_LAST_APPROVAL_TOKEN.get("mode", "live"),
     )
 
     os.environ["DATAHUB_GMS_URL"] = gms_url
@@ -152,8 +214,11 @@ def api_write_back():
 
     try:
         dh = RosettaDataHub()
-        result = apply_proposal(dh, proposal)
+        result = apply_proposal(dh, proposal, approval)
+        _LAST_APPROVAL_TOKEN = None   # single-use: consumed after execution
         return jsonify({"ok": True, "result": result})
+    except ValueError as exc:
+        return jsonify({"ok": False, "error": str(exc)}), 403
     except Exception as exc:  # noqa: BLE001
         return jsonify({"ok": False, "error": str(exc)}), 500
 

@@ -20,7 +20,7 @@ Real issue in this dataset:
 """
 from __future__ import annotations
 
-from .broker import draft_proposal
+from .broker import draft_proposal, generate_write_plan
 from .demo import Step
 from .detector import detect_conflicts, _severity
 from .fiction_retail_source import FictionRetailDataSource
@@ -217,7 +217,9 @@ def run_fiction_retail_demo() -> dict:
             {"term_id": p.term_id, "display_name": p.display_name,
              "canonical_definition": p.canonical_definition,
              "approvers": p.approvers, "deprecated_terms": p.deprecated_terms,
-             "affected_assets": p.affected_assets}
+             "affected_assets": p.affected_assets,
+             "plan_id": p.plan_id,
+             "write_plan": generate_write_plan(p)}
             for p in proposals
         ],
     }

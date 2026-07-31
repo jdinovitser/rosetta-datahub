@@ -333,6 +333,9 @@
                 <span><strong>55,500</strong> records</span>
                 <span class="lp-ds-conflicts">5 conflicts detected</span>
               </div>
+              <div class="lp-ds-provenance-row">
+                <span class="lp-ds-provenance official">Official hackathon data</span>
+              </div>
             </div>
             <button class="btn healthcare-btn btn-sm lp-ds-btn">🏥 Scan Healthcare</button>
           </div>
@@ -344,6 +347,9 @@
               <div class="lp-ds-meta">
                 <span><strong>150,000</strong> orders</span>
                 <span class="lp-ds-conflicts">2 conflicts detected</span>
+              </div>
+              <div class="lp-ds-provenance-row">
+                <span class="lp-ds-provenance supplementary">Supplementary scenario</span>
               </div>
             </div>
             <button class="btn retail-btn btn-sm lp-ds-btn">🛍️ Scan Retail</button>
@@ -358,7 +364,35 @@
             <div class="lp-dh-badge">Native Integration</div>
             <h2 class="lp-dh-h2">Bring your own graph.</h2>
             <p class="lp-dh-body">Running DataHub in production? Point Rosetta at your GMS endpoint and let it trace lineage automatically — no access to underlying data required.</p>
-            <button class="link-btn" id="showTechFromLanding">View Technical Details →</button>
+            <ul class="lp-dh-uses" aria-label="How Rosetta uses the DataHub context graph">
+              <li>Harvests GlossaryTerm definitions via the Metadata API</li>
+              <li>Traces downstream lineage transitively without touching data</li>
+              <li>Proposes a canonical GlossaryTerm and computes a plan hash</li>
+              <li>Enforces explicit human approval before any write operation</li>
+              <li>Executes only <code>upsert</code>, <code>attach</code>, and <code>deprecate</code> ops</li>
+              <li>Re-reads every changed entity to verify the applied state</li>
+            </ul>
+            <div class="lp-dh-modes" aria-label="Mode comparison">
+              <div class="lp-dh-mode lp-dh-mode-demo">
+                <div class="lp-dh-mode-title">Demo Mode</div>
+                <ul>
+                  <li>Runs on official hackathon sample data</li>
+                  <li>Generates a validated write plan</li>
+                  <li>Approval token issued; plan hash recorded</li>
+                  <li>No catalog is ever modified</li>
+                </ul>
+              </div>
+              <div class="lp-dh-mode lp-dh-mode-live">
+                <div class="lp-dh-mode-title">Connected Mode</div>
+                <ul>
+                  <li>Reads from your DataHub GMS endpoint</li>
+                  <li>Approval token must match exact plan hash</li>
+                  <li>Executes approved DataHub operations</li>
+                  <li>Post-write verification confirms applied state</li>
+                </ul>
+              </div>
+            </div>
+            <button class="link-btn" id="showTechFromLanding" style="margin-top:18px">View Technical Details →</button>
           </div>
           <div class="lp-dh-terminal">
             <div class="lp-term-dots"><span></span><span></span><span></span></div>

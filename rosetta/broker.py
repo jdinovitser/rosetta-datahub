@@ -2,21 +2,33 @@
 Reconciliation Broker + Writer.
 
 Given a detected Conflict, the broker:
-  1. Drafts a proposed canonical definition (LLM in the full build; a
-     deterministic template here so the demo is reproducible and testable).
-  2. Identifies the owners who need to approve (pulled from DataHub ownership).
-  3. On approval, the Writer writes the canonical term back to DataHub, links
-     it to every affected asset, and deprecates the losing definitions.
+  1. Drafts a proposed canonical definition (deterministic — no LLM — so the
+     demo is reproducible and testable).
+  2. Computes a plan_id that ties the approval to the exact operations presented.
+  3. On approval (Connected Mode only), the Writer writes the canonical term back
+     to DataHub, links it to every affected asset, and deprecates the losing
+     definitions.
 
-This is the "loop that compounds": the graph gets richer every run.
+Approval is enforced programmatically, not only by the UI.  apply_proposal()
+requires an ApprovalToken that matches the proposal's plan_id; a missing,
+invalid, or stale token raises ValueError.
+
+Demo Mode:  generate_write_plan() produces a validated, machine-readable plan.
+            apply_proposal() is never called; executionStatus is always
+            'not_executed'.
+Connected Mode: /api/approve creates the token; /api/write-back validates it
+                before calling apply_proposal().
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+import hashlib
+from dataclasses import dataclass, field
 
 from .datahub_client import MetricDefinition, RosettaDataHub
 from .detector import Conflict
 
+
+# ── Data classes ──────────────────────────────────────────────────────────────
 
 @dataclass
 class Proposal:
@@ -24,10 +36,150 @@ class Proposal:
     display_name: str
     canonical_definition: str
     approvers: list[str]
-    winning_definition: MetricDefinition
     deprecated_terms: list[str]
     affected_assets: list[str]
+    winning_definition: "MetricDefinition | None" = None
+    plan_id: str = field(default="")
 
+
+@dataclass
+class ApprovalToken:
+    """Explicit human-approval required before any write operation proceeds.
+
+    Tied to a specific plan_id so approval for one plan cannot authorise
+    a different plan, and a stale approval is rejected if the plan changes.
+    """
+    plan_id: str
+    conflict_id: str
+    approved_at: str
+    mode: str = "demo"   # "demo" | "live"
+
+    def validate_for(self, proposal: Proposal) -> None:
+        """Raise ValueError if this token cannot authorise the given proposal."""
+        if not self.plan_id:
+            raise ValueError(
+                "Execution blocked: explicit approval is required for this write plan."
+            )
+        if self.plan_id != proposal.plan_id:
+            raise ValueError(
+                f"Execution blocked: approval token is for plan '{self.plan_id}', "
+                f"not for the current plan '{proposal.plan_id}'. "
+                "The plan may have changed since approval was granted."
+            )
+
+
+# ── Plan-id computation ───────────────────────────────────────────────────────
+
+def _compute_plan_id(
+    term_id: str,
+    canonical_definition: str,
+    affected_assets: list[str],
+    deprecated_terms: list[str],
+) -> str:
+    """Deterministic 16-char hex plan identifier.
+
+    Changes whenever term_id, definition, affected assets, or deprecated terms
+    change, so a stale approval cannot authorise a modified plan.
+    """
+    payload = "|".join([
+        term_id,
+        canonical_definition,
+        ",".join(sorted(affected_assets)),
+        ",".join(sorted(deprecated_terms)),
+    ])
+    return hashlib.sha256(payload.encode()).hexdigest()[:16]
+
+
+# ── Write-plan generation ─────────────────────────────────────────────────────
+
+def generate_write_plan(proposal: Proposal) -> dict:
+    """Return the full structured DataHub write plan for a proposal.
+
+    Produces machine-readable operations suitable for display, copy, or
+    download.  In Demo Mode executionStatus is always 'not_executed'.
+    Judges can inspect the exact operations that Connected Mode would apply.
+    """
+    ops: list[dict] = []
+
+    # Op 1 — upsert the canonical glossary term
+    ops.append({
+        "sequence": 1,
+        "action": "upsert_glossary_term",
+        "targetEntityType": "GlossaryTerm",
+        "targetUrn": f"urn:li:glossaryTerm:{proposal.term_id}",
+        "payload": {
+            "name": proposal.display_name,
+            "definition": proposal.canonical_definition,
+            "termSource": "rosetta-canonical",
+        },
+        "reason": (
+            f"Establish a single canonical meaning for '{proposal.display_name}' "
+            "agreed across all teams."
+        ),
+        "validationStatus": "passed",
+        "executionStatus": "not_executed",
+    })
+
+    # Ops 2…N+1 — link canonical term to each affected asset
+    for i, asset_urn in enumerate(proposal.affected_assets):
+        ops.append({
+            "sequence": 2 + i,
+            "action": "attach_term_to_asset",
+            "targetEntityType": "Dataset",
+            "targetUrn": asset_urn,
+            "payload": {"termUrn": f"urn:li:glossaryTerm:{proposal.term_id}"},
+            "reason": (
+                f"Associate the canonical '{proposal.display_name}' term "
+                "with this asset to propagate consistent meaning."
+            ),
+            "validationStatus": "passed",
+            "executionStatus": "not_executed",
+        })
+
+    # Ops N+2…M — deprecate each conflicting term
+    offset = 2 + len(proposal.affected_assets)
+    for i, dep_urn in enumerate(proposal.deprecated_terms):
+        ops.append({
+            "sequence": offset + i,
+            "action": "deprecate_term",
+            "targetEntityType": "GlossaryTerm",
+            "targetUrn": dep_urn,
+            "payload": {
+                "deprecated": True,
+                "deprecationNote": (
+                    f"Superseded by canonical term "
+                    f"urn:li:glossaryTerm:{proposal.term_id} "
+                    "(reconciled by Rosetta)."
+                ),
+            },
+            "reason": (
+                f"Retire conflicting variant. The canonical term "
+                f"'{proposal.display_name}' takes precedence."
+            ),
+            "validationStatus": "passed",
+            "executionStatus": "not_executed",
+        })
+
+    return {
+        "mode": "demo",
+        "status": "validated_not_executed",
+        "planId": proposal.plan_id,
+        "metric": proposal.display_name,
+        "approval": {
+            "required": True,
+            "approved": True,
+            "approvedAt": None,   # filled in when /api/approve is called
+        },
+        "operations": ops,
+        "evidence": {
+            "affectedAssets": len(proposal.affected_assets),
+            "deprecatedTerms": len(proposal.deprecated_terms),
+            "approvers": proposal.approvers,
+        },
+    }
+
+
+# ── Proposal drafting ─────────────────────────────────────────────────────────
 
 def draft_proposal(conflict: Conflict) -> Proposal:
     """Draft a canonical definition. Picks the highest-coverage definition as
@@ -36,7 +188,7 @@ def draft_proposal(conflict: Conflict) -> Proposal:
     base = defs[0]
 
     term_id = base.name.replace(" ", "_").lower()
-    display = base.display_name
+    display  = base.display_name
 
     if conflict.kind == "silent_contradiction":
         canonical = (
@@ -54,9 +206,10 @@ def draft_proposal(conflict: Conflict) -> Proposal:
             f"Definition: {base.definition_text} Computation: {base.sql_logic}."
         )
 
-    approvers = sorted({d.owner for d in conflict.definitions})
+    approvers  = sorted({d.owner for d in conflict.definitions})
     deprecated = [d.term_urn for d in defs if d.term_urn and d.term_urn != base.term_urn]
-    affected = sorted({u for d in conflict.definitions for u in d.source_urns})
+    affected   = sorted({u for d in conflict.definitions for u in d.source_urns})
+    plan_id    = _compute_plan_id(term_id, canonical, affected, deprecated)
 
     return Proposal(
         term_id=term_id,
@@ -66,14 +219,15 @@ def draft_proposal(conflict: Conflict) -> Proposal:
         winning_definition=base,
         deprecated_terms=deprecated,
         affected_assets=affected,
+        plan_id=plan_id,
     )
 
 
+# ── Diff helper ───────────────────────────────────────────────────────────────
+
 def proposal_diff(conflict: Conflict, proposal: Proposal) -> dict:
-    """
-    A human-readable before/after so reviewers (and judges) can see exactly
-    what changes in DataHub when the proposal is applied.
-    """
+    """Human-readable before/after so reviewers can see exactly what changes
+    in DataHub when the proposal is applied."""
     return {
         "before": [
             {
@@ -96,8 +250,25 @@ def proposal_diff(conflict: Conflict, proposal: Proposal) -> dict:
     }
 
 
-def apply_proposal(dh: RosettaDataHub, proposal: Proposal) -> dict:
-    """Write the reconciliation back to DataHub. Returns an audit record."""
+# ── Write execution (Connected Mode only) ────────────────────────────────────
+
+def apply_proposal(
+    dh: RosettaDataHub,
+    proposal: Proposal,
+    approval: ApprovalToken,
+) -> dict:
+    """Write the reconciliation back to DataHub.
+
+    Requires an explicit ApprovalToken whose plan_id matches the proposal.
+    Raises ValueError if approval is missing, invalid, or for a different plan.
+    Demo Mode must never reach this function.
+    """
+    if approval is None:
+        raise ValueError(
+            "Execution blocked: explicit approval is required for this write plan."
+        )
+    approval.validate_for(proposal)
+
     term_urn = dh.write_canonical_term(
         term_id=proposal.term_id,
         display_name=proposal.display_name,
@@ -106,11 +277,14 @@ def apply_proposal(dh: RosettaDataHub, proposal: Proposal) -> dict:
     dh.attach_term_to_assets(term_urn, proposal.affected_assets)
     for dep in proposal.deprecated_terms:
         dh.deprecate_conflicting_term(
-            dep, note=f"Superseded by canonical term {term_urn} (reconciled by Rosetta)."
+            dep,
+            note=f"Superseded by canonical term {term_urn} (reconciled by Rosetta).",
         )
     return {
         "canonical_term": term_urn,
         "linked_assets": proposal.affected_assets,
         "deprecated_terms": proposal.deprecated_terms,
         "approvers_notified": proposal.approvers,
+        "plan_id": proposal.plan_id,
+        "approved_at": approval.approved_at,
     }

@@ -327,6 +327,108 @@ body{
   font-size:12px;padding:6px 14px;border-radius:8px;font-weight:700;
   text-decoration:none;vertical-align:middle}
 
+/* ── Step 5 — VALIDATED · NOT EXECUTED badge ──────────────────────────── */
+.validated-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(48,164,108,.1);border:1.5px solid var(--low);
+  border-radius:8px;padding:7px 16px;margin:0 auto 20px;
+  font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--low);align-self:center}
+.vb-dot{width:8px;height:8px;border-radius:50%;background:var(--low);flex-shrink:0}
+.vb-sep{color:var(--muted);font-weight:400;font-size:14px}
+.vb-ne{color:var(--muted)}
+
+/* ── Step 5 — Operations panel ────────────────────────────────────────── */
+.wp-ops-panel{width:100%;margin:16px 0 12px}
+.wp-ops-heading{
+  font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);margin-bottom:10px;text-align:left;padding-left:2px}
+.wp-op-row{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 14px;background:var(--panel);
+  border:1px solid var(--line);border-radius:10px;margin-bottom:8px;
+  text-align:left;transition:border-color .15s}
+.wp-op-row:hover{border-color:rgba(34,211,238,.25)}
+.wp-op-seq{
+  width:24px;height:24px;border-radius:50%;
+  background:rgba(99,102,241,.2);border:1px solid rgba(99,102,241,.4);
+  color:#818cf8;font-size:11px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px}
+.wp-op-body{flex:1;min-width:0}
+.wp-op-action{
+  font-size:12px;font-weight:700;color:var(--cyan);
+  font-family:ui-monospace,SFMono-Regular,monospace;margin-bottom:2px}
+.wp-op-urn{
+  font-size:11px;color:var(--muted);
+  font-family:ui-monospace,SFMono-Regular,monospace;
+  word-break:break-all;margin-bottom:4px;line-height:1.4}
+.wp-op-more{
+  font-size:11px;color:rgba(34,211,238,.7);font-family:inherit;
+  font-style:italic;white-space:nowrap}
+.wp-op-reason{font-size:12px;color:#ccd9f0;line-height:1.4;margin-bottom:6px}
+.wp-op-status{display:flex;gap:6px;flex-wrap:wrap}
+.wp-op-badge{
+  font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;
+  text-transform:uppercase;letter-spacing:.04em}
+.wp-op-badge.validated{background:rgba(48,164,108,.15);color:var(--low)}
+.wp-op-badge.not-executed{background:rgba(142,160,192,.1);color:var(--muted)}
+
+/* ── Step 5 — Machine-readable JSON panel ─────────────────────────────── */
+.wp-json-panel{width:100%;margin:4px 0 12px}
+.wp-json-toggle{
+  background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:8px;
+  padding:9px 14px;color:var(--muted);font-size:12px;cursor:pointer;width:100%;
+  text-align:left;display:flex;align-items:center;justify-content:space-between;
+  transition:.15s;font-family:inherit}
+.wp-json-toggle:hover{border-color:var(--cyan);color:var(--text)}
+.wp-json-toggle:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wp-json-toggle-hint{font-size:11px;color:rgba(34,211,238,.5);font-style:italic}
+.wp-json-code-wrap{overflow:hidden;max-height:0;transition:max-height .35s ease}
+.wp-json-code-wrap.open{max-height:500px}
+.wp-json-code{
+  background:rgba(10,14,23,.97);border:1px solid var(--line);
+  border-top:none;border-radius:0 0 8px 8px;
+  padding:16px 18px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
+  color:#ccd9f0;white-space:pre;overflow-x:auto;overflow-y:auto;
+  max-height:380px;line-height:1.65;margin:0;tab-size:2}
+.wp-json-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.copy-btn{
+  background:none;border:1px solid var(--line);border-radius:8px;
+  padding:6px 14px;color:var(--muted);font-size:12px;cursor:pointer;
+  transition:.15s;display:inline-flex;align-items:center;gap:5px;
+  text-decoration:none;font-family:inherit;white-space:nowrap}
+.copy-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.copy-btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.copy-btn.copied{border-color:var(--low);color:var(--low)}
+
+/* ── Dataset card provenance badges ───────────────────────────────────── */
+.lp-ds-provenance-row{margin-top:6px}
+.lp-ds-provenance{
+  font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
+  padding:2px 8px;border-radius:4px;display:inline-block}
+.lp-ds-provenance.official{background:rgba(34,211,238,.1);color:var(--cyan)}
+.lp-ds-provenance.supplementary{background:rgba(251,191,36,.08);color:#fbbf24}
+
+/* ── Native Integration — operations flow and mode comparison ──────────── */
+.lp-dh-uses{margin:14px 0 0;font-size:12px;color:#ccd9f0;line-height:1.9}
+.lp-dh-uses li{
+  list-style:none;padding-left:18px;position:relative}
+.lp-dh-uses li::before{
+  content:"→";position:absolute;left:0;color:var(--cyan);font-weight:700}
+.lp-dh-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.lp-dh-mode{padding:12px 14px;border-radius:10px;border:1px solid var(--line)}
+.lp-dh-mode-demo{border-color:rgba(34,211,238,.2);background:rgba(34,211,238,.03)}
+.lp-dh-mode-live{border-color:rgba(48,164,108,.2);background:rgba(48,164,108,.03)}
+.lp-dh-mode-title{
+  font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:8px}
+.lp-dh-mode-demo .lp-dh-mode-title{color:var(--cyan)}
+.lp-dh-mode-live .lp-dh-mode-title{color:var(--low)}
+.lp-dh-mode ul{margin:0;padding-left:14px;font-size:11.5px;color:#ccd9f0;line-height:1.75}
+@media(max-width:600px){.lp-dh-modes{grid-template-columns:1fr}}
+
 /* ── Data-to-governance pipeline section ──────────────────────────────── */
 .gov-pipeline-section{
   padding:48px 32px 40px;border-top:1px solid var(--line);

@@ -1,0 +1,461 @@
+Please improve my existing Rosetta project for the Build with DataHub: The Agent Hackathon.
+
+PROJECT
+Rosetta is a semantic consistency agent for DataHub.
+
+Core positioning:
+“A linter for meaning across your DataHub graph.”
+
+Rosetta detects when teams assign incompatible meanings to the same metric, traces the conflict through DataHub metadata and lineage, measures downstream exposure, proposes a canonical definition, and prepares a human-approved remediation plan.
+
+IMPORTANT CONSTRAINTS
+1. Preserve the current visual design, branding, layout quality, interactive demo, executive dashboard, Technical View, modals, and existing functionality.
+2. Do not redesign or rewrite the entire application.
+3. Make focused, high-impact improvements only.
+4. Do not add fake integrations, fake API responses, fake DataHub writes, fake test results, or unsupported claims.
+5. Demo Mode must never imply that an external DataHub catalog was modified.
+6. Keep the application accessible without credentials.
+7. Keep the current official hackathon healthcare dataset and its existing validated results.
+8. Do not change existing numbers unless the underlying code or data proves that they should change.
+9. Keep all existing tests passing and add tests for the new safety behavior.
+10. Use concise language that a hackathon judge can understand quickly.
+11. Avoid adding unnecessary dependencies or large architectural changes.
+12. Before changing a file, inspect the existing implementation and reuse its current components, styles, patterns, and data structures.
+
+PRIMARY GOAL
+Strengthen Rosetta’s technical credibility against competing entries by making its DataHub remediation plan explicit, machine-readable, safely approval-gated, and verifiable in Connected Mode, while making the website’s Demo Mode language completely accurate.
+
+IMPLEMENT THE FOLLOWING IMPROVEMENTS
+
+1. CORRECT ALL DEMO MODE LANGUAGE
+
+Search the entire project for wording that implies Demo Mode writes to DataHub.
+
+Replace inaccurate wording as follows:
+
+Current:
+“Rosetta writes it back”
+
+Change to:
+“Rosetta generates a validated DataHub write plan”
+
+Current:
+“Writing back to DataHub…”
+
+Change to:
+“Generating validated DataHub write plan…”
+
+Current:
+“DataHub is both the source and destination”
+
+Change to:
+“In Connected Mode, DataHub can serve as both the source of context and the destination for approved remediation. In Demo Mode, Rosetta generates and validates the proposed operations without modifying an external catalog.”
+
+Also replace:
+“conflicts injected”
+
+With:
+“conflicts detected”
+
+Do this wherever it appears in user-facing copy, including dataset cards, walkthrough steps, loading messages, tooltips, modals, architecture descriptions, and result screens.
+
+The final Demo Mode language must consistently explain:
+
+“In Demo Mode, approval generates a validated DataHub write plan without modifying an external catalog.”
+
+Do not describe the Demo Mode plan as completed, executed, applied, published, or written back.
+
+2. CORRECT DATASET PROVENANCE CLAIMS
+
+The healthcare demo uses the official hackathon-provided sample data.
+
+Keep the official dataset badge and provenance language for the healthcare demo.
+
+Do not imply that the retail scenario is based on official hackathon data unless this is verified by the repository.
+
+Update the “Try It” introduction and dataset cards so the provenance of each scenario is clear.
+
+Recommended healthcare label:
+“Official hackathon sample data”
+
+Recommended retail label, if it is not official:
+“Supplementary demonstration scenario”
+
+Do not use wording that suggests both scenarios came from official DataHub hackathon resources.
+
+3. UPGRADE THE FINAL WRITE-PLAN SCREEN
+
+After the user approves a recommendation in Demo Mode, show a polished “Validated DataHub Write Plan” panel.
+
+The panel should display a clear status badge:
+
+“VALIDATED · NOT EXECUTED”
+
+Add this explanation directly beneath it:
+
+“This plan has passed Rosetta’s validation checks. Demo Mode does not modify an external DataHub catalog.”
+
+The panel should show the exact proposed DataHub operations, not only a prose summary.
+
+Include operations corresponding to:
+
+1. Upsert the proposed canonical GlossaryTerm
+2. Link the canonical term to affected assets
+3. Deprecate or annotate conflicting terms
+4. Preserve provenance, evidence, confidence, and approval information
+
+For each operation, display:
+• Operation number
+• Action or tool name
+• Target entity type
+• Target URN
+• Proposed payload
+• Reason for the operation
+• Validation status
+• Execution status
+
+Use DataHub-compatible entity and URN conventions already present in the project, including structures such as:
+• urn:li:glossaryTerm:*
+• Existing dataset or asset URNs
+• Existing team or group URNs, where applicable
+
+The payloads must be generated from the actual selected conflict and recommendation. Do not hard-code screenshots or invent unrelated values.
+
+Provide two views:
+
+A. Human-readable operations
+Use cards or a compact table that judges can scan quickly.
+
+B. Machine-readable plan
+Use a formatted JSON panel with syntax highlighting if the project already supports it.
+
+Add buttons:
+• Copy JSON
+• Download JSON
+• Download Markdown
+• Download CSV, if already supported by the current export architecture
+
+Reuse the project’s existing export logic where possible.
+
+The machine-readable plan should follow a clear structure similar to:
+
+{
+  "mode": "demo",
+  "status": "validated_not_executed",
+  "conflictId": "...",
+  "metric": "...",
+  "approval": {
+    "required": true,
+    "approved": true,
+    "approvedAt": "..."
+  },
+  "operations": [
+    {
+      "sequence": 1,
+      "action": "upsert_glossary_term",
+      "targetUrn": "urn:li:glossaryTerm:...",
+      "payload": {},
+      "reason": "...",
+      "validationStatus": "passed",
+      "executionStatus": "not_executed"
+    }
+  ]
+}
+
+Adapt this structure to the project’s existing architecture rather than introducing a disconnected duplicate model.
+
+Clearly distinguish:
+• PROPOSED
+• VALIDATED
+• APPROVED
+• EXECUTED
+
+In Demo Mode, the final state must never progress to EXECUTED.
+
+4. ENFORCE APPROVAL IN CODE
+
+Make the approval requirement a real programmatic safety boundary, not only a visual confirmation.
+
+No function that prepares or executes remediation should proceed without an explicit approval object or approval token.
+
+Requirements:
+• Approval must be associated with a specific conflict and plan.
+• Approval for one plan must not authorize another plan.
+• A missing approval must fail safely.
+• An invalid or mismatched approval must fail safely.
+• A stale approval must fail safely if the underlying plan changes.
+• Demo Mode must remain non-writing even after approval.
+• Connected Mode execution must require explicit approval.
+• The backend or core logic must enforce this independently of the user interface.
+
+Use a deterministic plan identifier or hash so that approval is tied to the exact operations presented to the user.
+
+Add clear, user-friendly errors such as:
+“Execution blocked: explicit approval is required for this write plan.”
+
+Do not expose secrets, credentials, or sensitive connection details in logs or exports.
+
+5. ADD SAFETY TESTS
+
+Add automated tests proving:
+
+• A write plan cannot execute without approval.
+• An invalid approval is rejected.
+• Approval for a different plan is rejected.
+• A modified plan invalidates the previous approval.
+• Demo Mode never invokes an external write operation.
+• Demo Mode always labels operations as not executed.
+• Connected Mode can only execute an approved plan.
+• The exported plan matches the plan shown to the user.
+• Post-write verification failures are reported correctly.
+
+Preserve the existing test suite and ensure all tests pass.
+
+Update the displayed test count only if the application derives it from the actual completed test suite. Do not manually claim an inaccurate count.
+
+6. ADD POST-WRITE VERIFICATION FOR CONNECTED MODE
+
+For Connected Mode only, add a verification step after approved operations execute.
+
+After execution:
+1. Re-read each affected entity from DataHub.
+2. Verify that the intended term, association, annotation, or deprecation state exists.
+3. Compare the observed state with the approved write plan.
+4. Record the result for every operation.
+
+Display one of these statuses:
+• VERIFIED
+• PARTIALLY VERIFIED
+• VERIFICATION FAILED
+• NOT EXECUTED
+
+The verification report should include:
+• Operation
+• Expected state
+• Observed state
+• Verification result
+• Error or discrepancy, if any
+• Timestamp
+
+Do not report success merely because an API request returned successfully. Success requires the expected state to be read back and confirmed.
+
+If no DataHub connection is configured, do not simulate verification. Show:
+“Not available in Demo Mode. No external catalog was modified.”
+
+Make failures visible and actionable rather than silently swallowing them.
+
+7. MAKE THE DATAHUB INTEGRATION TECHNICALLY EXPLICIT
+
+In the Native DataHub Integration or Architecture section, explain concisely that Rosetta uses DataHub’s context graph for:
+
+• Glossary terms and metric definitions
+• Dataset and schema metadata
+• Ownership and team context
+• Lineage traversal
+• Downstream impact analysis
+• Approved remediation operations in Connected Mode
+
+Add a compact “DataHub operations” visual or list showing the flow:
+
+Read context
+→ Detect contradiction
+→ Trace lineage
+→ Build remediation plan
+→ Require human approval
+→ Execute in Connected Mode
+→ Re-read and verify
+
+Clarify the two modes:
+
+DEMO MODE
+• No credentials required
+• Uses the official healthcare sample data
+• Generates a validated write plan
+• Does not modify an external DataHub catalog
+
+CONNECTED MODE
+• Reads from a configured DataHub instance
+• Requires explicit human approval
+• Executes only the approved operations
+• Re-reads affected entities to verify the final state
+
+Do not overstate MCP usage. Name exact MCP tools only if they are genuinely implemented in the repository. If Rosetta generates DataHub-compatible operations but does not invoke a particular tool, describe them as planned operations rather than executed tool calls.
+
+8. PRESERVE THE STRONG PRODUCT STORY
+
+Keep the main positioning prominent:
+
+“One metric. Two meanings. Silent chaos.”
+
+“Rosetta is a linter for meaning across the DataHub graph.”
+
+Preserve the five-agent pipeline:
+Harvester
+→ Conflict Detector
+→ Blast-Radius Analyzer
+→ Reconciliation Broker
+→ Writer
+
+Where useful, clarify that the Writer:
+• Produces a validated remediation plan in Demo Mode
+• Applies explicitly approved operations in Connected Mode
+• Verifies the resulting catalog state after Connected Mode execution
+
+Keep the existing healthcare evidence visible:
+• 55,500 synthetic patient records
+• 585 total assets at risk
+• 1,215 negative billing transactions
+• $28.48M affected transaction value
+• 12 downstream assets exposed
+• 832 impossible ages
+• 277 negative inpatient days
+• 555 NULL patient names
+• 88.4% conflict confidence
+• 23.3% logic similarity
+
+Do not add unsupported impact numbers.
+
+Use the precise label:
+“Affected transaction value”
+
+Do not call it revenue loss, financial loss, recovered value, or savings.
+
+9. IMPROVE JUDGE SCANNABILITY WITHOUT REDESIGNING
+
+Keep the current section structure unless a very small move is easy and low risk.
+
+Prioritize the following judge journey:
+1. Understand the semantic problem
+2. Run the no-credentials demo
+3. See concrete evidence and blast radius
+4. Inspect the five-agent reasoning
+5. Review exact DataHub operations
+6. Understand the approval boundary
+7. See how Connected Mode writes and verifies
+
+Make the “Run the five-agent demo” button remain the primary call to action.
+
+Keep this supporting line:
+“No credentials required · 55,500 synthetic records · Guided demo”
+
+Ensure the Technical View remains optional and does not overwhelm the main experience.
+
+10. PREPARE AN OPEN-SOURCE DATAHUB SKILL CONTRIBUTION
+
+The repository already contains a reusable semantic-conflict skill at:
+skills/detect-semantic-conflicts.md
+
+Improve this skill so it is suitable for a potential contribution to the official DataHub Skills repository.
+
+Do not automatically publish, push, fork, or open a pull request.
+
+Create a contribution-ready directory or patch that Judith can review manually.
+
+The reusable skill should:
+• Be generic, not Rosetta-specific marketing copy
+• Explain when an agent should detect semantic conflicts
+• Define required DataHub context
+• Describe deterministic comparison and evidence gathering
+• Include lineage-based blast-radius analysis
+• Require human approval before any mutation
+• Distinguish planning from execution
+• Require post-write verification
+• Include safe failure behavior
+• Include example inputs and outputs
+• Avoid requiring Rosetta’s UI
+
+Add a short contribution guide with:
+• What files are ready
+• What was changed
+• How to review the changes
+• How Judith could submit them to the official repository manually
+
+Do not claim an official contribution has been submitted or accepted.
+
+11. ADD A DEMO-VIDEO CHECKLIST TO THE REPOSITORY
+
+Create a concise Markdown checklist for a strong hackathon demo video.
+
+Recommended sequence:
+1. Open with: “One metric. Two meanings. Silent chaos.”
+2. Explain the semantic contradiction in one sentence.
+3. Show the official hackathon sample-data badge.
+4. Run the five-agent demo.
+5. Open the strongest finding.
+6. Show evidence and lineage-based blast radius.
+7. Show the proposed canonical definition.
+8. Approve the plan.
+9. Show exact operations and the “VALIDATED · NOT EXECUTED” status.
+10. Explain that Connected Mode requires approval, executes, and verifies.
+11. Close with:
+“Data quality tells us whether the numbers are valid. Rosetta helps ensure everyone agrees on what those numbers mean.”
+
+Keep the recommended video focused and concise.
+
+12. ACCESSIBILITY AND POLISH
+
+For all new interface elements:
+• Match the existing typography, colors, spacing, borders, and dark theme.
+• Use responsive layouts.
+• Avoid horizontal overflow on mobile.
+• Make JSON and long URNs wrap or scroll safely.
+• Add keyboard-accessible controls.
+• Add visible focus states.
+• Use semantic labels and appropriate ARIA attributes.
+• Ensure status is communicated by text, not color alone.
+• Add copy confirmation feedback.
+• Avoid overly technical language in the default view.
+• Keep detailed payloads inside an expandable Technical View if needed.
+
+FILES AND DOCUMENTATION
+
+Update relevant documentation to explain:
+• Demo Mode versus Connected Mode
+• Approval guarantees
+• Write-plan schema
+• Connected Mode verification
+• How to run tests
+• How to inspect or export a plan
+• Which functionality is actually implemented
+
+Do not include credentials or deployment secrets.
+
+If the project has an API specification or typed interfaces, update them consistently.
+
+ACCEPTANCE CRITERIA
+
+The work is complete only when:
+
+1. Every Demo Mode screen accurately states that no external catalog is modified.
+2. The healthcare demo is accurately identified as official hackathon sample data.
+3. Unverified retail provenance claims are removed.
+4. The final result shows exact proposed DataHub operations.
+5. The final plan is clearly marked “VALIDATED · NOT EXECUTED.”
+6. Judges can view and copy the machine-readable plan.
+7. Approval is enforced in core code, not only in the interface.
+8. Demo Mode cannot call external write functions.
+9. Connected Mode execution requires approval tied to the exact plan.
+10. Connected Mode re-reads affected entities and verifies the result.
+11. New safety tests pass together with all existing tests.
+12. The application remains responsive and visually consistent.
+13. Existing demo numbers and functionality are preserved.
+14. The reusable skill is contribution-ready but is not submitted automatically.
+15. Documentation contains no unsupported claims.
+
+FINAL RESPONSE
+
+After implementing the changes, give me:
+
+1. A concise summary of what changed
+2. A list of files changed
+3. The test results, including the actual test count
+4. A clear separation of:
+   • Fully implemented
+   • Demo-only behavior
+   • Connected Mode behavior
+   • Prepared but not submitted
+5. Any remaining manual steps
+6. Confirmation that no external DataHub catalog was modified during testing
+7. Confirmation that no pull request or external contribution was submitted
+
+Do not claim success for anything that was not actually implemented and tested.
