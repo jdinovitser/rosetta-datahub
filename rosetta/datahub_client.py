@@ -193,20 +193,28 @@ class RosettaDataHub:
 
     # ---------- VERIFY (post-write confirmation) ----------
 
-    def read_glossary_term(self, term_urn: str) -> dict | None:
+    def read_glossary_term(self, term_urn: str) -> dict:
         """Re-read a GlossaryTerm entity and return its observed attributes.
 
-        Used by verify_proposal() to confirm a write actually applied.
-        Returns None if the entity cannot be read or does not exist.
+        Return shape:
+          {"unavailable": True,  "reason": "..."}
+              SDK not installed or the read itself raised an exception.
+              Callers must treat this as UNAVAILABLE, not FAILED.
+          {"unavailable": False, "exists": False}
+              SDK executed successfully but the entity was not found.
+              This is a real contradiction — the write should have created it.
+          {"unavailable": False, "exists": True, "definition": ..., "deprecated": ...}
+              Entity found.  "definition" / "deprecated" may be absent if the
+              installed SDK version does not expose those attributes.
         """
         if not _HAS_SDK:
-            return None
+            return {"unavailable": True, "reason": "DataHub SDK not installed"}
         try:
             term = self.client.entities.get(GlossaryTermUrn.from_string(term_urn))
             if term is None:
-                return None
-            result: dict = {"urn": term_urn, "exists": True}
-            # Definition may be on different attributes depending on SDK version
+                return {"unavailable": False, "exists": False}
+            result: dict = {"unavailable": False, "exists": True}
+            # Definition may live under different attribute names across SDK versions
             for attr in ("definition", "description", "doc"):
                 val = getattr(term, attr, None)
                 if val:
@@ -219,17 +227,21 @@ class RosettaDataHub:
                     result["deprecated"] = bool(val)
                     break
             return result
-        except Exception:
-            return None
+        except Exception as exc:
+            return {"unavailable": True, "reason": str(exc)}
 
-    def read_asset_term_urns(self, asset_urn: str) -> list[str]:
+    def read_asset_term_urns(self, asset_urn: str) -> list[str] | None:
         """Return the glossary term URNs currently attached to a dataset.
 
-        Used by verify_proposal() to confirm that attach_term_to_asset applied.
-        Returns an empty list if the entity cannot be read.
+        Return shape:
+          None       — SDK not installed or the read raised an exception.
+                       Callers must treat this as UNAVAILABLE, not FAILED.
+          []         — Entity is readable but no terms are attached.
+                       This is a real contradiction — the write should have linked the term.
+          [urn, ...] — Term URNs found on the asset.
         """
         if not _HAS_SDK:
-            return []
+            return None
         try:
             dataset = self.client.entities.get(DatasetUrn.from_string(asset_urn))
             if dataset is None:
@@ -249,7 +261,7 @@ class RosettaDataHub:
                 return urns
             return []
         except Exception:
-            return []
+            return None
 
     # ---------- WRITE (the loop that compounds) ----------
     def write_canonical_term(

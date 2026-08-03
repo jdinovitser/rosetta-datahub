@@ -1,0 +1,52 @@
+Implement Task #30: Connected Mode post-write verification.
+
+Goal:
+After Rosetta applies an approved write plan in Connected Mode, it must read the affected metadata back from DataHub and verify that each requested mutation actually persisted.
+
+Requirements:
+1. Keep the existing ApprovalToken and SHA-256 plan-hash enforcement unchanged.
+2. Verification must run only after an approved Connected Mode write attempt.
+3. For each operation, use the best available DataHub read method to check the resulting state:
+   - upsert_glossary_term: verify the glossary term exists with the expected name and definition.
+   - attach_term_to_asset: verify the expected term is attached to the expected asset.
+   - deprecate_term: verify the expected deprecation state or supported replacement metadata.
+4. Do not report success merely because the write API returned successfully.
+5. Return a structured verification result for every operation with:
+   - operation_type
+   - target_urn
+   - expected_state
+   - observed_state
+   - status: verified, failed, or unavailable
+   - reason
+   - verified_at
+6. The overall result must be one of:
+   - VERIFIED: every operation was read back and matched.
+   - PARTIALLY_VERIFIED: at least one matched, but another failed or could not be read.
+   - VERIFICATION_FAILED: a readable result contradicted the expected state.
+   - VERIFICATION_UNAVAILABLE: no supported read-back method was available.
+7. Never convert an unavailable verification into a successful verification.
+8. Demo Mode must remain explicitly labeled VALIDATED · NOT EXECUTED. It must never imply that DataHub was changed or read back.
+9. Update the Step 5 UI:
+   - Connected Mode: show WRITE COMPLETED · VERIFIED only when every operation is verified.
+   - Otherwise show the appropriate partial, failed, or unavailable state.
+   - Display expected versus observed results for each operation.
+10. Preserve machine-readable verification evidence in JSON exports.
+11. Add deterministic tests covering:
+   - all operations verified
+   - one operation mismatched
+   - one read unavailable
+   - mixed results
+   - write failure before verification
+   - verification never runs without valid approval
+   - Demo Mode never claims verification
+12. Use mocked DataHub responses in tests. Do not require live credentials.
+13. Do not invent DataHub methods. Inspect the installed client and existing repository adapters first, then use supported reads.
+14. Update documentation to explain execution acknowledgment versus post-write verification.
+
+Run the full test suite and report:
+- files changed
+- read methods used
+- verification status model
+- tests added
+- total passing tests
+- any operations that DataHub cannot currently verify

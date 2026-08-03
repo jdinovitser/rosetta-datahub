@@ -31,7 +31,10 @@ import urllib.error
 from flask import Flask, Response, jsonify, render_template, request, session
 
 from rosetta import exporter
-from rosetta.broker import ApprovalToken, Proposal, apply_proposal, verify_proposal
+from rosetta.broker import (
+    ApprovalToken, Proposal, apply_proposal, verify_proposal,
+    VERIFICATION_UNAVAILABLE,
+)
 from rosetta.datahub_client import RosettaDataHub, _HAS_SDK
 from rosetta.demo import run_demo
 from rosetta.healthcare_demo import run_healthcare_demo
@@ -45,7 +48,8 @@ app.secret_key = os.environ.get("SESSION_SECRET", "rosetta-dev-secret")
 # Cache the most recent report + proposals so export and write-back have something to serve.
 _LAST_REPORT: dict = {}
 _LAST_PROPOSALS: list = []
-_LAST_APPROVAL_TOKEN: dict | None = None  # set by /api/approve, consumed by /api/write-back
+_LAST_APPROVAL_TOKEN: dict | None = None    # set by /api/approve, consumed by /api/write-back
+_LAST_VERIFICATION:   dict | None = None    # set after a live write-back; included in exports
 
 
 def _active_gms_url() -> str:
@@ -212,15 +216,19 @@ def api_write_back():
     if token:
         os.environ["DATAHUB_GMS_TOKEN"] = token
 
+    global _LAST_VERIFICATION  # noqa: PLW0603
     try:
         dh = RosettaDataHub()
         result = apply_proposal(dh, proposal, approval)
         _LAST_APPROVAL_TOKEN = None   # single-use: consumed after execution
 
         # Post-write verification: re-read each affected entity and compare
-        # to the approved plan.  Failure here doesn't undo the write but is
-        # surfaced clearly in the UI and the audit record.
+        # to the approved plan.  A successful write-API response is NOT treated
+        # as proof of persistence — each entity is read back independently.
+        # Failure here does not undo the write; it is surfaced in the UI and
+        # included in the machine-readable audit record.
         verification = verify_proposal(dh, proposal, result).to_dict()
+        _LAST_VERIFICATION = verification   # preserved for JSON export
 
         return jsonify({"ok": True, "result": result, "verification": verification})
     except ValueError as exc:
@@ -251,7 +259,11 @@ def api_scan():
 
 @app.route("/api/export/<fmt>")
 def api_export(fmt: str):
-    report = _LAST_REPORT or run_demo()["report"]
+    report = dict(_LAST_REPORT or run_demo()["report"])
+    # Embed post-write verification evidence so machine-readable exports are
+    # auditable: judges can see exactly what Rosetta read back from DataHub.
+    if _LAST_VERIFICATION:
+        report["rosetta_verification"] = _LAST_VERIFICATION
     try:
         content = exporter.export(report, fmt)
     except ValueError as e:

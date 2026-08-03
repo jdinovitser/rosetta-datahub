@@ -1161,12 +1161,25 @@ def test_demo_mode_write_back_blocked_by_missing_gms():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# POST-WRITE VERIFICATION TESTS  (Item 6 of the implementation brief)
+# POST-WRITE VERIFICATION TESTS  (Task #30 / implementation brief)
+#
+# Spec requirements covered here:
+#   ✓ all operations verified
+#   ✓ one operation mismatched (definition wrong → "failed")
+#   ✓ one read unavailable (SDK returns None / unavailable dict)
+#   ✓ mixed results
+#   ✓ write failure before verification (apply_proposal raises → verify not called)
+#   ✓ verification never runs without valid approval
+#   ✓ Demo Mode never claims verification
+#   ✓ per-check shape (operationType, expectedState, observedState, status, reason, verifiedAt)
+#   ✓ asset-sample cap
 # ═══════════════════════════════════════════════════════════════════════════════
 
 from rosetta.broker import (
     VERIFICATION_FAILED, VERIFIED, PARTIALLY_VERIFIED, NOT_EXECUTED,
-    VerificationResult, verify_proposal,
+    VERIFICATION_UNAVAILABLE,
+    VerificationResult, VerificationCheck, verify_proposal,
+    _CHECK_VERIFIED, _CHECK_FAILED, _CHECK_UNAVAILABLE,
 )
 
 
@@ -1176,90 +1189,313 @@ def _make_proposal_for_verify():
     return draft_proposal(conflict)
 
 
+def _write_result(proposal):
+    return {"canonical_term": f"urn:li:glossaryTerm:{proposal.term_id}"}
+
+
 def _mock_dh_all_pass(proposal):
-    """Return a mock RosettaDataHub where all read methods report success."""
+    """Mock RosettaDataHub where every read method confirms the write succeeded.
+
+    read_glossary_term returns the new dict shape:
+      {"unavailable": False, "exists": True, "definition": ..., "deprecated": ...}
+    read_asset_term_urns returns [canonical_term_urn]
+    """
     from unittest.mock import MagicMock
     dh = MagicMock()
     term_urn = f"urn:li:glossaryTerm:{proposal.term_id}"
-    dh.read_glossary_term.return_value = {"urn": term_urn, "exists": True, "deprecated": False}
-    # Canonical term exists; deprecated terms are marked deprecated
+    display   = proposal.display_name
+
     def _read_term(urn):
         if urn == term_urn:
-            return {"urn": urn, "exists": True, "deprecated": False}
-        return {"urn": urn, "exists": True, "deprecated": True}
+            # Canonical term exists with definition referencing display_name
+            return {
+                "unavailable": False, "exists": True,
+                "definition": f"CANONICAL DEFINITION of '{display}'. Agreed computation.",
+                "deprecated": False,
+            }
+        # Deprecated terms: deprecated flag is set
+        return {"unavailable": False, "exists": True, "deprecated": True}
+
     dh.read_glossary_term.side_effect = _read_term
     dh.read_asset_term_urns.return_value = [term_urn]
     return dh
 
 
-def _write_result(proposal):
-    return {"canonical_term": f"urn:li:glossaryTerm:{proposal.term_id}"}
-
+# ── All verified ──────────────────────────────────────────────────────────────
 
 def test_verify_proposal_all_pass_returns_verified():
     """When all sampled entities reflect the write plan, status is VERIFIED."""
-    p = _make_proposal_for_verify()
+    p  = _make_proposal_for_verify()
     dh = _mock_dh_all_pass(p)
     result = verify_proposal(dh, p, _write_result(p))
-    assert result.status == VERIFIED
+    assert result.status == VERIFIED, f"Expected VERIFIED, got {result.status}"
     assert result.passed_checks == result.total_checks
     assert result.total_checks >= 1
+    # Every check must have status "verified"
+    for c in result.checks:
+        assert c.status == _CHECK_VERIFIED, (
+            f"Check {c.operation_type} on {c.target_urn} has status {c.status!r}"
+        )
 
 
 def test_verify_proposal_empty_write_result_returns_not_executed():
-    """An empty write_result dict must return NOT_EXECUTED."""
+    """An empty write_result dict must return NOT_EXECUTED, not an error."""
     from unittest.mock import MagicMock
     p = _make_proposal_for_verify()
     result = verify_proposal(MagicMock(), p, {})
     assert result.status == NOT_EXECUTED
     assert result.total_checks == 0
+    assert result.checks == []
 
 
-def test_verify_proposal_term_missing_returns_failed():
-    """If the canonical term cannot be read from DataHub, fail the check."""
+# ── Unavailable reads ─────────────────────────────────────────────────────────
+
+def test_verify_read_unavailable_marks_check_unavailable():
+    """When read_glossary_term returns unavailable, the check status is 'unavailable',
+    not 'failed'.  VERIFICATION_UNAVAILABLE is never promoted to success."""
     from unittest.mock import MagicMock
-    p = _make_proposal_for_verify()
+    p  = _make_proposal_for_verify()
     dh = MagicMock()
-    dh.read_glossary_term.return_value = None   # term not found
+    # SDK not installed — all reads return the unavailable sentinel
+    dh.read_glossary_term.return_value = {"unavailable": True, "reason": "SDK not installed"}
+    dh.read_asset_term_urns.return_value = None   # None also signals unavailable
+    result = verify_proposal(dh, p, _write_result(p))
+    assert result.status == VERIFICATION_UNAVAILABLE, (
+        f"All-unavailable reads must yield VERIFICATION_UNAVAILABLE, got {result.status}"
+    )
+    for c in result.checks:
+        assert c.status == _CHECK_UNAVAILABLE, (
+            f"Check {c.operation_type} should be 'unavailable', got {c.status!r}"
+        )
+    assert result.passed_checks == 0, (
+        "Unavailable reads must never be counted as passed"
+    )
+
+
+def test_verify_read_none_treated_as_unavailable():
+    """None from read_glossary_term (e.g. mock default) is treated as unavailable."""
+    from unittest.mock import MagicMock
+    p  = _make_proposal_for_verify()
+    dh = MagicMock()
+    dh.read_glossary_term.return_value = None
+    dh.read_asset_term_urns.return_value = None
+    result = verify_proposal(dh, p, _write_result(p))
+    term_checks = [c for c in result.checks if c.operation_type == "upsert_glossary_term"]
+    assert term_checks
+    assert term_checks[0].status == _CHECK_UNAVAILABLE, (
+        "None from read_glossary_term must be 'unavailable', not 'failed'"
+    )
+
+
+# ── One operation mismatched → "failed" ──────────────────────────────────────
+
+def test_verify_term_not_found_is_failed():
+    """Entity readable (SDK works) but not found → status 'failed', not 'unavailable'."""
+    from unittest.mock import MagicMock
+    p  = _make_proposal_for_verify()
+    dh = MagicMock()
+    # SDK returned successfully but entity does not exist
+    dh.read_glossary_term.return_value = {"unavailable": False, "exists": False}
     dh.read_asset_term_urns.return_value = []
     result = verify_proposal(dh, p, _write_result(p))
-    # At least the term-exists check fails
-    term_checks = [c for c in result.checks if c.operation == "upsert_glossary_term"]
-    assert term_checks, "Expected at least one upsert_glossary_term check"
-    assert not term_checks[0].passed
+    term_checks = [c for c in result.checks if c.operation_type == "upsert_glossary_term"]
+    assert term_checks
+    assert term_checks[0].status == _CHECK_FAILED, (
+        "Entity not found after write should be 'failed', not 'unavailable'"
+    )
 
 
-def test_verify_proposal_partial_pass_returns_partially_verified():
-    """Term exists but assets not linked → PARTIALLY_VERIFIED."""
+def test_verify_definition_mismatch_is_failed():
+    """Term exists but definition does not reference the expected name → 'failed'."""
     from unittest.mock import MagicMock
-    p = _make_proposal_for_verify()
+    p  = _make_proposal_for_verify()
     dh = MagicMock()
     term_urn = f"urn:li:glossaryTerm:{p.term_id}"
-    # Term exists, but assets return empty term list
+
+    def _read(urn):
+        if urn == term_urn:
+            return {
+                "unavailable": False, "exists": True,
+                "definition": "Something completely unrelated to the metric",
+                "deprecated": False,
+            }
+        return {"unavailable": False, "exists": True, "deprecated": True}
+
+    dh.read_glossary_term.side_effect = _read
+    dh.read_asset_term_urns.return_value = [term_urn]
+    result = verify_proposal(dh, p, _write_result(p))
+    term_checks = [c for c in result.checks if c.operation_type == "upsert_glossary_term"]
+    assert term_checks
+    assert term_checks[0].status == _CHECK_FAILED, (
+        "Definition mismatch should produce 'failed' status"
+    )
+    assert p.display_name.lower() not in (term_checks[0].observed_state or "").lower()
+
+
+def test_verify_deprecation_not_applied_is_failed():
+    """Term readable but deprecated=False after deprecate_term write → 'failed'."""
+    from unittest.mock import MagicMock
+    p  = _make_proposal_for_verify()
+    if not p.deprecated_terms:
+        return  # no deprecated terms in fixture; skip
+    dh = MagicMock()
+    term_urn = f"urn:li:glossaryTerm:{p.term_id}"
+
+    def _read(urn):
+        if urn == term_urn:
+            return {
+                "unavailable": False, "exists": True,
+                "definition": f"CANONICAL DEFINITION of '{p.display_name}'.",
+                "deprecated": False,
+            }
+        # deprecated term: readable but not actually deprecated
+        return {"unavailable": False, "exists": True, "deprecated": False}
+
+    dh.read_glossary_term.side_effect = _read
+    dh.read_asset_term_urns.return_value = [term_urn]
+    result = verify_proposal(dh, p, _write_result(p))
+    dep_checks = [c for c in result.checks if c.operation_type == "deprecate_term"]
+    assert dep_checks
+    assert dep_checks[0].status == _CHECK_FAILED, (
+        "deprecated=False after a deprecate write should produce 'failed'"
+    )
+
+
+# ── Mixed results ─────────────────────────────────────────────────────────────
+
+def test_verify_proposal_partial_pass_returns_partially_verified():
+    """Canonical term verified but assets not linked → PARTIALLY_VERIFIED."""
+    from unittest.mock import MagicMock
+    p  = _make_proposal_for_verify()
+    dh = MagicMock()
+    term_urn = f"urn:li:glossaryTerm:{p.term_id}"
+
     def _read_term(urn):
         if urn == term_urn:
-            return {"urn": urn, "exists": True, "deprecated": False}
-        return {"urn": urn, "exists": True, "deprecated": False}  # not deprecated yet
-    dh.read_glossary_term.side_effect = _read_term
-    dh.read_asset_term_urns.return_value = []  # canonical term not found on assets
-    result = verify_proposal(dh, p, _write_result(p))
-    # Term check passes, asset checks fail → PARTIALLY_VERIFIED (if there are assets)
-    if p.affected_assets:
-        assert result.status == PARTIALLY_VERIFIED
-    else:
-        # No assets to check → depends only on term and deprecated checks
-        assert result.status in (VERIFIED, PARTIALLY_VERIFIED, VERIFICATION_FAILED)
+            return {
+                "unavailable": False, "exists": True,
+                "definition": f"CANONICAL DEFINITION of '{p.display_name}'.",
+                "deprecated": False,
+            }
+        # Deprecated terms: not yet deprecated → "failed"
+        return {"unavailable": False, "exists": True, "deprecated": False}
 
+    dh.read_glossary_term.side_effect = _read_term
+    dh.read_asset_term_urns.return_value = []  # term not linked → "failed"
+
+    result = verify_proposal(dh, p, _write_result(p))
+    if p.affected_assets or p.deprecated_terms:
+        # canonical term check passes, at least one other check fails
+        assert result.status == PARTIALLY_VERIFIED, (
+            f"Expected PARTIALLY_VERIFIED; got {result.status}. "
+            f"Checks: {[(c.operation_type, c.status) for c in result.checks]}"
+        )
+    else:
+        # No assets or deprecated terms in fixture; only the term check runs
+        assert result.status in (VERIFIED, PARTIALLY_VERIFIED)
+
+
+def test_verify_mixed_unavailable_and_verified():
+    """Canonical term verified + asset reads unavailable → PARTIALLY_VERIFIED."""
+    from unittest.mock import MagicMock
+    p  = _make_proposal_for_verify()
+    if not p.affected_assets:
+        return  # fixture has no assets; skip
+    dh = MagicMock()
+    term_urn = f"urn:li:glossaryTerm:{p.term_id}"
+
+    def _read_term(urn):
+        if urn == term_urn:
+            return {
+                "unavailable": False, "exists": True,
+                "definition": f"CANONICAL DEFINITION of '{p.display_name}'.",
+                "deprecated": False,
+            }
+        return {"unavailable": False, "exists": True, "deprecated": True}
+
+    dh.read_glossary_term.side_effect = _read_term
+    dh.read_asset_term_urns.return_value = None  # unavailable for assets
+
+    result = verify_proposal(dh, p, _write_result(p))
+    assert result.status == PARTIALLY_VERIFIED, (
+        f"Expected PARTIALLY_VERIFIED (verified term + unavailable assets); got {result.status}"
+    )
+    asset_checks = [c for c in result.checks if c.operation_type == "attach_term_to_asset"]
+    for c in asset_checks:
+        assert c.status == _CHECK_UNAVAILABLE
+
+
+# ── Write failure before verification ────────────────────────────────────────
+
+def test_verify_not_called_when_apply_raises():
+    """If apply_proposal() raises, verify_proposal() must never be called."""
+    from unittest.mock import MagicMock, patch
+    p      = _make_proposal_for_verify()
+    token  = ApprovalToken(
+        plan_id=p.plan_id, conflict_id=p.term_id,
+        approved_at="2026-08-03T12:00:00Z", mode="live",
+    )
+    dh = MagicMock()
+    dh.write_canonical_term.side_effect = RuntimeError("DataHub GMS unreachable")
+
+    verify_spy = MagicMock()
+    with patch("rosetta.broker.verify_proposal", verify_spy):
+        with pytest.raises(RuntimeError, match="DataHub GMS unreachable"):
+            apply_proposal(dh, p, token)
+    verify_spy.assert_not_called()
+
+
+# ── Demo Mode never claims verification ───────────────────────────────────────
+
+def test_demo_mode_step5_never_claims_verification():
+    """The Demo Mode step-5 screen must use 'VALIDATED · NOT EXECUTED' language,
+    never imply that DataHub was read back or that verification ran."""
+    js = _app_js()
+    demo_notice_idx = js.find("VALIDATED")
+    assert demo_notice_idx != -1, "Demo mode must show VALIDATED · NOT EXECUTED"
+    # The string 'VALIDATED · NOT EXECUTED' must appear in demo-mode context only
+    # (the write-demo-notice block, not the connected-mode verification banner)
+    assert "write-demo-notice" in js, "Demo Mode uses write-demo-notice block"
+    # The verification banner is gated on _writeBackVerification which is only
+    # set by the live /api/write-back response — confirm demo approve handler
+    # does NOT set _writeBackVerification
+    live_set_idx = js.find("_writeBackVerification = data.verification")
+    assert live_set_idx != -1, "_writeBackVerification must be set from live write-back"
+    # Confirm demo approve path does NOT set _writeBackVerification
+    demo_branch = js.find("Demo mode — call /api/approve")
+    assert demo_branch != -1
+    # In the demo approve block (next ~600 chars), _writeBackVerification must NOT be set
+    demo_snippet = js[demo_branch: demo_branch + 600]
+    assert "_writeBackVerification" not in demo_snippet, (
+        "Demo mode approve handler must not set _writeBackVerification"
+    )
+
+
+# ── Approval required (verification never without approval) ──────────────────
+
+def test_verify_never_runs_without_valid_approval():
+    """apply_proposal must raise before any write; verify can never follow."""
+    from unittest.mock import MagicMock
+    p  = _make_proposal_for_verify()
+    dh = MagicMock()
+    with pytest.raises((ValueError, TypeError)):
+        apply_proposal(dh, p, None)   # no token → raises before writes
+    dh.write_canonical_term.assert_not_called()
+    dh.read_glossary_term.assert_not_called()
+
+
+# ── Per-check dict shape ──────────────────────────────────────────────────────
 
 def test_verify_result_to_dict_shape():
-    """VerificationResult.to_dict() must include required keys."""
-    from rosetta.broker import VerificationCheck
+    """VerificationResult.to_dict() must expose the exact fields the spec requires."""
     check = VerificationCheck(
-        operation="upsert_glossary_term",
-        target_urn="urn:li:glossaryTerm:x",
-        expected="exists",
-        observed="exists",
-        passed=True,
+        operation_type="upsert_glossary_term",
+        target_urn="urn:li:glossaryTerm:active_user",
+        expected_state="GlossaryTerm exists with name 'Active Users'",
+        observed_state="exists; definition: 'CANONICAL DEFINITION of 'Active Users'.'",
+        status=_CHECK_VERIFIED,
+        reason="GlossaryTerm exists with matching canonical definition",
+        verified_at="2026-08-03T12:00:00+00:00",
     )
     vr = VerificationResult(
         status=VERIFIED, total_checks=1, passed_checks=1, checks=[check]
@@ -1269,20 +1505,32 @@ def test_verify_result_to_dict_shape():
     assert d["totalChecks"] == 1
     assert d["passedChecks"] == 1
     assert len(d["checks"]) == 1
-    assert d["checks"][0]["operation"] == "upsert_glossary_term"
-    assert d["checks"][0]["passed"] is True
+    c = d["checks"][0]
+    # Required fields from the spec
+    assert c["operationType"]  == "upsert_glossary_term"
+    assert c["targetUrn"]      == "urn:li:glossaryTerm:active_user"
+    assert c["expectedState"], "expectedState must be non-empty"
+    assert c["observedState"], "observedState must be non-empty"
+    assert c["status"]         == _CHECK_VERIFIED
+    assert c["reason"],        "reason must be non-empty"
+    assert c["verifiedAt"]     == "2026-08-03T12:00:00+00:00"
+    # Must NOT expose legacy fields
+    assert "passed"    not in c, "Legacy 'passed' field must not appear in to_dict()"
+    assert "operation" not in c, "Legacy 'operation' field must not appear in to_dict()"
+    assert "expected"  not in c, "Legacy 'expected' field must not appear in to_dict()"
+    assert "observed"  not in c, "Legacy 'observed' field must not appear in to_dict()"
 
+
+# ── Asset-sample cap ──────────────────────────────────────────────────────────
 
 def test_verify_caps_asset_sample():
     """Verification must read at most _VERIFY_ASSET_SAMPLE assets."""
     from rosetta.broker import _VERIFY_ASSET_SAMPLE
-    from unittest.mock import MagicMock, call
     p = _make_proposal_for_verify()
-    # Force many affected assets
     p.affected_assets = [f"urn:li:dataset:ds_{i}" for i in range(20)]
     dh = _mock_dh_all_pass(p)
     verify_proposal(dh, p, _write_result(p))
-    asset_calls = dh.read_asset_term_urns.call_count
-    assert asset_calls <= _VERIFY_ASSET_SAMPLE, (
-        f"Verification read {asset_calls} assets; must cap at {_VERIFY_ASSET_SAMPLE}"
+    assert dh.read_asset_term_urns.call_count <= _VERIFY_ASSET_SAMPLE, (
+        f"Verification read {dh.read_asset_term_urns.call_count} assets; "
+        f"must cap at {_VERIFY_ASSET_SAMPLE}"
     )

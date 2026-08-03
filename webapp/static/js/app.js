@@ -530,30 +530,42 @@ function buildStep5(data, writeResult) {
       const vstatus  = vrf.status || "VERIFICATION_FAILED";
       const vpassed  = vrf.passedChecks ?? 0;
       const vtotal   = vrf.totalChecks  ?? 0;
-      const vrfMeta  = {
-        VERIFIED:            { icon: "✓", label: "VERIFIED",            cls: "vrf-ok"   },
-        PARTIALLY_VERIFIED:  { icon: "⚠", label: "PARTIALLY VERIFIED",  cls: "vrf-warn" },
-        VERIFICATION_FAILED: { icon: "✗", label: "VERIFICATION FAILED",  cls: "vrf-fail" },
-        NOT_EXECUTED:        { icon: "—", label: "NOT EXECUTED",          cls: "vrf-muted"},
+      const vrfMeta = {
+        VERIFIED:                 { icon: "✓", label: "WRITE COMPLETED · VERIFIED",                cls: "vrf-ok"   },
+        PARTIALLY_VERIFIED:       { icon: "⚠", label: "WRITE COMPLETED · PARTIALLY VERIFIED",       cls: "vrf-warn" },
+        VERIFICATION_FAILED:      { icon: "✗", label: "WRITE COMPLETED · VERIFICATION FAILED",      cls: "vrf-fail" },
+        VERIFICATION_UNAVAILABLE: { icon: "?", label: "WRITE COMPLETED · VERIFICATION UNAVAILABLE", cls: "vrf-warn" },
+        NOT_EXECUTED:             { icon: "—", label: "NOT EXECUTED",                               cls: "vrf-muted"},
       };
       const m = vrfMeta[vstatus] || vrfMeta.VERIFICATION_FAILED;
 
-      const checkRows = (vrf.checks || []).map(c => `
+      const _checkIcon = s =>
+        s === "verified"   ? { cls: "vrf-check-pass",    ch: "✓" } :
+        s === "failed"     ? { cls: "vrf-check-fail",    ch: "✗" } :
+                             { cls: "vrf-check-unavail", ch: "?" };
+
+      const checkRows = (vrf.checks || []).map(c => {
+        const ic = _checkIcon(c.status);
+        return `
         <div class="vrf-check">
-          <span class="vrf-check-icon ${c.passed ? "vrf-check-pass" : "vrf-check-fail"}">${c.passed ? "✓" : "✗"}</span>
+          <span class="vrf-check-icon ${ic.cls}" aria-label="${esc(c.status)}">${ic.ch}</span>
           <div class="vrf-check-body">
-            <span class="vrf-check-op">${esc(c.operation)}</span>
+            <span class="vrf-check-op">${esc(c.operationType)}</span>
             <div class="vrf-check-urn">${esc(c.targetUrn)}</div>
-            <div class="vrf-check-obs">${esc(c.observed)}</div>
+            <div class="vrf-check-row"><b>Expected:</b> ${esc(c.expectedState)}</div>
+            <div class="vrf-check-row"><b>Observed:</b> ${esc(c.observedState)}</div>
+            <div class="vrf-check-reason">${esc(c.reason)}</div>
+            <div class="vrf-check-ts">${c.verifiedAt ? "Re-read at " + esc(c.verifiedAt) : ""}</div>
           </div>
-        </div>`).join("");
+        </div>`;
+      }).join("");
 
       vrfBanner = `
         <div class="verification-banner ${m.cls}" role="status" aria-label="Verification status: ${vstatus}">
           <span class="vrf-icon" aria-hidden="true">${m.icon}</span>
           <div class="vrf-body">
             <div class="vrf-title">${m.label}</div>
-            <div class="vrf-detail">${vpassed} of ${vtotal} post-write check${vtotal !== 1 ? "s" : ""} passed — DataHub entities re-read and compared to the approved plan.</div>
+            <div class="vrf-detail">${vpassed} of ${vtotal} check${vtotal !== 1 ? "s" : ""} verified — DataHub entities re-read and compared to the approved plan. A successful write-API response is not treated as proof of persistence.</div>
             ${checkRows ? `<div class="vrf-checks" aria-label="Individual checks">${checkRows}</div>` : ""}
           </div>
         </div>`;
