@@ -6,8 +6,8 @@ modules = ["python-3.10", "nodejs-20", "web"]
 channel = "stable-25_05"
 
 [deployment]
-run = ["sh", "-c", "python webapp/app.py"]
-deploymentTarget = "cloudrun"
+run = ["python", "webapp/app.py"]
+deploymentTarget = "autoscale"
 
 [[ports]]
 localPort = 5000
