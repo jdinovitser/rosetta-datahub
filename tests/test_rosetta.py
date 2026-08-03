@@ -674,8 +674,8 @@ def _app_js():
 
 def test_homepage_has_no_credentials_disclosure():
     html = _get_homepage()
-    assert "No credentials required" in html, (
-        "Homepage must contain 'No credentials required' disclosure"
+    assert "no DataHub credentials required" in html, (
+        "Homepage must contain 'no DataHub credentials required' disclosure"
     )
     assert "no account or credentials are required" in html, (
         "Homepage must disclose no account or credentials are required"

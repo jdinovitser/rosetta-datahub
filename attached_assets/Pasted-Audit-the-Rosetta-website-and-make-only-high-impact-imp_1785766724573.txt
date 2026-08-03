@@ -1,0 +1,39 @@
+Audit the Rosetta website and make only high-impact improvements that help a hackathon judge understand and trust the project within two minutes.
+
+Priorities:
+1. Above the fold, state:
+   Rosetta detects conflicting metric definitions, traces their downstream impact through DataHub lineage, and prepares a human-approved remediation plan.
+2. Keep the tagline:
+   A linter for meaning across your DataHub graph.
+3. Add a compact proof strip near the top with verified facts only:
+   - five-agent pipeline
+   - current automated test count
+   - 88.4% conflict confidence
+   - 585 assets at risk
+   - approval-gated remediation
+4. Near the first call to action, label the hosted experience:
+   Public demo: deterministic Demo Mode, no DataHub credentials required.
+5. Make mode behavior unmistakable:
+   - Demo Mode: VALIDATED · NOT EXECUTED
+   - Connected Mode: approval-gated execution with post-write verification
+6. Do not show WRITE COMPLETED · VERIFIED unless read-back confirmed every operation.
+7. Add a compact section explaining Rosetta's distinction:
+   Data quality asks whether values are valid. Rosetta asks whether the organization agrees on what those values mean.
+8. Correct provenance everywhere:
+   - Healthcare: Official hackathon data
+   - Retail: Supplementary scenario
+9. Add visible links to:
+   - GitHub repository
+   - architecture
+   - test results
+   - Connected Mode evidence
+   - official skill pull request, but only if a real URL exists
+10. End with:
+   No important metric should reach a dashboard, decision, or AI model before the organization agrees on what it means.
+11. Preserve the existing visual identity and interactive pipeline. Do not redesign the entire site.
+12. Check mobile and desktop layouts, accessibility labels, keyboard interaction, broken links, and copy consistency.
+
+Before finishing:
+- verify every metric against repository output
+- verify the deployed page contains the new copy
+- report the deployment URL and exact visible changes

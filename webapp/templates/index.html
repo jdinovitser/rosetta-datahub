@@ -201,24 +201,30 @@
             <span class="lp-h1-grad">Silent chaos.</span>
           </h1>
 
+          <p class="lp-tagline">A linter for meaning across your DataHub graph.</p>
+
           <p class="lp-sub">
-            Rosetta is a linter for meaning across the DataHub graph. It finds where teams assign incompatible meanings to the same metric, traces the conflict through metadata and lineage, measures downstream exposure, and proposes a canonical definition.
+            Rosetta detects conflicting metric definitions, traces their downstream impact through DataHub lineage, and prepares a human-approved remediation plan.
           </p>
 
-          <p class="lp-sub-note">
-            In Demo Mode, approval generates a validated DataHub write plan without modifying an external catalog.
-          </p>
+          <div class="lp-proof-strip" role="list" aria-label="Verified facts">
+            <span role="listitem">Five-agent pipeline</span><span class="lp-proof-sep" aria-hidden="true">·</span>
+            <span role="listitem">100 automated tests</span><span class="lp-proof-sep" aria-hidden="true">·</span>
+            <span role="listitem">88.4% conflict confidence</span><span class="lp-proof-sep" aria-hidden="true">·</span>
+            <span role="listitem">585 assets at risk</span><span class="lp-proof-sep" aria-hidden="true">·</span>
+            <span role="listitem">Approval-gated remediation</span>
+          </div>
 
           <div class="lp-ctas">
             <button id="runDemo" class="btn primary btn-lg">Run the five-agent demo</button>
             <button class="btn ghost btn-lg" id="navTechViewHero">Connect to DataHub</button>
-            <a class="btn ghost btn-lg lp-gh" href="https://github.com/jdinovitser/rosetta-datahub" target="_blank">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+            <a class="btn ghost btn-lg lp-gh" href="https://github.com/jdinovitser/rosetta-datahub" target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
               GitHub
             </a>
           </div>
           <p class="lp-cta-note">
-            No credentials required · 55,500 synthetic records · Guided demo
+            <strong>Public demo:</strong> deterministic Demo Mode — no DataHub credentials required.
             <button class="lp-about-link" id="openAboutDataHero">About this data ›</button>
           </p>
         </div>
@@ -284,6 +290,17 @@
               <button class="btn primary btn-sm lp-cc-approve" id="runDemo2">Run Healthcare Demo ›</button>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ② b  ROSETTA'S DISTINCTION -->
+      <section class="lp-distinction-section" aria-label="What makes Rosetta different">
+        <div class="lp-distinction-inner">
+          <span class="lp-distinction-pill">What makes Rosetta different</span>
+          <p class="lp-distinction-text">
+            Data quality tools ask whether values are <em>valid</em>.
+            Rosetta asks whether the organization <em>agrees on what those values mean</em>.
+          </p>
         </div>
       </section>
 
@@ -377,9 +394,10 @@
                 <div class="lp-dh-mode-title">Demo Mode</div>
                 <ul>
                   <li>Runs on official hackathon sample data</li>
-                  <li>Generates a validated write plan</li>
-                  <li>Approval token issued; plan hash recorded</li>
-                  <li>No catalog is ever modified</li>
+                  <li>Generates and validates the full write plan</li>
+                  <li>Approval token issued; SHA-256 plan hash recorded</li>
+                  <li>No external catalog is ever modified</li>
+                  <li>Result: <strong>VALIDATED · NOT EXECUTED</strong></li>
                 </ul>
               </div>
               <div class="lp-dh-mode lp-dh-mode-live">
@@ -387,8 +405,9 @@
                 <ul>
                   <li>Reads from your DataHub GMS endpoint</li>
                   <li>Approval token must match exact plan hash</li>
-                  <li>Executes approved DataHub operations</li>
-                  <li>Post-write verification confirms applied state</li>
+                  <li>Approval-gated: executes only after explicit human sign-off</li>
+                  <li>Re-reads every changed entity to verify applied state</li>
+                  <li><strong>WRITE COMPLETED · VERIFIED</strong> only when read-back confirms every operation</li>
                 </ul>
               </div>
             </div>
@@ -453,6 +472,27 @@
         </div>
       </section>
 
+      <!-- ⑨ PROJECT LINKS -->
+      <section class="lp-links-section" aria-label="Project resources">
+        <div class="lp-links-inner">
+          <a class="lp-link-chip" href="https://github.com/jdinovitser/rosetta-datahub" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+            GitHub Repository
+          </a>
+          <a class="lp-link-chip" href="{{ url_for('static', filename='img/architecture.png') }}" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Architecture Diagram
+          </a>
+          <a class="lp-link-chip" href="https://github.com/jdinovitser/rosetta-datahub/blob/main/tests/test_rosetta.py" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            100 Tests · View Source
+          </a>
+          <a class="lp-link-chip" href="https://github.com/jdinovitser/rosetta-datahub/blob/main/CONNECTED_MODE_EVIDENCE.md" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Connected Mode Evidence
+          </a>
+        </div>
+      </section>
 
     </div>
 
@@ -731,8 +771,17 @@
   </div><!-- /techView -->
 
   <footer class="footer">
-    Rosetta · Semantic Consistency Agent · Built for the DataHub Agent Hackathon · Apache-2.0 ·
-    <a href="https://github.com/jdinovitser/rosetta-datahub" target="_blank">source</a>
+    <p class="footer-quote">No important metric should reach a dashboard, decision, or AI model before the organization agrees on what it means.</p>
+    <nav class="footer-nav" aria-label="Project links">
+      <a href="https://github.com/jdinovitser/rosetta-datahub" target="_blank" rel="noopener">GitHub</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/jdinovitser/rosetta-datahub/blob/main/CONNECTED_MODE_EVIDENCE.md" target="_blank" rel="noopener">Connected Mode Evidence</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/jdinovitser/rosetta-datahub/blob/main/tests/test_rosetta.py" target="_blank" rel="noopener">100 tests</a>
+      <span aria-hidden="true">·</span>
+      <a href="{{ url_for('static', filename='img/architecture.png') }}" target="_blank" rel="noopener">Architecture</a>
+    </nav>
+    <div class="footer-meta">Rosetta · Apache-2.0 · DataHub Agent Hackathon 2026</div>
   </footer>
 
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>

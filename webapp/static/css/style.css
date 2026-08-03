@@ -1345,3 +1345,93 @@ body{
 /* Ensure hidden attribute is never overridden by display:flex rules */
 #wtNav[hidden],
 #wtProgress[hidden] { display: none !important; }
+
+/* ── TAGLINE ───────────────────────────────────────────────────────────────── */
+.lp-tagline {
+  font-size: 15px; font-weight: 700; letter-spacing: .02em;
+  color: var(--accent, #7c9cff); text-transform: uppercase;
+  margin: 0 0 10px; line-height: 1.3;
+}
+
+/* ── PROOF STRIP ──────────────────────────────────────────────────────────── */
+.lp-proof-strip {
+  display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center;
+  margin: 16px 0 0;
+  font-size: 12px; font-weight: 600; letter-spacing: .03em;
+  color: rgba(255,255,255,.65);
+}
+.lp-proof-strip span[role="listitem"] {
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px; padding: 3px 10px; white-space: nowrap;
+}
+.lp-proof-sep { color: rgba(255,255,255,.25); font-size: 11px; }
+
+/* ── DISTINCTION SECTION ──────────────────────────────────────────────────── */
+.lp-distinction-section {
+  padding: 32px 24px;
+  background: linear-gradient(135deg, rgba(124,156,255,.08) 0%, rgba(53,196,201,.06) 100%);
+  border-top: 1px solid rgba(255,255,255,.07);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.lp-distinction-inner {
+  max-width: 760px; margin: 0 auto;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; text-align: center;
+}
+.lp-distinction-pill {
+  display: inline-block;
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  border: 1px solid rgba(255,255,255,.15); border-radius: 20px;
+  padding: 3px 12px;
+}
+.lp-distinction-text {
+  font-size: 18px; font-weight: 500; line-height: 1.55;
+  color: rgba(255,255,255,.9); margin: 0;
+}
+.lp-distinction-text em { font-style: normal; color: #7c9cff; font-weight: 600; }
+
+/* ── PROJECT LINKS SECTION ────────────────────────────────────────────────── */
+.lp-links-section {
+  padding: 32px 24px 40px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.lp-links-inner {
+  max-width: 900px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+}
+.lp-link-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 8px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.13);
+  color: rgba(255,255,255,.8); font-size: 13px; font-weight: 500;
+  text-decoration: none; transition: background .15s, border-color .15s;
+}
+.lp-link-chip:hover, .lp-link-chip:focus-visible {
+  background: rgba(124,156,255,.15); border-color: rgba(124,156,255,.4);
+  color: #fff; outline: 2px solid #7c9cff; outline-offset: 2px;
+}
+
+/* ── FOOTER UPDATES ───────────────────────────────────────────────────────── */
+.footer { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 24px; }
+.footer-quote {
+  font-size: 13px; font-style: italic; color: rgba(255,255,255,.55);
+  text-align: center; max-width: 680px; margin: 0; line-height: 1.6;
+}
+.footer-nav {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: 6px; font-size: 12px;
+}
+.footer-nav a { color: rgba(255,255,255,.5); text-decoration: none; }
+.footer-nav a:hover, .footer-nav a:focus-visible {
+  color: #fff; text-decoration: underline; outline: 2px solid #7c9cff; outline-offset: 2px;
+}
+.footer-nav span[aria-hidden] { color: rgba(255,255,255,.2); }
+.footer-meta { font-size: 11px; color: rgba(255,255,255,.3); text-align: center; }
+
+@media (max-width: 600px) {
+  .lp-proof-strip { justify-content: flex-start; }
+  .lp-distinction-text { font-size: 15px; }
+  .lp-links-inner { flex-direction: column; align-items: center; }
+}
