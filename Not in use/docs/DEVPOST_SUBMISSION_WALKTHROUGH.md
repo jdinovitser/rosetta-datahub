@@ -20,7 +20,7 @@ Rosetta — the Semantic Consistency Agent for DataHub
 
 ## Field 2 — Elevator pitch / tagline (~200 char)
 ```
-A linter for meaning across your DataHub graph: it finds where two teams silently mean different things by the same metric, quantifies the blast radius, brokers a canonical definition, and writes it back.
+A linter for meaning across your DataHub graph: it finds where two teams silently mean different things by the same metric, quantifies the blast radius, brokers a canonical definition, and — in Connected Mode — writes it back.
 ```
 
 ## Field 3 — "About the project" (rich text; use these headings)
@@ -39,7 +39,7 @@ Rosetta runs a five-agent pipeline over DataHub metadata:
 On the demo dataset it surfaces 3 conflicts across 24 downstream assets, quantifies roughly $1,080 and 12 analyst-hours of avoidable rework, and visualizes the blast radius as an interactive force graph.
 
 **How we built it**
-Python. A dependency-free, deterministic detection core (tokenized similarity over metric names and SQL/definition text, with a pluggable embedding hook) so the whole thing is testable and reproducible offline. Read/write to DataHub via the acryl-datahub SDK (entity upsert, add term, set deprecation), with an optional MCP Server + Agent Context Kit path for the harvester. A Flask web app serves the themed, hosted demo, an interactive blast-radius graph, and JSON/CSV/Markdown/HTML export endpoints. 32 passing unit tests.
+Python. A dependency-free, deterministic detection core (tokenized similarity over metric names and SQL/definition text, with a pluggable embedding hook) so the whole thing is testable and reproducible offline. Read/write to DataHub via the acryl-datahub SDK (entity upsert, add term, set deprecation), with an optional MCP Server + Agent Context Kit path for the harvester. A Flask web app serves the themed, hosted demo, an interactive blast-radius graph, and JSON/CSV/Markdown/HTML export endpoints. 100 passing unit tests.
 
 **Challenges we ran into**
 Detecting semantic conflicts without a heavyweight ML dependency meant designing a deterministic scoring core that still captures intent, then walking DataHub lineage transitively so blast radius reflects the true downstream footprint rather than just direct neighbors.

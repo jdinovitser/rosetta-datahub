@@ -14,7 +14,7 @@ This guide explains how to submit the `detect-semantic-conflicts` skill to the o
 
 ## Pre-submission checklist
 
-- [ ] All 66+ tests pass: `pytest tests/ -q`
+- [ ] All 100 tests pass: `pytest tests/ -q`
 - [ ] Skill description file updated: `datahub-skill-contribution/detect-semantic-conflicts.md`
 - [ ] `DEMO_CHECKLIST.md` reviewed and accurate
 - [ ] `examples/input-manifest.json` covers all demo databases with SHA-256 checksums
@@ -44,7 +44,7 @@ This guide explains how to submit the `detect-semantic-conflicts` skill to the o
 | `datahub-skill-contribution/CONTRIBUTION_GUIDE.md` | This file |
 | `DEMO_CHECKLIST.md` | Demo recording sequence |
 | `rosetta/` | Full agent implementation |
-| `tests/test_rosetta.py` | 66+ tests including approval safety tests |
+| `tests/test_rosetta.py` | 100 tests including approval safety and post-write verification tests |
 | `examples/input-manifest.json` | Data provenance and checksums |
 
 ---

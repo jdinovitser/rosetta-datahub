@@ -1,6 +1,6 @@
 # Rosetta — Enterprise AI Data Intelligence
 
-A five-agent semantic consistency engine for DataHub. Finds where teams silently define the same metric differently, quantifies blast radius, brokers a canonical definition, and writes it back.
+A five-agent semantic consistency engine for DataHub. Finds where teams silently define the same metric differently, quantifies blast radius, brokers a canonical definition, and — in Connected Mode — writes it back and verifies each write persisted.
 
 ## How to run
 
@@ -69,7 +69,7 @@ docs/                  SETUP, DEMO_SCRIPT, DEPLOYMENT_GUIDE, etc.
 ## Tests
 
 ```
-pytest -q    # 32 passed
+pytest -q    # 100 passed
 ```
 
 ## User preferences

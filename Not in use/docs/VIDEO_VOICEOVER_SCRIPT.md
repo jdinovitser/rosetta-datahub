@@ -2,7 +2,7 @@
 
 Read this exactly. It is timed to land at ~2:48, leaving buffer under the 3:00 hard cap.
 Numbers here match the current build: **3 conflicts, 24 downstream assets, $1,080 and 12
-analyst-hours avoided, 32 passing tests.** Record at 1080p, set the YouTube video to **Public**.
+analyst-hours avoided, 100 passing tests.** Record at 1080p, set the YouTube video to **Public**.
 
 Legend: **[VO]** = what you say. *(SCREEN)* = what is on screen.
 
@@ -63,9 +63,9 @@ Legend: **[VO]** = what you say. *(SCREEN)* = what is on screen.
 
 ---
 
-## [2:15–2:40] The write-back loop — the part that matters
+## [2:15–2:40] The write plan — validated, then executed on approval
 **[VO]**
-> "On approval, Rosetta writes back: it upserts the canonical glossary term, links it to
+> "On approval, Rosetta generates a validated write plan — in Connected Mode it executes: upserts the canonical glossary term, links it to
 > all twelve affected assets, and deprecates the losing definition without deleting
 > history. The graph is now permanently smarter, and the next analyst, and the next
 > agent, inherit one agreed answer."
@@ -76,11 +76,11 @@ Legend: **[VO]** = what you say. *(SCREEN)* = what is on screen.
 
 ## [2:40–2:48] Proof and tagline
 **[VO]**
-> "Five agents, thirty-two passing tests, Apache 2.0, and it ships as a reusable DataHub
+> "Five agents, one hundred passing tests, Apache 2.0, and it ships as a reusable DataHub
 > Skill any agent can call. Rosetta doesn't just answer questions. It makes sure your
 > whole company is asking the same one."
 
-*(SCREEN: terminal shows `pytest -q` → 32 passed. Cut to the skill file, then an end card with the repo URL and "Built on DataHub".)*
+*(SCREEN: terminal shows `pytest -q` → 100 passed. Cut to the skill file, then an end card with the repo URL and "Built on DataHub".)*
 
 ---
 

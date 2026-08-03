@@ -4,8 +4,8 @@ Rosetta runs in two modes:
 
 | Mode | Needs | What it does |
 |---|---|---|
-| **Demo mode** (default) | Nothing but Python | Runs the whole 5-agent pipeline on bundled seed data. This is what the hosted demo URL serves. |
-| **Live mode** | A DataHub instance + token | Reads your real graph and writes canonical terms back. |
+| **Demo Mode** (default) | Nothing but Python | Runs the whole 5-agent pipeline on bundled seed data. Generates and validates the proposed write plan — no external catalog is modified. This is what the hosted demo URL serves. |
+| **Connected Mode** | A DataHub instance + token | Reads your real graph. After explicit human approval, executes the approved write plan and re-reads each entity to verify the write persisted. |
 
 You can win the hackathon demo with **Demo mode only** — no external accounts required. Live mode is for judges who want to point Rosetta at real metadata.
 
@@ -44,7 +44,7 @@ export DATAHUB_GMS_URL="http://localhost:8080"      # or your Cloud GMS URL
 export DATAHUB_GMS_TOKEN="<your personal access token>"
 
 python -m rosetta.orchestrator --report            # read-only scan of the live graph
-python -m rosetta.orchestrator --apply             # write canonical terms back
+python -m rosetta.orchestrator --apply             # execute approved write plan + verify (Connected Mode)
 ```
 When these env vars are set, the web app's **Read-only scan** button and `/api/scan` talk to your live instance automatically (the top-right badge switches to **LIVE DATAHUB**).
 
@@ -80,5 +80,5 @@ Rosetta's Harvester can pull context through DataHub's **MCP Server** instead of
 ## 5. Run the tests
 ```bash
 pip install pytest
-pytest -q          # 32 passed
+pytest -q          # 100 passed
 ```

@@ -4,7 +4,7 @@
 **Rosetta — the Semantic Consistency Agent for DataHub**
 
 ## Elevator pitch (one line)
-A linter for *meaning* across your DataHub graph: it finds where two teams silently mean different things by the same metric, quantifies the blast radius, brokers a canonical definition, and writes it back.
+A linter for *meaning* across your DataHub graph: it finds where two teams silently mean different things by the same metric, quantifies the blast radius, brokers a canonical definition, and — in Connected Mode — writes it back.
 
 ## Inspiration
 Talk-to-data agents fail silently when the same metric name has two definitions. Finance's "active user" is not marketing's "active user," and no dashboard warns you. A DataHub hackathon judge from Pinterest publicly called conflicting metric definitions across teams the unsolved problem behind trustworthy data agents. Rosetta attacks exactly that.
@@ -15,10 +15,10 @@ Rosetta runs a five-agent pipeline over DataHub metadata:
 2. **Conflict Detector** finds two failure modes: *silent contradictions* (same name, different computation) and *hidden synonyms* (different names, same computation) by comparing intent, not just text.
 3. **Blast-Radius Analyzer** walks lineage to count the downstream dashboards, models and tables at risk, and scores severity.
 4. **Reconciliation Broker** drafts one canonical definition and routes it to the real owners (pulled from DataHub ownership metadata) for approval.
-5. **Writer** upserts the agreed canonical GlossaryTerm back into DataHub, links it to every affected asset, and deprecates the losing definitions — a loop that makes the graph richer every run.
+5. **Writer** — **Demo Mode:** generates and validates the proposed DataHub write plan (upsert GlossaryTerm + attach assets + deprecate conflicts) without executing anything. **Connected Mode:** executes only after valid human approval tied to the exact SHA-256 plan hash, then re-reads every affected entity to verify the write persisted — making the graph permanently richer.
 
 ## How we built it
-Python. A dependency-free, deterministic detection core (tokenized Jaccard similarity over metric names + SQL/definition text, with a pluggable embedding hook) so the whole thing is testable and reproducible offline. Read/write to DataHub via the `acryl-datahub` SDK (`entities.upsert`, `add_term`, `set_deprecation`), with an optional MCP Server + Agent Context Kit path for the harvester. A Flask web app serves the themed, hosted demo and JSON/CSV/Markdown/HTML export endpoints. 32 passing unit tests.
+Python. A dependency-free, deterministic detection core (tokenized Jaccard similarity over metric names + SQL/definition text, with a pluggable embedding hook) so the whole thing is testable and reproducible offline. Read/write to DataHub via the `acryl-datahub` SDK (`entities.upsert`, `add_term`, `set_deprecation`), with an optional MCP Server + Agent Context Kit path for the harvester. A Flask web app serves the themed, hosted demo and JSON/CSV/Markdown/HTML export endpoints. 100 passing unit tests.
 
 ## What's in the box
 - Hosted, zero-config demo (click "Run the five-agent demo").

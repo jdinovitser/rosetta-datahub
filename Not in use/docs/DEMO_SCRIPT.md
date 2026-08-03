@@ -1,7 +1,7 @@
 # Rosetta — 3-Minute Demo Video Script
 
 Judges watch fast and may stop at 3:00. Hook in the first 20 seconds, show the
-write-back loop by 2:30, land the tagline.
+approval and write-plan loop by 2:30, land the tagline.
 
 ---
 
@@ -30,23 +30,25 @@ write-back loop by 2:30, land the tagline.
 > "Rosetta drafts a canonical definition from the highest-coverage variant, then
 > routes it to the actual owners it pulled from DataHub ownership metadata."
 
-*(Screen: Slack/PR message to finance + marketing owners. One clicks Approve.)*
+*(Screen: the proposed canonical definition and approvers list.)*
 
 > "A human approves. Nothing is silently overwritten."
 
-**[1:50–2:35] The write-back loop — the part that matters**
-> "On approval, Rosetta writes back: it upserts the canonical glossary term,
-> links it to all twelve affected assets, and deprecates the losing definition —
-> without deleting history."
+**[1:50–2:35] The write plan — validated and ready**
+> "On approval, Rosetta generates a machine-readable write plan: upsert the
+> canonical GlossaryTerm, link it to all twelve affected assets, deprecate the
+> losing definition. The plan is validated and shown in full — in Demo Mode,
+> nothing is executed against an external catalog."
 
-*(Screen: refresh DataHub. The canonical term now appears on every asset;
-the old finance term shows a Deprecated badge.)*
+*(Screen: the VALIDATED · NOT EXECUTED badge, the operations panel with URNs, the
+Copy/Download JSON buttons.)*
 
-> "The graph is now permanently smarter. The next analyst, and the next agent,
-> inherit one agreed answer."
+> "In Connected Mode, Rosetta executes this exact plan — and then re-reads every
+> entity from DataHub to confirm the state was applied correctly, not just that
+> the API accepted the request."
 
 **[2:35–3:00] Proof + tagline**
-> "It's a five-agent pipeline, thirty-two passing tests, Apache 2.0, and it ships
+> "It's a five-agent pipeline, one hundred passing tests, Apache 2.0, and it ships
 > as a reusable DataHub Skill any agent can call."
 
 *(Screen: `pytest` green; the skill file.)*

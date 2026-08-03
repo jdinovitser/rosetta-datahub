@@ -18,7 +18,7 @@ rosetta/
 ├── skills/detect-semantic-conflicts.md   reusable DataHub Skill (OSS bonus)
 ├── assets/                      logo, icon, architecture diagram, UI screenshot
 ├── docs/                        SETUP, SUBMISSION, DEMO scripts, checklists
-├── tests/                       32 passing unit tests
+├── tests/                       100 passing unit tests
 ├── LICENSE                      Apache-2.0
 ├── Dockerfile / render.yaml / Procfile / .replit   one-click deploy configs
 └── requirements*.txt / pyproject.toml
