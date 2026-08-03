@@ -6,17 +6,18 @@ approval and write-plan loop by 2:30, land the tagline.
 ---
 
 **[0:00–0:20] The hook — the silent failure**
-> "Here are two executive dashboards. Same company, same month. Finance says we
-> have 2.1 million monthly active users. Marketing says 3.4 million. Both are
-> 'correct.' Both are wrong to somebody. This is the silent failure mode that
-> breaks every talk-to-data agent — and nobody has fixed it in open source."
+>Here are two executive dashboards. Same company, same month.
+>Finance reports 2.1 million monthly active users. Marketing reports 3.4 million.
+>Both numbers are technically correct based on their definitions. But they cannot both represent the same business metric.
+>This semantic drift is the silent failure mode behind unreliable analytics and AI agents.
+>
 
 *(Screen: two dashboards side by side with different MAU numbers.)*
 
 **[0:20–1:05] The scan**
-> "Rosetta is a linter for meaning. It reads your entire DataHub graph — glossary
-> terms, column descriptions, ownership, and the actual SQL behind each metric —
-> via the DataHub SDK."
+"Rosetta is a linter for meaning. 
+It analyzes your DataHub metadata graph — glossary terms, ownership, lineage, and metric logic — 
+and finds where teams have different definitions hiding behind the same names."
 
 *(Screen: run `python -m rosetta.orchestrator --report`. Graph view lights up;
 "active_user" forks into two definitions across finance and marketing, flagged red.)*
@@ -53,7 +54,8 @@ Copy/Download JSON buttons.)*
 
 *(Screen: `pytest` green; the skill file.)*
 
-> "Rosetta doesn't just answer questions. It makes sure your whole company is
-> asking the same one."
+Because AI agents are only as reliable as the metadata behind them. 
+Rosetta doesn't just answer questions. 
+It makes sure your whole company is asking the same one.
 
 *(End card: repo URL + "Built on DataHub".)*
