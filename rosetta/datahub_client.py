@@ -1,5 +1,7 @@
 """
-Thin wrapper around DataHub's Python SDK + MCP server.
+Thin wrapper around DataHub's Python SDK (acryl-datahub).
+MCP Server / Agent Context Kit is a planned optional path for the Harvester;
+it is not yet implemented — the current code uses the SDK directly.
 
 Rosetta reads context (glossary terms, column descriptions, lineage, ownership,
 historical SQL) and WRITES BACK canonical glossary terms, deprecation tags, and

@@ -1,7 +1,7 @@
 """
 Impact estimator: turns a raw blast radius into a "so what" the judges feel.
 
-Winning hackathon demos don't stop at "found 3 conflicts" -- they quantify the
+Winning hackathon demos don't stop at "found N conflicts" -- they quantify the
 cost of NOT fixing them. Rosetta estimates:
   - decision surface: how many dashboards/models a wrong number silently feeds
   - review hours saved: hand-reconciling a metric across N assets is ~0.5h each

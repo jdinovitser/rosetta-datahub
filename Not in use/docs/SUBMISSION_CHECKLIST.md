@@ -13,7 +13,7 @@
 
 ## The six judging criteria — how Rosetta scores
 1. **Use of DataHub** — reads glossary/lineage/ownership; in Connected Mode executes approved write plans (upsert, add_term, deprecate) and verifies each write persisted.
-2. **Technical Execution** — 5-agent pipeline, 26 tests, hosted app, 4 export formats.
+2. **Technical Execution** — 5-agent pipeline, 100 tests, hosted app, 4 export formats.
 3. **Originality** — targets conflicting metric definitions, the pain a judge called unsolved; not a re-run of prior winners.
 4. **Real-World Usefulness** — silent metric contradictions are a top cause of broken trust in data.
 5. **Submission Quality** — themed UI, diagram, samples, docs, video.

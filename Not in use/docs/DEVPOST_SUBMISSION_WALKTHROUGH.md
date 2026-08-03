@@ -36,10 +36,10 @@ Rosetta runs a five-agent pipeline over DataHub metadata:
 4. Reconciliation Broker drafts one canonical definition, produces a before/after diff, and routes it to the real owners (pulled from DataHub ownership metadata) for approval.
 5. Writer upserts the agreed canonical GlossaryTerm back into DataHub, links it to every affected asset, and deprecates the losing definitions, a loop that makes the graph richer every run.
 
-On the demo dataset it surfaces 3 conflicts across 24 downstream assets, quantifies roughly $1,080 and 12 analyst-hours of avoidable rework, and visualizes the blast radius as an interactive force graph.
+On the healthcare demo dataset it surfaces 5 conflicts across 585 downstream assets, with $28.48M in affected transaction value in the sample data, and visualizes the blast radius as an interactive force graph.
 
 **How we built it**
-Python. A dependency-free, deterministic detection core (tokenized similarity over metric names and SQL/definition text, with a pluggable embedding hook) so the whole thing is testable and reproducible offline. Read/write to DataHub via the acryl-datahub SDK (entity upsert, add term, set deprecation), with an optional MCP Server + Agent Context Kit path for the harvester. A Flask web app serves the themed, hosted demo, an interactive blast-radius graph, and JSON/CSV/Markdown/HTML export endpoints. 100 passing unit tests.
+Python. A dependency-free, deterministic detection core (tokenized similarity over metric names and SQL/definition text, with a pluggable embedding hook) so the whole thing is testable and reproducible offline. Read/write to DataHub via the acryl-datahub SDK (entity upsert, add term, set deprecation). A Flask web app serves the themed, hosted demo, an interactive blast-radius graph, and JSON/CSV/Markdown/HTML export endpoints. 100 passing unit tests. (MCP Server + Agent Context Kit harvester path is designed but not yet implemented.)
 
 **Challenges we ran into**
 Detecting semantic conflicts without a heavyweight ML dependency meant designing a deterministic scoring core that still captures intent, then walking DataHub lineage transitively so blast radius reflects the true downstream footprint rather than just direct neighbors.
@@ -55,7 +55,7 @@ Real embedding-based intent matching, PR/Slack approval gating for the broker, a
 
 ## Field 4 — "Built With" tags (comma-separated)
 ```
-python, flask, acryl-datahub, datahub-mcp-server, agent-context-kit, glossary-terms, lineage-api, force-graph
+python, flask, acryl-datahub, glossary-terms, lineage-api, force-graph
 ```
 
 ## Field 5 — Try it out links

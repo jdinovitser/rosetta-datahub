@@ -1,8 +1,8 @@
 # Rosetta — Word-for-Word Video Voiceover Script (under 3:00)
 
 Read this exactly. It is timed to land at ~2:48, leaving buffer under the 3:00 hard cap.
-Numbers here match the current build: **3 conflicts, 24 downstream assets, $1,080 and 12
-analyst-hours avoided, 100 passing tests.** Record at 1080p, set the YouTube video to **Public**.
+Numbers here match the current build: **5 conflicts, 585 downstream assets, $28.48M
+affected transaction value in the healthcare sample dataset, 100 passing tests.** Record at 1080p, set the YouTube video to **Public**.
 
 Legend: **[VO]** = what you say. *(SCREEN)* = what is on screen.
 
@@ -32,21 +32,20 @@ Legend: **[VO]** = what you say. *(SCREEN)* = what is on screen.
 
 ## [0:40–1:20] The scan and the blast radius
 **[VO]**
-> "One click runs a five-agent pipeline. It found three conflicts. The worst:
-> 'active user' is defined two different ways, and that fork feeds twelve downstream
-> assets, seven dashboards and one machine-learning model. Rosetta ranks by blast
-> radius, because a conflict on your board deck matters more than one on a scratch
-> table."
+> "One click runs a five-agent pipeline. It found five conflicts. The worst:
+> 'billing amount' is defined two different ways across twelve downstream assets.
+> Rosetta ranks by blast radius, because a conflict on your board deck matters more
+> than one on a scratch table."
 
-*(SCREEN: click **🏥 Healthcare Scan** in the top nav. Progress dots animate: DISCOVER · DETECT · IMPACT · RECONCILE · WRITE. Counters animate to 3 Conflicts, 1 High, 24 Assets, and the green **$1,080 Cost Avoided** stat. The interactive blast-radius graph draws itself; the red ML-model node pulses.)*
+*(SCREEN: click **🏥 Healthcare Scan** in the top nav. Progress dots animate: DISCOVER · DETECT · IMPACT · RECONCILE · WRITE. Counters animate to 5 Conflicts, 1 Critical, 585 Assets. The interactive blast-radius graph draws itself; the red ML-model node pulses.)*
 
 ---
 
 ## [1:20–1:45] The dollars
 **[VO]**
 > "And it quantifies the damage. Across the portfolio, these conflicts put
-> twenty-four downstream assets at risk and about one thousand eighty dollars and
-> twelve analyst-hours of avoidable rework on the table. That's the language a
+> five hundred eighty-five downstream assets at risk and $28.48 million in
+> affected transaction value in the healthcare sample dataset. That's the language a
 > platform team actually acts on."
 
 *(SCREEN: hover the risk banner on the top conflict showing the cost-if-unreconciled line.)*
@@ -63,9 +62,11 @@ Legend: **[VO]** = what you say. *(SCREEN)* = what is on screen.
 
 ---
 
-## [2:15–2:40] The write plan — validated, then executed on approval
+## [2:15–2:40] The write plan — validated; Demo Mode: NOT EXECUTED
 **[VO]**
-> "On approval, Rosetta generates a validated write plan — in Connected Mode it executes: upserts the canonical glossary term, links it to
+> "On approval, Rosetta generates a validated write plan. In Demo Mode, the plan is
+> shown and validated but never executed — the badge reads VALIDATED · NOT EXECUTED.
+> In Connected Mode it executes: upserts the canonical glossary term, links it to
 > all twelve affected assets, and deprecates the losing definition without deleting
 > history. The graph is now permanently smarter, and the next analyst, and the next
 > agent, inherit one agreed answer."

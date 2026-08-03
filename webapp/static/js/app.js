@@ -226,7 +226,7 @@ function buildStep1(data) {
   const domMatch = detail.match(/(\d+)\s+domain/);
   const ndefs = defMatch ? defMatch[1] : "12";
   const ndoms = domMatch ? domMatch[1] : "6";
-  const nassets = (report.summary || {}).assets_at_risk || 63;
+  const nassets = (report.summary || {}).assets_at_risk || 0;
 
   return `
   <div class="agent-step-inner">

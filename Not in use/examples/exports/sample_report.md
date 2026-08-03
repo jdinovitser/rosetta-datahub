@@ -4,11 +4,11 @@ _Generated at 2026-07-21T15:37:57.478432+00:00_
 
 ## Summary
 
-- **Total conflicts:** 3
-- **Critical:** 0
-- **High:** 1
-- **Downstream assets at risk:** 24
-- **Est. manual reconciliation cost avoided:** $1,080 (12.0 analyst-hours)
+- **Total conflicts:** 5
+- **Critical:** 1
+- **High:** 2
+- **Downstream assets at risk:** 585
+- **Est. affected transaction value:** $28.48M (healthcare sample dataset)
 
 ## Conflicts
 

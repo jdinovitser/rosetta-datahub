@@ -16,13 +16,13 @@ approval and write-plan loop by 2:30, land the tagline.
 **[0:20–1:05] The scan**
 > "Rosetta is a linter for meaning. It reads your entire DataHub graph — glossary
 > terms, column descriptions, ownership, and the actual SQL behind each metric —
-> through the MCP Server."
+> via the DataHub SDK."
 
 *(Screen: run `python -m rosetta.orchestrator --report`. Graph view lights up;
 "active_user" forks into two definitions across finance and marketing, flagged red.)*
 
-> "It found three conflicts. The worst: 'active user' is defined two different
-> ways across twelve downstream assets and one ML feature table. Ranked by
+> "It found five conflicts. The worst: 'billing amount' is defined two different
+> ways across twelve downstream assets. Ranked by
 > blast radius, because a conflict on your board deck matters more than one on a
 > scratch table."
 

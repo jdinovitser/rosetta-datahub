@@ -13,7 +13,7 @@ A hospital system. Three teams. One metric. Three incompatible definitions.
 No errors. No alerts. Every pipeline green.
 
 **Rosetta finds all five conflicts in seconds. Traces every poisoned downstream asset.
-Proposes the fix. Waits for a human to approve. Then writes the truth back to DataHub.**
+Proposes the fix. Waits for a human to approve. Then — in Connected Mode — writes the truth back to DataHub.**
 
 ---
 
@@ -55,7 +55,7 @@ Proposes the fix. Waits for a human to approve. Then writes the truth back to Da
 |---|-----|--------|----|
 | **0:38** | *"Agent one — the Harvester."* | **HARVESTER · AGENT 1 OF 5** chip. Title: **"Discover the meaning."** Subtitle: "Rosetta reads every metric definition in your DataHub graph." | Watch the terminal tick. |
 | **0:41** | *"It reads everything — glossary terms, dataset schemas, lineage edges, ownership, SQL logic. Every way every team has ever defined a metric."* | Terminal lines tick done: ✓ DataHub glossary terms loaded · ✓ Metric owners identified · ✓ Cross-domain lineage mapped · ✓ SQL logic extracted for comparison | Point to each line as it ticks. |
-| **0:48** | *"Nine metric definitions. Three business domains. Sixty-three downstream assets — all mapped. Before a single conflict has been found."* | Three stats count up: **Metric Definitions · Business Domains · Downstream Assets** | Let the numbers land. |
+| **0:48** | *"Ten metric definitions. Three clinical and business teams. Five hundred eighty-five downstream assets mapped across the lineage graph. Before a single conflict has been found."* | Three stats count up: **Metric Definitions · Business Domains · Downstream Assets** | Let the numbers land. |
 | **0:54** | *"Rosetta understands how your organisation defines its data — before anyone knows the definitions disagree."* | Quote appears: *"Rosetta starts by understanding how your organisation defines its data — before anyone knows the definitions disagree."* | Click **Next →** |
 
 ---
@@ -112,6 +112,7 @@ Proposes the fix. Waits for a human to approve. Then writes the truth back to Da
 | ⏱ | SAY | SCREEN | DO |
 |---|-----|--------|----|
 | **2:38** | *"Agent five — the Writer."* | **WRITER · AGENT 5 OF 5** chip. Title: **"Make the graph smarter."** | — |
+| **2:39** | *"This is Demo Mode. The plan is validated — but not executed. That badge tells you exactly what Rosetta would do if you connected a live DataHub and clicked Approve."* | **VALIDATED · NOT EXECUTED** status badge visible below the write plan. | Point directly to the badge. Pause. |
 | **2:41** | *"Canonical glossary term — ready."* | ✓ **Canonical glossary term ready to create** | Point. |
 | **2:43** | *"Twelve downstream assets — identified for linking."* | ✓ **Downstream assets identified** | Point. |
 | **2:45** | *"Five conflicting definitions — flagged for retirement."* | ✓ **Conflicting definitions flagged for retirement** | Point. |

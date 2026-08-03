@@ -18,16 +18,16 @@ Rosetta runs a five-agent pipeline over DataHub metadata:
 5. **Writer** — **Demo Mode:** generates and validates the proposed DataHub write plan (upsert GlossaryTerm + attach assets + deprecate conflicts) without executing anything. **Connected Mode:** executes only after valid human approval tied to the exact SHA-256 plan hash, then re-reads every affected entity to verify the write persisted — making the graph permanently richer.
 
 ## How we built it
-Python. A dependency-free, deterministic detection core (tokenized Jaccard similarity over metric names + SQL/definition text, with a pluggable embedding hook) so the whole thing is testable and reproducible offline. Read/write to DataHub via the `acryl-datahub` SDK (`entities.upsert`, `add_term`, `set_deprecation`), with an optional MCP Server + Agent Context Kit path for the harvester. A Flask web app serves the themed, hosted demo and JSON/CSV/Markdown/HTML export endpoints. 100 passing unit tests.
+Python. A dependency-free, deterministic detection core (tokenized Jaccard similarity over metric names + SQL/definition text, with a pluggable embedding hook) so the whole thing is testable and reproducible offline. Read/write to DataHub via the `acryl-datahub` SDK (`entities.upsert`, `add_term`, `set_deprecation`). A Flask web app serves the themed, hosted demo and JSON/CSV/Markdown/HTML export endpoints. 100 passing unit tests. (MCP Server + Agent Context Kit harvester path is designed but not yet implemented.)
 
 ## What's in the box
 - Hosted, zero-config demo (click "Run the five-agent demo").
 - CLI: `--demo`, `--report`, `--apply`, `--export {json,csv,md,html,all}`.
-- Reusable DataHub Skill `detect-semantic-conflicts` (OSS contribution).
+- Reusable DataHub Skill `detect-semantic-conflicts` (prepared as an OSS contribution — PR not yet submitted).
 - `examples/` with sample conflict report, reconciled term, and exported artifacts in every format.
 
 ## Technologies
-Python, Flask, acryl-datahub SDK, DataHub MCP Server / Agent Context Kit, DataHub GlossaryTerm & Lineage APIs.
+Python, Flask, acryl-datahub SDK, DataHub GlossaryTerm & Lineage APIs.
 
 ## What's next
 Real embedding-based intent matching, PR/Slack approval gating, scheduled scans that track semantic drift over time.
