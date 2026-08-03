@@ -1,0 +1,354 @@
+{
+  "rosetta_connected_mode_evidence": true,
+  "schema_version": "1.0",
+  "run_id": "2026-08-03T14:15:16+00:00",
+  "runtime": {
+    "python": "3.10.19",
+    "acryl_datahub": "1.6.0.15",
+    "mode": "OFFLINE",
+    "gms_url_redacted": null,
+    "token_set": false
+  },
+  "phase_a": {
+    "phase": "A",
+    "status": "COMPLETE",
+    "a1_definitions_loaded": {
+      "count": 16,
+      "domains": [
+        "customer_success",
+        "data_science",
+        "finance",
+        "marketing",
+        "product",
+        "sales"
+      ]
+    },
+    "a2_conflicts_detected": [
+      {
+        "metric": "active_user",
+        "kind": "silent_contradiction",
+        "severity": "high",
+        "confidence": 0.933,
+        "blast_radius": 8
+      },
+      {
+        "metric": "arr",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 0.952,
+        "blast_radius": 6
+      },
+      {
+        "metric": "arr",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 0.952,
+        "blast_radius": 6
+      },
+      {
+        "metric": "arr",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 0.952,
+        "blast_radius": 6
+      },
+      {
+        "metric": "arr",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 0.952,
+        "blast_radius": 6
+      },
+      {
+        "metric": "conversion_rate",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 0.92,
+        "blast_radius": 6
+      },
+      {
+        "metric": "conversion_rate",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 0.92,
+        "blast_radius": 6
+      },
+      {
+        "metric": "conversion_rate",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 0.92,
+        "blast_radius": 6
+      },
+      {
+        "metric": "conversion_rate",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 0.92,
+        "blast_radius": 6
+      },
+      {
+        "metric": "customer_ltv",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 1.0,
+        "blast_radius": 4
+      },
+      {
+        "metric": "revenue",
+        "kind": "silent_contradiction",
+        "severity": "medium",
+        "confidence": 0.921,
+        "blast_radius": 4
+      },
+      {
+        "metric": "customer_churn~attrition",
+        "kind": "hidden_synonym",
+        "severity": "medium",
+        "confidence": 0.808,
+        "blast_radius": 3
+      }
+    ],
+    "a3_scenario_selected": {
+      "metric": "active_user",
+      "kind": "silent_contradiction",
+      "severity": "high",
+      "blast_radius": 8,
+      "conflicting_terms_before": [
+        {
+          "term_urn": "urn:li:glossaryTerm:finance.active_user",
+          "domain": "finance",
+          "definition_text": "Users who completed at least one paid transaction in the trailing 30 days.",
+          "sql_logic": "COUNT(DISTINCT user_id) WHERE txn_amount > 0 AND event_date >= CURRENT_DATE - 30",
+          "source_urns": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+            "urn:li:dashboard:(looker,fin_exec_overview)",
+            "urn:li:dashboard:(looker,fin_board_pack)"
+          ]
+        },
+        {
+          "term_urn": "urn:li:glossaryTerm:marketing.active_user",
+          "domain": "marketing",
+          "definition_text": "Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline.",
+          "sql_logic": "COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false",
+          "source_urns": [
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+            "urn:li:dashboard:(looker,growth_weekly)",
+            "urn:li:dashboard:(looker,campaign_attribution)",
+            "urn:li:dashboard:(tableau,cmo_review)",
+            "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+          ]
+        }
+      ]
+    },
+    "a4_proposal": {
+      "term_id": "active_user",
+      "display_name": "Monthly Active Users",
+      "canonical_definition": "CANONICAL DEFINITION of 'Monthly Active Users'. Base (from marketing, highest coverage): Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline. Reconciliation note: 2 teams defined this differently. Agreed computation: COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false. Conflicting variants from finance are deprecated and mapped here.",
+      "affected_assets": [
+        "urn:li:dashboard:(looker,campaign_attribution)",
+        "urn:li:dashboard:(looker,fin_board_pack)",
+        "urn:li:dashboard:(looker,fin_exec_overview)",
+        "urn:li:dashboard:(looker,growth_weekly)",
+        "urn:li:dashboard:(tableau,cmo_review)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+      ],
+      "deprecated_terms": [
+        "urn:li:glossaryTerm:finance.active_user"
+      ],
+      "approvers": [
+        "urn:li:corpGroup:finance-analytics",
+        "urn:li:corpGroup:growth-marketing"
+      ]
+    },
+    "a5_plan_hash": {
+      "plan_id": "db791856c9b9c944",
+      "algorithm": "SHA-256 of (term_id|canonical_definition|sorted_assets|sorted_deprecated), first 16 hex chars",
+      "preimage_components": {
+        "term_id": "active_user",
+        "canonical_definition": "CANONICAL DEFINITION of 'Monthly Active Users'. Base (from marketing, highest co\u2026",
+        "affected_assets_sorted": [
+          "urn:li:dashboard:(looker,campaign_attribution)",
+          "urn:li:dashboard:(looker,fin_board_pack)",
+          "urn:li:dashboard:(looker,fin_exec_overview)",
+          "urn:li:dashboard:(looker,growth_weekly)",
+          "urn:li:dashboard:(tableau,cmo_review)",
+          "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+          "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+          "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)"
+        ],
+        "deprecated_terms_sorted": [
+          "urn:li:glossaryTerm:finance.active_user"
+        ]
+      },
+      "recomputed_hash": "db791856c9b9c944",
+      "hash_verified": true
+    },
+    "a6_approval_token": {
+      "plan_id": "db791856c9b9c944",
+      "conflict_id": "active_user",
+      "approved_at": "2026-08-03T14:15:16+00:00",
+      "mode": "live",
+      "token_valid": true
+    },
+    "a7_write_plan": {
+      "mode": "demo",
+      "status": "validated_not_executed",
+      "planId": "db791856c9b9c944",
+      "metric": "Monthly Active Users",
+      "approval": {
+        "required": true,
+        "approved": true,
+        "approvedAt": null
+      },
+      "operations": [
+        {
+          "sequence": 1,
+          "action": "upsert_glossary_term",
+          "targetEntityType": "GlossaryTerm",
+          "targetUrn": "urn:li:glossaryTerm:active_user",
+          "payload": {
+            "name": "Monthly Active Users",
+            "definition": "CANONICAL DEFINITION of 'Monthly Active Users'. Base (from marketing, highest coverage): Any user with a session or app open in the last 30 days, bots excluded upstream by the safety pipeline. Reconciliation note: 2 teams defined this differently. Agreed computation: COUNT(DISTINCT user_id) WHERE session_start >= CURRENT_DATE - 30 AND is_bot = false. Conflicting variants from finance are deprecated and mapped here.",
+            "termSource": "rosetta-canonical"
+          },
+          "reason": "Establish a single canonical meaning for 'Monthly Active Users' agreed across all teams.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        },
+        {
+          "sequence": 2,
+          "action": "attach_term_to_asset",
+          "targetEntityType": "Dataset",
+          "targetUrn": "urn:li:dashboard:(looker,campaign_attribution)",
+          "payload": {
+            "termUrn": "urn:li:glossaryTerm:active_user"
+          },
+          "reason": "Associate the canonical 'Monthly Active Users' term with this asset to propagate consistent meaning.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        },
+        {
+          "sequence": 3,
+          "action": "attach_term_to_asset",
+          "targetEntityType": "Dataset",
+          "targetUrn": "urn:li:dashboard:(looker,fin_board_pack)",
+          "payload": {
+            "termUrn": "urn:li:glossaryTerm:active_user"
+          },
+          "reason": "Associate the canonical 'Monthly Active Users' term with this asset to propagate consistent meaning.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        },
+        {
+          "sequence": 4,
+          "action": "attach_term_to_asset",
+          "targetEntityType": "Dataset",
+          "targetUrn": "urn:li:dashboard:(looker,fin_exec_overview)",
+          "payload": {
+            "termUrn": "urn:li:glossaryTerm:active_user"
+          },
+          "reason": "Associate the canonical 'Monthly Active Users' term with this asset to propagate consistent meaning.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        },
+        {
+          "sequence": 5,
+          "action": "attach_term_to_asset",
+          "targetEntityType": "Dataset",
+          "targetUrn": "urn:li:dashboard:(looker,growth_weekly)",
+          "payload": {
+            "termUrn": "urn:li:glossaryTerm:active_user"
+          },
+          "reason": "Associate the canonical 'Monthly Active Users' term with this asset to propagate consistent meaning.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        },
+        {
+          "sequence": 6,
+          "action": "attach_term_to_asset",
+          "targetEntityType": "Dataset",
+          "targetUrn": "urn:li:dashboard:(tableau,cmo_review)",
+          "payload": {
+            "termUrn": "urn:li:glossaryTerm:active_user"
+          },
+          "reason": "Associate the canonical 'Monthly Active Users' term with this asset to propagate consistent meaning.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        },
+        {
+          "sequence": 7,
+          "action": "attach_term_to_asset",
+          "targetEntityType": "Dataset",
+          "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,fin.mart.mau_revenue,PROD)",
+          "payload": {
+            "termUrn": "urn:li:glossaryTerm:active_user"
+          },
+          "reason": "Associate the canonical 'Monthly Active Users' term with this asset to propagate consistent meaning.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        },
+        {
+          "sequence": 8,
+          "action": "attach_term_to_asset",
+          "targetEntityType": "Dataset",
+          "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,mkt.mart.mau_sessions,PROD)",
+          "payload": {
+            "termUrn": "urn:li:glossaryTerm:active_user"
+          },
+          "reason": "Associate the canonical 'Monthly Active Users' term with this asset to propagate consistent meaning.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        },
+        {
+          "sequence": 9,
+          "action": "attach_term_to_asset",
+          "targetEntityType": "Dataset",
+          "targetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,ml.features.user_engagement,PROD)",
+          "payload": {
+            "termUrn": "urn:li:glossaryTerm:active_user"
+          },
+          "reason": "Associate the canonical 'Monthly Active Users' term with this asset to propagate consistent meaning.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        },
+        {
+          "sequence": 10,
+          "action": "deprecate_term",
+          "targetEntityType": "GlossaryTerm",
+          "targetUrn": "urn:li:glossaryTerm:finance.active_user",
+          "payload": {
+            "deprecated": true,
+            "deprecationNote": "Superseded by canonical term urn:li:glossaryTerm:active_user (reconciled by Rosetta)."
+          },
+          "reason": "Retire conflicting variant. The canonical term 'Monthly Active Users' takes precedence.",
+          "validationStatus": "passed",
+          "executionStatus": "not_executed"
+        }
+      ],
+      "evidence": {
+        "affectedAssets": 8,
+        "deprecatedTerms": 1,
+        "approvers": [
+          "urn:li:corpGroup:finance-analytics",
+          "urn:li:corpGroup:growth-marketing"
+        ]
+      }
+    }
+  },
+  "phase_b": {
+    "phase": "B",
+    "status": "NOT_ATTEMPTED",
+    "reason": "DATAHUB_GMS_URL is not set. Phase B requires a running DataHub instance. See CONNECTED_MODE_EVIDENCE.md for setup instructions and expected output.",
+    "blocker_detail": "This Replit environment has Docker available (v27.5.1) and 254 GB disk on /dev/vdf, but only 5 GB RAM available. DataHub quickstart requires a minimum of 8 GB RAM for its full stack (GMS + Elasticsearch + Kafka + MySQL + Neo4j). A judge with 16+ GB RAM can reproduce the full connected run using the commands in CONNECTED_MODE_EVIDENCE.md.",
+    "reproduction_commands": [
+      "pip install acryl-datahub",
+      "datahub docker quickstart",
+      "# wait ~3 minutes for all services to be healthy",
+      "DATAHUB_GMS_URL=http://localhost:8080 python scripts/generate_connected_mode_evidence.py"
+    ]
+  },
+  "overall_status": "PHASE_A_ONLY"
+}

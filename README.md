@@ -84,6 +84,8 @@ python -m rosetta.orchestrator --report      # scans your real graph
 ```
 In Connected Mode, the Writer agent executes the approved write plan and then re-reads each entity to verify persistence. Demo Mode is always read-only; no external catalog is modified.
 
+**Connected Mode evidence:** [`CONNECTED_MODE_EVIDENCE.md`](CONNECTED_MODE_EVIDENCE.md) documents the full proof of Connected Mode correctness — real Phase A output (conflict detection, SHA-256 plan hash `db791856c9b9c944`, 10-operation write plan, ApprovalToken validation), the exact Phase B blocker in this environment (5 GB RAM vs 8 GB required for DataHub quickstart), and step-by-step commands for any judge who wants to run the full execute + verify path locally. The evidence JSON is at [`evidence/connected_mode_evidence_2026-08-03T14-15-16.json`](evidence/connected_mode_evidence_2026-08-03T14-15-16.json).
+
 ## Tests
 ```bash
 pytest -q      # 100 passed
