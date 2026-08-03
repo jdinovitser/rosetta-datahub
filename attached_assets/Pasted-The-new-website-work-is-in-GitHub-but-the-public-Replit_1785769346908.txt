@@ -1,0 +1,49 @@
+The new website work is in GitHub, but the public Replit URL still appears to serve the older homepage. Complete and verify the deployment.
+
+1. Deploy the latest main branch to:
+   https://rosetta-datahub.replit.app/
+
+2. After deployment, open the public URL in a fresh session and confirm that it visibly contains:
+   - Public demo: deterministic Demo Mode, no DataHub credentials required.
+   - the judge-facing proof strip
+   - the current verified test count
+   - Demo Mode: VALIDATED · NOT EXECUTED
+   - Connected Mode approval and post-write verification language
+   - the corrected healthcare and retail provenance labels
+   - links to GitHub, architecture, tests, and Connected Mode evidence
+
+3. Fix the opening copy so it does not imply that Demo Mode writes to DataHub:
+   Rosetta detects conflicting metric definitions, traces their downstream impact through DataHub lineage, and prepares a human-approved remediation plan. In Connected Mode, approved plans can be executed and verified through metadata read-back.
+
+4. Audit the public HTML and JSON exports for duplicate conflicts. Canonicalize each definition pair before output so A-versus-B and B-versus-A are treated as one finding. Ensure the same logical conflict is never repeated.
+
+5. Add the selected scenario and provenance to every export:
+   - Healthcare: Official hackathon data
+   - Retail: Supplementary scenario
+
+6. Make the website, JSON export, HTML export, README, and Devpost claims consistent. Explain which scenario produces each headline metric.
+
+7. Replace:
+   Rosetta can write the canonical GlossaryTerm to DataHub automatically.
+   With:
+   In Connected Mode, Rosetta can execute a human-approved remediation plan and verify the resulting metadata where supported.
+
+8. Add tests proving:
+   - duplicate definition pairs are deduplicated
+   - reversed pairs are treated as the same conflict
+   - scenario provenance appears in every export
+   - Demo Mode never claims execution
+   - Connected Mode claims verification only after successful read-back
+
+9. Run the full test suite and report the exact count.
+
+10. Do not report completion until the public URL, public JSON export, and public HTML export all show the corrected deployed version.
+
+Report:
+- deployment commit hash
+- deployment time
+- final test count
+- final conflict count per scenario
+- final assets-at-risk count per scenario
+- duplicate findings removed
+- exact public text verified

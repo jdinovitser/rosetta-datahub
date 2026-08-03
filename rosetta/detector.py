@@ -143,8 +143,13 @@ def detect_conflicts(
 ) -> list[Conflict]:
     """Return all detected semantic conflicts, ranked by severity."""
     conflicts: list[Conflict] = []
+    seen_pairs: set[frozenset] = set()
 
     for d1, d2 in combinations(definitions, 2):
+        pair_key = frozenset([d1.term_urn, d2.term_urn])
+        if pair_key in seen_pairs:
+            continue
+        seen_pairs.add(pair_key)
         nsim = name_similarity(d1, d2)
         lsim = logic_similarity(d1, d2)
 

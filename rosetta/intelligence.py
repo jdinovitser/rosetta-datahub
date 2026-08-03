@@ -136,7 +136,7 @@ def generate_ai_explanation(conflict_dict: dict) -> dict:
         rec = (
             f"Escalate immediately: align {' and '.join(domains)} leadership on a single "
             f"canonical definition for '{friendly_name}'. Freeze dependent pipelines until "
-            f"resolved. Rosetta can write the canonical GlossaryTerm to DataHub automatically."
+            f"resolved. In Connected Mode, Rosetta can execute a human-approved remediation plan and verify the resulting metadata where supported."
         )
     elif severity == "high":
         rec = (

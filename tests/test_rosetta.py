@@ -1401,3 +1401,84 @@ def test_verify_caps_asset_sample():
         f"Verification read {dh.read_asset_term_urns.call_count} assets; "
         f"must cap at {_VERIFY_ASSET_SAMPLE}"
     )
+
+
+# ---------- deduplication & provenance tests ----------
+
+def test_detect_conflicts_deduplicates_identical_pairs():
+    """Passing the same definition twice must not double-count any conflict."""
+    from rosetta.healthcare_source import HealthcareDataSource
+    from rosetta.detector import detect_conflicts
+    ds = HealthcareDataSource()
+    defs = ds.harvest_metric_definitions()
+    # Append first definition again — creates a duplicate term_urn in the input
+    defs_with_dup = defs + [defs[0]]
+    c_clean = detect_conflicts(defs)
+    c_duped = detect_conflicts(defs_with_dup)
+    assert len(c_duped) == len(c_clean), (
+        f"Duplicate definition in input inflated conflict count: "
+        f"{len(c_clean)} → {len(c_duped)}"
+    )
+
+
+def test_detect_conflicts_reversed_pairs_treated_as_one():
+    """detect_conflicts must return the same conflict set regardless of definition order."""
+    from rosetta.healthcare_source import HealthcareDataSource
+    from rosetta.detector import detect_conflicts
+    ds = HealthcareDataSource()
+    defs = ds.harvest_metric_definitions()
+    c_forward = detect_conflicts(defs)
+    c_reversed = detect_conflicts(list(reversed(defs)))
+    assert len(c_forward) == len(c_reversed), (
+        f"Reversed input changed conflict count: {len(c_forward)} → {len(c_reversed)}"
+    )
+    metrics_forward = {c.metric for c in c_forward}
+    metrics_reversed = {c.metric for c in c_reversed}
+    assert metrics_forward == metrics_reversed, (
+        f"Reversed input changed conflict metrics: {metrics_forward} vs {metrics_reversed}"
+    )
+
+
+def test_all_export_formats_include_scenario_provenance():
+    """Every export format must include the scenario label for healthcare and retail."""
+    from rosetta.healthcare_demo import run_healthcare_demo
+    from rosetta.fiction_retail_demo import run_fiction_retail_demo
+    from rosetta import exporter
+    hc_report = run_healthcare_demo()["report"]
+    rt_report = run_fiction_retail_demo()["report"]
+    for fmt in ["json", "csv", "md", "html"]:
+        hc_out = exporter.export(hc_report, fmt)
+        assert "Healthcare: Official hackathon data" in hc_out, (
+            f"'{fmt}' export missing 'Healthcare: Official hackathon data' scenario label"
+        )
+        rt_out = exporter.export(rt_report, fmt)
+        assert "Retail: Supplementary scenario" in rt_out, (
+            f"'{fmt}' export missing 'Retail: Supplementary scenario' scenario label"
+        )
+
+
+def test_demo_mode_exports_never_claim_automatic_writes():
+    """Demo mode exports must not contain the old 'write automatically' language."""
+    from rosetta.healthcare_demo import run_healthcare_demo
+    from rosetta import exporter
+    report = run_healthcare_demo()["report"]
+    forbidden = "write the canonical GlossaryTerm to DataHub automatically"
+    for fmt in ["json", "csv", "md", "html"]:
+        output = exporter.export(report, fmt)
+        assert forbidden not in output, (
+            f"'{fmt}' export still contains old automatic-write claim"
+        )
+
+
+def test_json_export_omits_verification_block_in_demo_mode():
+    """JSON export must not include rosetta_verification unless a real write occurred."""
+    from rosetta.healthcare_demo import run_healthcare_demo
+    from rosetta import exporter
+    import json
+    report = run_healthcare_demo()["report"]
+    # demo report has no rosetta_verification injected
+    assert "rosetta_verification" not in report
+    output = json.loads(exporter.export(report, "json"))
+    assert "rosetta_verification" not in output, (
+        "JSON export must not invent a rosetta_verification block in demo mode"
+    )

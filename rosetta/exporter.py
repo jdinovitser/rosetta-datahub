@@ -24,6 +24,7 @@ from pathlib import Path
 
 _DEMO_PROVENANCE: dict[str, dict] = {
     "healthcare": {
+        "scenario_label": "Healthcare: Official hackathon data",
         "generator": "Rosetta — https://github.com/jdinovitser/rosetta-datahub",
         "demo_mode": True,
         "dataset": "DataHub sample data supplied through the official Build with DataHub Agent Hackathon resources (healthcare.db)",
@@ -43,9 +44,9 @@ _DEMO_PROVENANCE: dict[str, dict] = {
             "Whether anomalies were intentionally planted or naturally present in the source",
         ],
         "full_provenance": "DATA_PROVENANCE.md",
-        "manifest": "examples/input-manifest.json",
     },
     "fiction_retail": {
+        "scenario_label": "Retail: Supplementary scenario",
         "generator": "Rosetta — https://github.com/jdinovitser/rosetta-datahub",
         "demo_mode": True,
         "dataset": "Fiction Retail E-Commerce dataset (fiction_retail.db — 150,000 orders across 10 tables)",
@@ -66,7 +67,6 @@ _DEMO_PROVENANCE: dict[str, dict] = {
             "Whether data is synthetic",
         ],
         "full_provenance": "DATA_PROVENANCE.md",
-        "manifest": "examples/input-manifest.json",
     },
 }
 
@@ -102,7 +102,8 @@ def to_csv(report: dict) -> str:
     buf.write(f"# Rosetta-constructed: {'; '.join(prov.get('rosetta_constructed', []))}\n")
     if prov.get("not_established"):
         buf.write(f"# Not established: {'; '.join(prov['not_established'])}\n")
-    buf.write(f"# Full provenance: {prov.get('full_provenance','DATA_PROVENANCE.md')} | {prov.get('manifest','examples/input-manifest.json')}\n")
+    buf.write(f"# Scenario: {prov.get('scenario_label', 'Live DataHub scan')}\n")
+    buf.write(f"# Full provenance: {prov.get('full_provenance','DATA_PROVENANCE.md')}\n")
     buf.write("#\n")
     writer = csv.writer(buf)
     writer.writerow(
@@ -224,8 +225,8 @@ def to_markdown(report: dict) -> str:
     if prov.get("not_established"):
         lines.append(f"- **Not established:** {'; '.join(prov['not_established'])}")
     lines += [
-        f"- **Full provenance:** `{prov.get('full_provenance','DATA_PROVENANCE.md')}`"
-        f" · `{prov.get('manifest','examples/input-manifest.json')}`",
+        f"- **Scenario:** {prov.get('scenario_label', 'Live DataHub scan')}",
+        f"- **Full provenance:** `{prov.get('full_provenance','DATA_PROVENANCE.md')}`",
         "",
     ]
     return "\n".join(lines)
@@ -240,6 +241,8 @@ _SEV_COLOR = {
 
 
 def to_html(report: dict) -> str:
+    prov = _provenance_for(report)
+    scenario_label = prov.get("scenario_label", "Live DataHub scan")
     s = report.get("summary", {})
     cards = []
     for c in report.get("conflicts", []):
@@ -327,7 +330,7 @@ def to_html(report: dict) -> str:
   </div>
   {''.join(cards)}
   <footer>Rosetta · the linter for meaning across your DataHub graph · Apache-2.0<br>
-  <small style="color:var(--muted);font-size:11px">Demo data: DataHub sample data supplied through the official Build with DataHub Agent Hackathon resources. No real patient or personal information is used.</small></footer>
+  <small style="color:var(--muted);font-size:11px">Scenario: {scenario_label} · {prov.get('statement','')}</small></footer>
 </body></html>"""
 
 
