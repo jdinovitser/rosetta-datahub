@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rosetta Semantic Consistency Report</title>
+<style>
+  :root{--bg:#0a0f1f;--panel:#111a30;--line:#22304f;--cyan:#22d3ee;--text:#e6edf7;--muted:#8ea0c0}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:32px}
+  h1{font-size:26px;margin:0 0 4px} .sub{color:var(--muted);margin-bottom:24px}
+  .stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:16px 22px;min-width:150px}
+  .stat .n{font-size:30px;font-weight:700;color:var(--cyan)}
+  .stat .l{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin-bottom:18px}
+  .card-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+  .metric{font-size:18px;font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .badge{color:#0a0f1f;font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px}
+  .kind{color:var(--muted)} .blast{margin-left:auto;color:var(--muted)}
+  .rationale{color:var(--text);opacity:.9;margin:6px 0 14px}
+  .ai{border:1px solid var(--line);border-left:3px solid var(--cyan);border-radius:10px;
+    padding:12px 14px;margin:0 0 14px;background:rgba(34,211,238,.04)}
+  .ai-t{color:var(--cyan);font-size:11px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;margin-bottom:8px}
+  .ai-r{display:flex;gap:10px;font-size:13px;margin-bottom:6px}
+  .ai-r b{flex:0 0 110px;color:var(--muted);font-weight:600}
+  .ai-r span{flex:1}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:#a9c7ff}
+  .sims{color:var(--muted);font-size:12px;margin-top:10px}
+  footer{color:var(--muted);font-size:12px;margin-top:30px}
+</style></head><body>
+  <h1>Rosetta — Semantic Consistency Report</h1>
+  <div class="sub">Generated 2026-08-04T17:17:49.176405+00:00</div>
+  <div class="stats">
+    <div class="stat"><div class="n">2</div><div class="l">Conflicts</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">Critical</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">High</div></div>
+    <div class="stat"><div class="n">1871</div><div class="l">Assets at risk</div></div>
+  </div>
+  
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">discount_pct</span>
+                <span class="badge" style="background:#e5484d">CRITICAL</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>371</b></span>
+              </div>
+              <p class="rationale">'Discount Percentage' (commerce_team) and 'Discount Percentage' (marketing_team) share a name but compute differently (logic overlap 18%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Discount Pct' has 2 incompatible definitions across commerce_team and marketing_team — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 18%, confidence 91%. Definitions: commerce_team: "Decimal fraction discount applied to a line item at checkout. Range: 0.0…"; marketing_team: "Integer percentage discount authored in campaign management tools. Range…". Governance signals: commerce_team: definition stale (last updated 2024-02-14); marketing_team: definition stale (last updated 2023-11-30).</span></div><div class='ai-r'><b>Impact</b><span>CRITICAL severity. 371 downstream assets are at risk. A wrong 'Discount Pct' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Escalate immediately: align commerce_team and marketing_team leadership on a single canonical definition for 'Discount Pct'. Freeze dependent pipelines until resolved. In Connected Mode, Rosetta can execute a human-approved remediation plan and verify the resulting metadata where supported.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>commerce_team</td><td class='mono'>urn:li:corpGroup:commerce-team</td><td>Decimal fraction discount applied to a line item at checkout. Range: 0.0 (no discount) to 1.0 (100% off). Used to compute net revenue: unit_price × quantity × (1 − discount_pct). Values outside 0–1 indicate a unit-convention error.</td><td class='mono'>SELECT discount_pct FROM order_items WHERE discount_pct BETWEEN 0.0 AND 1.0</td></tr><tr><td>marketing_team</td><td class='mono'>urn:li:corpGroup:marketing-team</td><td>Integer percentage discount authored in campaign management tools. Range: 0 (no discount) to 100 (free). A value of 20 means 20% off. Stored as-is from the promotions authoring system — no fractional conversion applied.</td><td class='mono'>SELECT discount_pct FROM promotions</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.182 ·
+                name similarity 1.0 ·
+                confidence 0.909 ·
+                est. cost $16,695</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">order_status~shipment_state</span>
+                <span class="badge" style="background:#ffb224">MEDIUM</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>1500</b></span>
+              </div>
+              <p class="rationale">'Order Status' (commerce_team) and 'Shipment State' (logistics_team) share a name but compute differently (logic overlap 21%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Order Status vs Shipment State' has 2 incompatible definitions across commerce_team and logistics_team — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 21%, confidence 89%. Definitions: commerce_team: "Lifecycle state of an order as tracked by the commerce platform. Current…"; logistics_team: "Current state of a shipment in the carrier pipeline. Current distinct va…". Governance signals: commerce_team: definition stale (last updated 2023-08-10); logistics_team: definition stale (last updated 2024-01-22).</span></div><div class='ai-r'><b>Impact</b><span>MEDIUM severity. 1500 downstream assets are at risk. A wrong 'Order Status vs Shipment State' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Open a data governance ticket for 'Order Status vs Shipment State'. Draft a canonical definition incorporating both teams' intent and circulate for sign-off in the next governance review cycle.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>commerce_team</td><td class='mono'>urn:li:corpGroup:commerce-team</td><td>Lifecycle state of an order as tracked by the commerce platform. Current distinct values: 9. Used for customer-facing status pages, SLA reporting, and order management dashboards. Source of truth for order state.</td><td class='mono'>SELECT order_status FROM orders</td></tr><tr><td>logistics_team</td><td class='mono'>urn:li:corpGroup:logistics-team</td><td>Current state of a shipment in the carrier pipeline. Current distinct values: 3. Used for carrier tracking, warehouse SLAs, and delivery exception reporting. Independently updated from order_status — an order may be marked Delivered while a shipment shows In Transit.</td><td class='mono'>SELECT shipment_state FROM shipments</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.214 ·
+                name similarity 1.0 ·
+                confidence 0.893 ·
+                est. cost $67,500</div>
+            </div>
+  <footer>Rosetta · the linter for meaning across your DataHub graph · Apache-2.0<br>
+  <small style="color:var(--muted);font-size:11px">Scenario: Retail: Supplementary scenario · Generated in DEMO MODE. Rosetta queries this file read-only.</small></footer>
+</body></html>

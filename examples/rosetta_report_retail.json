@@ -1,0 +1,373 @@
+{
+  "generated_at": "2026-08-04T17:17:49.176405+00:00",
+  "source": "fiction_retail",
+  "dataset": "Fiction Retail E-Commerce (150,000 orders, 10 tables)",
+  "summary": {
+    "total_conflicts": 2,
+    "critical": 1,
+    "high": 0,
+    "assets_at_risk": 1871,
+    "real_data_issues": {
+      "bad_discount_rows": 37161,
+      "bad_discount_orders": 21795,
+      "bad_discount_revenue_usd": 24042223.02,
+      "discount_integer_range": "5\u201330",
+      "status_synonym_orders": 150000
+    },
+    "impact": {
+      "total_impacted_assets": 1871,
+      "total_manual_hours_avoided": 935.5,
+      "estimated_cost_avoided_usd": 84195
+    }
+  },
+  "conflicts": [
+    {
+      "kind": "silent_contradiction",
+      "metric": "discount_pct",
+      "severity": "critical",
+      "confidence": 0.909,
+      "blast_radius": 371,
+      "impacted_assets": [
+        "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.returns,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.shipments,PROD)"
+      ],
+      "impact_graph": {
+        "nodes": [
+          {
+            "id": "metric::discount_pct::commerce_team",
+            "label": "Discount Percentage\n(commerce_team)",
+            "type": "metric"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)",
+            "label": "order_items",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "label": "orders",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.shipments,PROD)",
+            "label": "shipments",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.returns,PROD)",
+            "label": "returns",
+            "type": "dashboard"
+          },
+          {
+            "id": "metric::discount_pct::marketing_team",
+            "label": "Discount Percentage\n(marketing_team)",
+            "type": "metric"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.promotions,PROD)",
+            "label": "promotions",
+            "type": "dataset"
+          }
+        ],
+        "edges": [
+          {
+            "source": "metric::discount_pct::commerce_team",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)"
+          },
+          {
+            "source": "metric::discount_pct::commerce_team",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.shipments,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.returns,PROD)"
+          },
+          {
+            "source": "metric::discount_pct::marketing_team",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.promotions,PROD)"
+          },
+          {
+            "source": "metric::discount_pct::marketing_team",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.promotions,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)"
+          }
+        ]
+      },
+      "logic_similarity": 0.182,
+      "name_similarity": 1.0,
+      "rationale": "'Discount Percentage' (commerce_team) and 'Discount Percentage' (marketing_team) share a name but compute differently (logic overlap 18%).",
+      "definitions": [
+        {
+          "domain": "commerce_team",
+          "owner": "urn:li:corpGroup:commerce-team",
+          "display_name": "Discount Percentage",
+          "definition_text": "Decimal fraction discount applied to a line item at checkout. Range: 0.0 (no discount) to 1.0 (100% off). Used to compute net revenue: unit_price \u00d7 quantity \u00d7 (1 \u2212 discount_pct). Values outside 0\u20131 indicate a unit-convention error.",
+          "sql_logic": "SELECT discount_pct FROM order_items WHERE discount_pct BETWEEN 0.0 AND 1.0",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:commerce.discount_pct",
+          "tags": [
+            "financial",
+            "pipeline_stage"
+          ],
+          "last_modified": "2024-02-14"
+        },
+        {
+          "domain": "marketing_team",
+          "owner": "urn:li:corpGroup:marketing-team",
+          "display_name": "Discount Percentage",
+          "definition_text": "Integer percentage discount authored in campaign management tools. Range: 0 (no discount) to 100 (free). A value of 20 means 20% off. Stored as-is from the promotions authoring system \u2014 no fractional conversion applied.",
+          "sql_logic": "SELECT discount_pct FROM promotions",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.promotions,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:marketing.discount_pct",
+          "tags": [
+            "financial"
+          ],
+          "last_modified": "2023-11-30"
+        }
+      ],
+      "impact": {
+        "impacted_assets": 371,
+        "asset_breakdown": {
+          "dataset": 4
+        },
+        "manual_reconciliation_hours": 185.5,
+        "estimated_manual_cost_usd": 16695,
+        "risk_statement": "A wrong 'Discount Pct' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams."
+      },
+      "proposed_reconciliation": {
+        "before": [
+          {
+            "term_urn": "urn:li:glossaryTerm:commerce.discount_pct",
+            "domain": "commerce_team",
+            "display_name": "Discount Percentage",
+            "definition": "Decimal fraction discount applied to a line item at checkout. Range: 0.0 (no discount) to 1.0 (100% off). Used to compute net revenue: unit_price \u00d7 quantity \u00d7 (1 \u2212 discount_pct). Values outside 0\u20131 indicate a unit-convention error.",
+            "status": "active"
+          },
+          {
+            "term_urn": "urn:li:glossaryTerm:marketing.discount_pct",
+            "domain": "marketing_team",
+            "display_name": "Discount Percentage",
+            "definition": "Integer percentage discount authored in campaign management tools. Range: 0 (no discount) to 100 (free). A value of 20 means 20% off. Stored as-is from the promotions authoring system \u2014 no fractional conversion applied.",
+            "status": "active"
+          }
+        ],
+        "after": {
+          "canonical_term_id": "discount_pct",
+          "display_name": "Discount Percentage",
+          "definition": "CANONICAL DEFINITION of 'Discount Percentage'. Base (from commerce_team, highest coverage): Decimal fraction discount applied to a line item at checkout. Range: 0.0 (no discount) to 1.0 (100% off). Used to compute net revenue: unit_price \u00d7 quantity \u00d7 (1 \u2212 discount_pct). Values outside 0\u20131 indicate a unit-convention error. Reconciliation note: 2 teams defined this differently. Agreed computation: SELECT discount_pct FROM order_items WHERE discount_pct BETWEEN 0.0 AND 1.0. Conflicting variants from marketing_team are deprecated and mapped here.",
+          "linked_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.promotions,PROD)"
+          ],
+          "deprecated_terms": [
+            "urn:li:glossaryTerm:marketing.discount_pct"
+          ],
+          "status": "canonical"
+        }
+      },
+      "ai_explanation": {
+        "finding": "'Discount Pct' has 2 incompatible definitions across commerce_team and marketing_team \u2014 same name, different computation.",
+        "evidence": "Logic similarity 18%, confidence 91%. Definitions: commerce_team: \"Decimal fraction discount applied to a line item at checkout. Range: 0.0\u2026\"; marketing_team: \"Integer percentage discount authored in campaign management tools. Range\u2026\". Governance signals: commerce_team: definition stale (last updated 2024-02-14); marketing_team: definition stale (last updated 2023-11-30).",
+        "impact": "CRITICAL severity. 371 downstream assets are at risk. A wrong 'Discount Pct' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.",
+        "recommendation": "Escalate immediately: align commerce_team and marketing_team leadership on a single canonical definition for 'Discount Pct'. Freeze dependent pipelines until resolved. In Connected Mode, Rosetta can execute a human-approved remediation plan and verify the resulting metadata where supported."
+      }
+    },
+    {
+      "kind": "silent_contradiction",
+      "metric": "order_status~shipment_state",
+      "severity": "medium",
+      "confidence": 0.893,
+      "blast_radius": 1500,
+      "impacted_assets": [
+        "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.returns,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.shipments,PROD)"
+      ],
+      "impact_graph": {
+        "nodes": [
+          {
+            "id": "metric::order_status~shipment_state::commerce_team",
+            "label": "Order Status\n(commerce_team)",
+            "type": "metric"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "label": "orders",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)",
+            "label": "order_items",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.shipments,PROD)",
+            "label": "shipments",
+            "type": "dataset"
+          },
+          {
+            "id": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.returns,PROD)",
+            "label": "returns",
+            "type": "dashboard"
+          },
+          {
+            "id": "metric::order_status~shipment_state::logistics_team",
+            "label": "Shipment State\n(logistics_team)",
+            "type": "metric"
+          }
+        ],
+        "edges": [
+          {
+            "source": "metric::order_status~shipment_state::commerce_team",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.order_items,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.shipments,PROD)"
+          },
+          {
+            "source": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.returns,PROD)"
+          },
+          {
+            "source": "metric::order_status~shipment_state::logistics_team",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.shipments,PROD)"
+          },
+          {
+            "source": "metric::order_status~shipment_state::logistics_team",
+            "target": "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)"
+          }
+        ]
+      },
+      "logic_similarity": 0.214,
+      "name_similarity": 1.0,
+      "rationale": "'Order Status' (commerce_team) and 'Shipment State' (logistics_team) share a name but compute differently (logic overlap 21%).",
+      "definitions": [
+        {
+          "domain": "commerce_team",
+          "owner": "urn:li:corpGroup:commerce-team",
+          "display_name": "Order Status",
+          "definition_text": "Lifecycle state of an order as tracked by the commerce platform. Current distinct values: 9. Used for customer-facing status pages, SLA reporting, and order management dashboards. Source of truth for order state.",
+          "sql_logic": "SELECT order_status FROM orders",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:commerce.order_status",
+          "tags": [
+            "transactional"
+          ],
+          "last_modified": "2023-08-10"
+        },
+        {
+          "domain": "logistics_team",
+          "owner": "urn:li:corpGroup:logistics-team",
+          "display_name": "Shipment State",
+          "definition_text": "Current state of a shipment in the carrier pipeline. Current distinct values: 3. Used for carrier tracking, warehouse SLAs, and delivery exception reporting. Independently updated from order_status \u2014 an order may be marked Delivered while a shipment shows In Transit.",
+          "sql_logic": "SELECT shipment_state FROM shipments",
+          "affected_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.shipments,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)"
+          ],
+          "term_urn": "urn:li:glossaryTerm:logistics.shipment_state",
+          "tags": [
+            "transactional"
+          ],
+          "last_modified": "2024-01-22"
+        }
+      ],
+      "impact": {
+        "impacted_assets": 1500,
+        "asset_breakdown": {
+          "dataset": 3
+        },
+        "manual_reconciliation_hours": 750.0,
+        "estimated_manual_cost_usd": 67500,
+        "risk_statement": "A wrong 'Order Status vs Shipment State' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams."
+      },
+      "proposed_reconciliation": {
+        "before": [
+          {
+            "term_urn": "urn:li:glossaryTerm:commerce.order_status",
+            "domain": "commerce_team",
+            "display_name": "Order Status",
+            "definition": "Lifecycle state of an order as tracked by the commerce platform. Current distinct values: 9. Used for customer-facing status pages, SLA reporting, and order management dashboards. Source of truth for order state.",
+            "status": "active"
+          },
+          {
+            "term_urn": "urn:li:glossaryTerm:logistics.shipment_state",
+            "domain": "logistics_team",
+            "display_name": "Shipment State",
+            "definition": "Current state of a shipment in the carrier pipeline. Current distinct values: 3. Used for carrier tracking, warehouse SLAs, and delivery exception reporting. Independently updated from order_status \u2014 an order may be marked Delivered while a shipment shows In Transit.",
+            "status": "active"
+          }
+        ],
+        "after": {
+          "canonical_term_id": "order_status~shipment_state",
+          "display_name": "Shipment State",
+          "definition": "CANONICAL DEFINITION of 'Shipment State'. Base (from logistics_team, highest coverage): Current state of a shipment in the carrier pipeline. Current distinct values: 3. Used for carrier tracking, warehouse SLAs, and delivery exception reporting. Independently updated from order_status \u2014 an order may be marked Delivered while a shipment shows In Transit. Reconciliation note: 2 teams defined this differently. Agreed computation: SELECT shipment_state FROM shipments. Conflicting variants from commerce_team are deprecated and mapped here.",
+          "linked_assets": [
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.orders,PROD)",
+            "urn:li:dataset:(urn:li:dataPlatform:sqlite,fiction-retail.shipments,PROD)"
+          ],
+          "deprecated_terms": [
+            "urn:li:glossaryTerm:commerce.order_status"
+          ],
+          "status": "canonical"
+        }
+      },
+      "ai_explanation": {
+        "finding": "'Order Status vs Shipment State' has 2 incompatible definitions across commerce_team and logistics_team \u2014 same name, different computation.",
+        "evidence": "Logic similarity 21%, confidence 89%. Definitions: commerce_team: \"Lifecycle state of an order as tracked by the commerce platform. Current\u2026\"; logistics_team: \"Current state of a shipment in the carrier pipeline. Current distinct va\u2026\". Governance signals: commerce_team: definition stale (last updated 2023-08-10); logistics_team: definition stale (last updated 2024-01-22).",
+        "impact": "MEDIUM severity. 1500 downstream assets are at risk. A wrong 'Order Status vs Shipment State' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.",
+        "recommendation": "Open a data governance ticket for 'Order Status vs Shipment State'. Draft a canonical definition incorporating both teams' intent and circulate for sign-off in the next governance review cycle."
+      }
+    }
+  ],
+  "rosetta_provenance": {
+    "scenario_label": "Retail: Supplementary scenario",
+    "generator": "Rosetta \u2014 https://github.com/jdinovitser/rosetta-datahub",
+    "demo_mode": true,
+    "dataset": "Fiction Retail E-Commerce dataset (fiction_retail.db \u2014 150,000 orders across 10 tables)",
+    "source_url": "Not established \u2014 developer notes describe this as a Kaggle dataset; not independently confirmed from repository history",
+    "git_commit_added": "e8690934dbd5ffc0ff45eb91f923fd255d28bab1",
+    "statement": "Generated in DEMO MODE. Rosetta queries this file read-only.",
+    "rosetta_constructed": [
+      "MetricDefinition pairs (rosetta/fiction_retail_source.py)",
+      "DataHub URN lineage graph",
+      "Glossary term URNs",
+      "Team ownership URNs",
+      "Severity scores",
+      "Canonical proposals (rosetta/broker.py)"
+    ],
+    "not_established": [
+      "Original source URL",
+      "License",
+      "Whether data is synthetic"
+    ],
+    "full_provenance": "DATA_PROVENANCE.md"
+  }
+}
