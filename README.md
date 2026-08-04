@@ -86,9 +86,18 @@ In Connected Mode, the Writer agent executes the approved write plan and then re
 
 **Connected Mode evidence:** [`CONNECTED_MODE_EVIDENCE.md`](CONNECTED_MODE_EVIDENCE.md) documents the full proof of Connected Mode correctness — real Phase A output (conflict detection, SHA-256 plan hash `db791856c9b9c944`, 10-operation write plan, ApprovalToken validation), the exact Phase B blocker in this environment (5 GB RAM vs 8 GB required for DataHub quickstart), and step-by-step commands for any judge who wants to run the full execute + verify path locally. The evidence JSON is at [`evidence/connected_mode_evidence_2026-08-03T14-15-16.json`](evidence/connected_mode_evidence_2026-08-03T14-15-16.json).
 
+## Judge resources
+
+| Resource | What's inside |
+|----------|--------------|
+| [`examples/`](examples/) | Pre-generated outputs in all 4 formats (JSON, CSV, Markdown, HTML) for both scenarios — evaluate quality without running the code |
+| [`examples/sample_conflict_report.json`](examples/sample_conflict_report.json) | Single conflict record — clean look at the full data shape |
+| [`examples/sample_reconciled_term.json`](examples/sample_reconciled_term.json) | What a resolved GlossaryTerm looks like after remediation |
+| [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md) | 3-minute demo script with exact screen labels, pacing, Q&A cheat sheet, and recording checklist |
+
 ## Tests
 ```bash
-pytest -q      # 100 passed
+pytest -q      # 96 passed
 ```
 
 ## Data provenance
