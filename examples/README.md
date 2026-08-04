@@ -17,6 +17,8 @@ Judges can evaluate output quality without running the code.
 | [`rosetta_report_retail.csv`](rosetta_report_retail.csv) | Retail · Supplementary scenario | CSV | — |
 | [`rosetta_report_retail.md`](rosetta_report_retail.md) | Retail · Supplementary scenario | Markdown | — |
 | [`rosetta_report_retail.html`](rosetta_report_retail.html) | Retail · Supplementary scenario | HTML | — |
+| [`sample_conflict_report.json`](sample_conflict_report.json) | Healthcare | JSON | Single conflict record — clean example of the full data shape for one finding |
+| [`sample_reconciled_term.json`](sample_reconciled_term.json) | Healthcare | JSON | What a resolved GlossaryTerm looks like after a human-approved remediation |
 
 ---
 
