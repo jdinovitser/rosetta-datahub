@@ -200,7 +200,10 @@ def detect_conflicts(
             synonym_name_threshold,
         )
 
-    conflicts.sort(key=lambda c: (c.blast_radius, c.confidence), reverse=True)
+    _SEV_RANK = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+    conflicts.sort(
+        key=lambda c: (_SEV_RANK.get(c.severity, 9), -c.blast_radius, -c.confidence)
+    )
     return conflicts
 
 

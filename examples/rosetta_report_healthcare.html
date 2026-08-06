@@ -34,7 +34,7 @@
   footer{color:var(--muted);font-size:12px;margin-top:30px}
 </style></head><body>
   <h1>Rosetta — Semantic Consistency Report</h1>
-  <div class="sub">Generated 2026-08-04T17:17:46.304307+00:00</div>
+  <div class="sub">Generated 2026-08-06T12:26:53.087176+00:00</div>
   <div class="stats">
     <div class="stat"><div class="n">5</div><div class="l">Conflicts</div></div>
     <div class="stat"><div class="n">1</div><div class="l">Critical</div></div>
@@ -44,21 +44,21 @@
   
             <div class="card">
               <div class="card-head">
-                <span class="metric">test_results~test_results_clean</span>
-                <span class="badge" style="background:#ffb224">MEDIUM</span>
+                <span class="metric">billing_amount</span>
+                <span class="badge" style="background:#e5484d">CRITICAL</span>
                 <span class="kind">silent contradiction</span>
-                <span class="blast">blast radius: <b>555</b></span>
+                <span class="blast">blast radius: <b>12</b></span>
               </div>
-              <p class="rationale">'Test Results' (clinical_team) and 'Test Results (Normalized)' (research_team) share a name but compute differently (logic overlap 20%).</p>
-              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Test Results vs Test Results Clean' has 2 incompatible definitions across clinical_team and research_team — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 20%, confidence 90%. Definitions: clinical_team: "Lab or diagnostic test outcome as recorded at point of care. Values: 'No…"; research_team: "Standardized diagnostic outcome for research queries. Values: 'normal',…". Governance signals: clinical_team: definition stale (last updated 2023-07-14); research_team: definition stale (last updated 2024-06-01).</span></div><div class='ai-r'><b>Impact</b><span>MEDIUM severity. 555 downstream assets are at risk. A wrong 'Test Results vs Test Results Clean' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Open a data governance ticket for 'Test Results vs Test Results Clean'. Draft a canonical definition incorporating both teams' intent and circulate for sign-off in the next governance review cycle.</span></div></div>
+              <p class="rationale">'Billing Amount' (clinical_team) and 'Billing Amount' (finance_team) share a name but compute differently (logic overlap 23%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Billing Amount' has 2 incompatible definitions across clinical_team and finance_team — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 23%, confidence 88%. Definitions: clinical_team: "Total charge for services rendered, recorded verbatim from the source sy…"; finance_team: "Revenue recognized for services rendered. Must always be positive — nega…". Governance signals: clinical_team: handles sensitive/PII data; clinical_team: definition stale (last updated 2024-01-15); finance_team: definition stale (last updated 2024-03-20).</span></div><div class='ai-r'><b>Impact</b><span>CRITICAL severity. 12 downstream assets are at risk. A wrong 'Billing Amount' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Escalate immediately: align clinical_team and finance_team leadership on a single canonical definition for 'Billing Amount'. Freeze dependent pipelines until resolved. In Connected Mode, Rosetta can execute a human-approved remediation plan and verify the resulting metadata where supported.</span></div></div>
               <table>
                 <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
-                <tbody><tr><td>clinical_team</td><td class='mono'>urn:li:corpGroup:clinical-team</td><td>Lab or diagnostic test outcome as recorded at point of care. Values: 'Normal', 'Abnormal', 'Inconclusive' (raw mixed-case from the EMR system). Used in clinical outcome tracking.</td><td class='mono'>SELECT test_results FROM raw_patients</td></tr><tr><td>research_team</td><td class='mono'>urn:li:corpGroup:research-team</td><td>Standardized diagnostic outcome for research queries. Values: 'normal', 'abnormal', 'inconclusive' (lowercase, trimmed). Defined as test_results_clean in staging_patients. mart_demographics uses the non-normalized column — joins against this field across tables produce case-mismatch failures.</td><td class='mono'>SELECT test_results_clean FROM staging_patients</td></tr></tbody>
+                <tbody><tr><td>clinical_team</td><td class='mono'>urn:li:corpGroup:clinical-team</td><td>Total charge for services rendered, recorded verbatim from the source system. No range constraint — accepted as-is, including negative values that may represent credits or data entry errors.</td><td class='mono'>SELECT billing_amount FROM raw_patients</td></tr><tr><td>finance_team</td><td class='mono'>urn:li:corpGroup:finance-team</td><td>Revenue recognized for services rendered. Must always be positive — negative values indicate data entry errors and must be rejected before reaching financial reporting. Used in revenue dashboards and insurance reconciliation.</td><td class='mono'>SELECT billing_amount FROM mart_billing WHERE billing_amount > 0</td></tr></tbody>
               </table>
-              <div class="sims">logic similarity 0.196 ·
+              <div class="sims">logic similarity 0.233 ·
                 name similarity 1.0 ·
-                confidence 0.902 ·
-                est. cost $24,975</div>
+                confidence 0.884 ·
+                est. cost $540</div>
             </div>
             <div class="card">
               <div class="card-head">
@@ -80,42 +80,6 @@
             </div>
             <div class="card">
               <div class="card-head">
-                <span class="metric">patient_name</span>
-                <span class="badge" style="background:#ffb224">MEDIUM</span>
-                <span class="kind">silent contradiction</span>
-                <span class="blast">blast radius: <b>6</b></span>
-              </div>
-              <p class="rationale">'Patient Name' (clinical_team) and 'Patient Name' (research_team) share a name but compute differently (logic overlap 21%).</p>
-              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Patient Name' has 2 incompatible definitions across clinical_team and research_team — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 21%, confidence 90%. Definitions: clinical_team: "Full name of the patient as provided at admission. May be NULL for anony…"; research_team: "Required patient identifier for cohort membership tracking. Must be non-…". Governance signals: clinical_team: handles sensitive/PII data; clinical_team: definition stale (last updated 2023-08-20); research_team: handles sensitive/PII data; research_team: definition stale (last updated 2024-04-01).</span></div><div class='ai-r'><b>Impact</b><span>MEDIUM severity. 6 downstream assets are at risk. A wrong 'Patient Name' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Open a data governance ticket for 'Patient Name'. Draft a canonical definition incorporating both teams' intent and circulate for sign-off in the next governance review cycle.</span></div></div>
-              <table>
-                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
-                <tbody><tr><td>clinical_team</td><td class='mono'>urn:li:corpGroup:clinical-team</td><td>Full name of the patient as provided at admission. May be NULL for anonymous, walk-in, or incomplete intake records. NULL is a valid source value indicating an unidentified patient.</td><td class='mono'>SELECT name FROM raw_patients</td></tr><tr><td>research_team</td><td class='mono'>urn:li:corpGroup:research-team</td><td>Required patient identifier for cohort membership tracking. Must be non-NULL — anonymous records cannot be included in longitudinal studies or outcome analysis.</td><td class='mono'>SELECT name FROM mart_demographics WHERE name IS NOT NULL</td></tr></tbody>
-              </table>
-              <div class="sims">logic similarity 0.211 ·
-                name similarity 1.0 ·
-                confidence 0.895 ·
-                est. cost $270</div>
-            </div>
-            <div class="card">
-              <div class="card-head">
-                <span class="metric">billing_amount</span>
-                <span class="badge" style="background:#e5484d">CRITICAL</span>
-                <span class="kind">silent contradiction</span>
-                <span class="blast">blast radius: <b>12</b></span>
-              </div>
-              <p class="rationale">'Billing Amount' (clinical_team) and 'Billing Amount' (finance_team) share a name but compute differently (logic overlap 23%).</p>
-              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Billing Amount' has 2 incompatible definitions across clinical_team and finance_team — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 23%, confidence 88%. Definitions: clinical_team: "Total charge for services rendered, recorded verbatim from the source sy…"; finance_team: "Revenue recognized for services rendered. Must always be positive — nega…". Governance signals: clinical_team: handles sensitive/PII data; clinical_team: definition stale (last updated 2024-01-15); finance_team: definition stale (last updated 2024-03-20).</span></div><div class='ai-r'><b>Impact</b><span>CRITICAL severity. 12 downstream assets are at risk. A wrong 'Billing Amount' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Escalate immediately: align clinical_team and finance_team leadership on a single canonical definition for 'Billing Amount'. Freeze dependent pipelines until resolved. In Connected Mode, Rosetta can execute a human-approved remediation plan and verify the resulting metadata where supported.</span></div></div>
-              <table>
-                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
-                <tbody><tr><td>clinical_team</td><td class='mono'>urn:li:corpGroup:clinical-team</td><td>Total charge for services rendered, recorded verbatim from the source system. No range constraint — accepted as-is, including negative values that may represent credits or data entry errors.</td><td class='mono'>SELECT billing_amount FROM raw_patients</td></tr><tr><td>finance_team</td><td class='mono'>urn:li:corpGroup:finance-team</td><td>Revenue recognized for services rendered. Must always be positive — negative values indicate data entry errors and must be rejected before reaching financial reporting. Used in revenue dashboards and insurance reconciliation.</td><td class='mono'>SELECT billing_amount FROM mart_billing WHERE billing_amount > 0</td></tr></tbody>
-              </table>
-              <div class="sims">logic similarity 0.233 ·
-                name similarity 1.0 ·
-                confidence 0.884 ·
-                est. cost $540</div>
-            </div>
-            <div class="card">
-              <div class="card-head">
                 <span class="metric">length_of_stay</span>
                 <span class="badge" style="background:#f76808">HIGH</span>
                 <span class="kind">silent contradiction</span>
@@ -131,6 +95,42 @@
                 name similarity 1.0 ·
                 confidence 0.939 ·
                 est. cost $180</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">test_results~test_results_clean</span>
+                <span class="badge" style="background:#ffb224">MEDIUM</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>555</b></span>
+              </div>
+              <p class="rationale">'Test Results' (clinical_team) and 'Test Results (Normalized)' (research_team) share a name but compute differently (logic overlap 20%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Test Results vs Test Results Clean' has 2 incompatible definitions across clinical_team and research_team — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 20%, confidence 90%. Definitions: clinical_team: "Lab or diagnostic test outcome as recorded at point of care. Values: 'No…"; research_team: "Standardized diagnostic outcome for research queries. Values: 'normal',…". Governance signals: clinical_team: definition stale (last updated 2023-07-14); research_team: definition stale (last updated 2024-06-01).</span></div><div class='ai-r'><b>Impact</b><span>MEDIUM severity. 555 downstream assets are at risk. A wrong 'Test Results vs Test Results Clean' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Open a data governance ticket for 'Test Results vs Test Results Clean'. Draft a canonical definition incorporating both teams' intent and circulate for sign-off in the next governance review cycle.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>clinical_team</td><td class='mono'>urn:li:corpGroup:clinical-team</td><td>Lab or diagnostic test outcome as recorded at point of care. Values: 'Normal', 'Abnormal', 'Inconclusive' (raw mixed-case from the EMR system). Used in clinical outcome tracking.</td><td class='mono'>SELECT test_results FROM raw_patients</td></tr><tr><td>research_team</td><td class='mono'>urn:li:corpGroup:research-team</td><td>Standardized diagnostic outcome for research queries. Values: 'normal', 'abnormal', 'inconclusive' (lowercase, trimmed). Defined as test_results_clean in staging_patients. mart_demographics uses the non-normalized column — joins against this field across tables produce case-mismatch failures.</td><td class='mono'>SELECT test_results_clean FROM staging_patients</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.196 ·
+                name similarity 1.0 ·
+                confidence 0.902 ·
+                est. cost $24,975</div>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <span class="metric">patient_name</span>
+                <span class="badge" style="background:#ffb224">MEDIUM</span>
+                <span class="kind">silent contradiction</span>
+                <span class="blast">blast radius: <b>6</b></span>
+              </div>
+              <p class="rationale">'Patient Name' (clinical_team) and 'Patient Name' (research_team) share a name but compute differently (logic overlap 21%).</p>
+              <div class='ai'><div class='ai-t'>AI Explanation</div><div class='ai-r'><b>Finding</b><span>'Patient Name' has 2 incompatible definitions across clinical_team and research_team — same name, different computation.</span></div><div class='ai-r'><b>Evidence</b><span>Logic similarity 21%, confidence 90%. Definitions: clinical_team: "Full name of the patient as provided at admission. May be NULL for anony…"; research_team: "Required patient identifier for cohort membership tracking. Must be non-…". Governance signals: clinical_team: handles sensitive/PII data; clinical_team: definition stale (last updated 2023-08-20); research_team: handles sensitive/PII data; research_team: definition stale (last updated 2024-04-01).</span></div><div class='ai-r'><b>Impact</b><span>MEDIUM severity. 6 downstream assets are at risk. A wrong 'Patient Name' silently feeds 0 decision surface(s) (0 dashboards, 0 models) across 2 teams.</span></div><div class='ai-r'><b>Recommendation</b><span>Open a data governance ticket for 'Patient Name'. Draft a canonical definition incorporating both teams' intent and circulate for sign-off in the next governance review cycle.</span></div></div>
+              <table>
+                <thead><tr><th>Domain</th><th>Owner</th><th>Definition</th><th>Computation</th></tr></thead>
+                <tbody><tr><td>clinical_team</td><td class='mono'>urn:li:corpGroup:clinical-team</td><td>Full name of the patient as provided at admission. May be NULL for anonymous, walk-in, or incomplete intake records. NULL is a valid source value indicating an unidentified patient.</td><td class='mono'>SELECT name FROM raw_patients</td></tr><tr><td>research_team</td><td class='mono'>urn:li:corpGroup:research-team</td><td>Required patient identifier for cohort membership tracking. Must be non-NULL — anonymous records cannot be included in longitudinal studies or outcome analysis.</td><td class='mono'>SELECT name FROM mart_demographics WHERE name IS NOT NULL</td></tr></tbody>
+              </table>
+              <div class="sims">logic similarity 0.211 ·
+                name similarity 1.0 ·
+                confidence 0.895 ·
+                est. cost $270</div>
             </div>
   <footer>Rosetta · the linter for meaning across your DataHub graph · Apache-2.0<br>
   <small style="color:var(--muted);font-size:11px">Scenario: Healthcare: Official hackathon data · Generated in DEMO MODE against official hackathon sample data. Rosetta queries this file read-only. No real patient or personal information is used.</small></footer>

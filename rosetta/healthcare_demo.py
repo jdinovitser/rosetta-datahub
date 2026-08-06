@@ -129,6 +129,12 @@ def run_healthcare_demo() -> dict:
         c.impacted_assets = sorted(downstream)
         c.impact_graph = {"nodes": list(merged_nodes.values()), "edges": merged_edges}
 
+    # Re-sort after evidence-driven severity re-assignments so CRITICAL always leads.
+    _SEV_RANK = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+    conflicts.sort(
+        key=lambda c: (_SEV_RANK.get(c.severity, 9), -c.blast_radius, -c.confidence)
+    )
+
     total_blast = sum(c.blast_radius for c in conflicts)
     steps.append(Step(
         "Blast-Radius Analyzer", "💥",
