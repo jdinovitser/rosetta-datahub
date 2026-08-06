@@ -176,7 +176,7 @@ function gotoStep(n) {
     prevBtn.disabled = false;
     prevBtn.textContent = n === 1 ? "⌂ Home" : "← Previous";
     const nextBtn = $("#nextBtn");
-    nextBtn.textContent = n === 5 ? "View Full Report →" : "Next →";
+    nextBtn.textContent = n === 5 ? "See the result →" : "Next →";
   }
 
   // Step label
@@ -1325,7 +1325,12 @@ document.getElementById("nextBtn")?.addEventListener("click", () => {
     gotoStep(currentStep + 1);
     if (currentStep === 3) animateStep3();
   } else {
-    showTech(); // "View Full Report" on step 5
+    // Round out the demo: return to landing and scroll to the before/after section
+    gotoStep(0);
+    setTimeout(() => {
+      document.querySelector(".lp-ba-section")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 350);
   }
 });
 
