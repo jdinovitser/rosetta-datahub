@@ -36,9 +36,8 @@
 | **1:17** | *"Five conflicts total. This is the worst. Next — how far has it already spread?"* | Let the tagline land: *"Same words. Different meaning."* Click **Next →**. |
 | | | |
 | **1:22** | *"Agent three — the Blast-Radius Analyzer."* | **Step 3** appears. **💥 BLAST-RADIUS ANALYZER · AGENT 3 OF 5** chip. |
-| **1:25** | *"The `billing_amount` conflict reaches twelve downstream assets — six datasets touched. That includes mart_billing, which is carrying all 1,215 of those negative rows."* | Watch **12** animate up under **Downstream Assets Contaminated**. Point to the **📦 6 datasets** chip. |
-| **1:35** | *"Every dashboard, model, and report pulling from mart_billing is working on a foundation that never agreed on what revenue means."* | Let the dependency graph and narrative hold. |
-| **1:42** | *"AI Readiness: red."* | Click **Next →**. |
+| **1:25** | *"The `billing_amount` conflict reaches twelve downstream assets — six datasets touched. That includes mart_billing, which is carrying all 1,215 of those negative rows."* | Point to the three stat numbers: **12** Downstream Assets Contaminated · **$540** Est. Business Cost · **6.0** Analyst Hours. Point to the **📦 6 datasets** chip below the numbers. |
+| **1:35** | *"Every dashboard, model, and report pulling from mart_billing is working on a foundation that never agreed on what revenue means."* | Let the dependency graph and narrative hold. Click **Next →**. |
 | | | |
 | **1:45** | *"Agent four — the Reconciliation Broker."* | **Step 4** appears. **🤝 RECONCILIATION BROKER · AGENT 4 OF 5** chip. |
 | **1:48** | *"It puts the two competing definitions side by side and proposes one canonical definition — merging clinical and finance intent."* | Point to the **Conflicting Definitions** panel on the left: clinical_team vs finance_team. Then point to the **Proposed Canonical Definition** panel on the right: **Billing Amount** with the **canonical** tag. |
