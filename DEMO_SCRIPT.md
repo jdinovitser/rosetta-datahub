@@ -51,11 +51,10 @@
 | **2:21** | *"— validated, not executed. The plan passed every check. Human approval: complete. Write-plan validation: passed. External catalog modified: no."* | Point to the status table inside the **Write plan generated & validated** box. |
 | **2:30** | *"Five GlossaryTerms prepared. Twelve assets identified for linking. Five conflicting definitions flagged for retirement."* | Point to the three checklist items below the status box. |
 | **2:37** | *"The full plan is machine-readable JSON — inspectable by any judge, submittable in Connected Mode."* | Click **▶ Machine-readable plan (JSON)** to expand it. Show the JSON panel briefly. |
-| **2:43** | *"Every scan also exports a full audit trail."* | Click **⬇ Download Audit Report** or **View Write Plan**. Point to the export chips. |
-| | | |
-| **2:48** | *"In Connected Mode, Rosetta submits these exact operations to your DataHub instance — then re-reads every affected entity to verify the write was applied. No silent changes. Approval is tied to the hash."* | Click **⊙ Technical View** in the navbar to show the export bar. |
-| **2:55** | *"The numbers were never wrong."* | Return to the landing page hero. |
-| **2:57** | *"They were never comparable."* | Pause. Hold on the headline. |
+| **2:43** | *"Every scan also exports a full audit trail — JSON, CSV, Markdown, and a self-contained HTML report."* | Point to the export chips: **View Write Plan** · **Download JSON** · **Download Audit Report**. |
+| **2:49** | *"In Connected Mode, these exact operations get submitted to your DataHub instance — and Rosetta re-reads every entity to verify the write was applied."* | Pause one beat on the VALIDATED · NOT EXECUTED badge. |
+| **2:55** | *"Let's see what just got resolved."* | Click **See the result →**. Page returns to the landing page and smooth-scrolls to the before/after section. |
+| **2:57** | *"Before Rosetta: three teams, three definitions, 1,215 bad rows. After: one canonical GlossaryTerm proposed for DataHub. All downstream assets identified for alignment."* | Let the **Three teams. Three definitions. One conflict resolved.** section hold on screen. |
 | **3:00** | — | End. |
 
 ---
@@ -108,7 +107,8 @@
 | Step 5 badge | **VALIDATED · NOT EXECUTED** |
 | Step 5 checklist | 5 GlossaryTerms prepared · **12** assets for linking · 5 terms flagged |
 | Step 5 JSON toggle | **▶ Machine-readable plan (JSON)** |
-| Technical View | **⊙ Technical View** (navbar, 4th item) |
+| Step 5 final button | **See the result →** (scrolls home to the before/after section) |
+| Technical View (optional) | **⊙ Technical View** (navbar, 4th item) |
 
 ---
 
