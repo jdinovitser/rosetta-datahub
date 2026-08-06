@@ -20,40 +20,40 @@
 | ⏱ | SAY | DO |
 |----|-----|----|
 | **0:00** | *"Your CFO just reported revenue to the board."* | Landing page open. Headline visible: **One metric. Two meanings. Silent chaos.** Pause one beat. |
-| **0:04** | *"But inside your DataHub, clinical records `billing_amount` as the total charge — reversals and all. Finance only counts validated positive amounts. Nobody flags the disagreement. Every pipeline stays green."* | Point to the **DEMO MODE · OFFICIAL HACKATHON SAMPLE DATA** badge in the topbar. |
-| **0:15** | *"The result: 1,215 negative billing entries sitting in your downstream mart — twenty-eight and a half million dollars of corrupted data. No alert. No error."* | Scroll to reveal the **CRITICAL CONFLICT DETECTED** problem card. |
-| **0:22** | *"This is the official hackathon dataset — fifty-five thousand synthetic patient records. This is Rosetta."* | Point to the card: **1,215 bad rows · $28.48M affected transaction value in sample data**. |
-| **0:29** | *"A five-agent semantic linter, built natively on DataHub."* | Point to the agent row below: **Harvester · Detector · Blast Radius · Broker · Writer**. |
+| **0:04** | *"Inside DataHub, clinical records `billing_amount` as the total charge — reversals and all. Finance strips them out. The disagreement is invisible. Every pipeline stays green."* | Point to the **DEMO MODE · OFFICIAL HACKATHON SAMPLE DATA** badge in the topbar. |
+| **0:14** | *"1,215 rows in your downstream mart are negative. Twenty-eight million dollars of affected transaction value. No alert fired. No check failed."* | Scroll to reveal the **CRITICAL CONFLICT DETECTED** problem card. |
+| **0:22** | *"DataHub hackathon sample data — fifty-five thousand synthetic patient records. This is Rosetta."* | Point to the card: **1,215 bad rows · $28.48M affected transaction value in sample data**. |
+| **0:28** | *"Five agents. One pipeline. Built natively on DataHub."* | Point to the agent row below: **Harvester · Detector · Blast Radius · Broker · Writer**. |
 | **0:34** | *"Let's run it."* | Click **🏥 Healthcare Scan** in the topbar. *(Do NOT click "▶ Demo" or the hero button — those run a different scenario.)* |
 | | | |
-| **0:38** | *"Agent one — the Harvester. It reads your DataHub graph: glossary terms, owners, SQL logic, and cross-domain lineage."* | **Step 1** appears. Four terminal lines tick: ✓ DataHub glossary terms loaded · ✓ Metric owners identified · ✓ Cross-domain lineage mapped · ✓ SQL logic extracted for comparison. |
-| **0:47** | *"Ten metric definitions. Six business domains. Five hundred and eighty-five downstream assets already in scope."* | Stats animate: **10** Metric Definitions · **6** Business Domains · **585** Downstream Assets. |
-| **0:54** | *"Now watch what the Detector finds."* | Click **Next →**. |
+| **0:38** | *"Agent one reads the DataHub graph — every GlossaryTerm, every owner, every SQL expression, every lineage edge — before a single conflict is checked."* | **Step 1** appears. Four terminal lines tick: ✓ DataHub glossary terms loaded · ✓ Metric owners identified · ✓ Cross-domain lineage mapped · ✓ SQL logic extracted for comparison. |
+| **0:48** | *"Ten metric definitions across six business domains. Five hundred and eighty-five downstream assets already in scope."* | Stats animate: **10** Metric Definitions · **6** Business Domains · **585** Downstream Assets. |
+| **0:54** | *"Now — watch what the Detector finds."* | Click **Next →**. |
 | | | |
-| **0:57** | *"Agent two — the Conflict Detector."* | **Step 2** fills the screen. **🚨 CONFLICT DETECTOR · AGENT 2 OF 5** chip appears. |
-| **1:00** | *"Critical finding: `billing_amount`. Clinical computes it as any charge straight from the EHR. Finance filters to positive amounts only."* | Point to the conflict card: metric **billing_amount**, **CRITICAL** badge, two definition boxes — **clinical_team** on the left, **finance_team** on the right. |
-| **1:09** | *"Twenty-three percent logic overlap — meaning they agree on almost nothing. Eighty-eight percent detection confidence."* | Point to the three stat tiles: **88%** Conflict Confidence · **23%** Logic Similarity · **12** Assets at Risk. |
-| **1:17** | *"Five conflicts total. This is the worst. Next — how far has it already spread?"* | Let the tagline land: *"Same words. Different meaning."* Click **Next →**. |
+| **0:57** | *"There it is."* | **Step 2** fills the screen. **🚨 CONFLICT DETECTOR · AGENT 2 OF 5** chip appears. Pause two beats on the conflict card. |
+| **1:01** | *"`billing_amount`. Clinical: total charge from the EHR, reversals included. Finance: validated positive amounts only. Same metric name. Completely different math."* | Point to the conflict card: metric **billing_amount**, **CRITICAL** badge, two definition boxes — **clinical_team** on the left, **finance_team** on the right. |
+| **1:10** | *"Twenty-three percent logic overlap — they barely agree on anything. Eighty-eight percent confidence this conflict is real."* | Point to the three stat tiles: **88%** Conflict Confidence · **23%** Logic Similarity · **12** Assets at Risk. |
+| **1:17** | *"Five conflicts in this pipeline. This one is critical. How far has it already spread?"* | Let the tagline land: *"Same words. Different meaning."* Click **Next →**. |
 | | | |
-| **1:22** | *"Agent three — the Blast-Radius Analyzer."* | **Step 3** appears. **💥 BLAST-RADIUS ANALYZER · AGENT 3 OF 5** chip. |
-| **1:25** | *"The `billing_amount` conflict reaches twelve downstream assets — six datasets touched. That includes mart_billing, which is carrying all 1,215 of those negative rows."* | Point to the three stat numbers: **12** Downstream Assets Contaminated · **$540** Est. Business Cost · **6.0** Analyst Hours. Point to the **📦 6 datasets** chip below the numbers. |
-| **1:35** | *"Every dashboard, model, and report pulling from mart_billing is working on a foundation that never agreed on what revenue means."* | Let the dependency graph and narrative hold. Click **Next →**. |
+| **1:22** | *"Agent three traces the blast radius."* | **Step 3** appears. **💥 BLAST-RADIUS ANALYZER · AGENT 3 OF 5** chip. |
+| **1:25** | *"Twelve downstream assets contaminated. Six datasets. mart_billing is carrying all 1,215 of those negative rows into every model and report that depends on it."* | Point to the three stat numbers: **12** Downstream Assets Contaminated · **$540** Est. Business Cost · **6.0** Analyst Hours. Point to the **📦 6 datasets** chip below the numbers. |
+| **1:35** | *"Every number built on mart_billing is running on a definition nobody agreed on."* | Let the dependency graph hold. Click **Next →**. |
 | | | |
-| **1:45** | *"Agent four — the Reconciliation Broker."* | **Step 4** appears. **🤝 RECONCILIATION BROKER · AGENT 4 OF 5** chip. |
-| **1:48** | *"It puts the two competing definitions side by side and proposes one canonical definition — merging clinical and finance intent."* | Point to the **Conflicting Definitions** panel on the left: clinical_team vs finance_team. Then point to the **Proposed Canonical Definition** panel on the right: **Billing Amount** with the **canonical** tag. |
+| **1:45** | *"Agent four doesn't just flag the problem — it proposes the fix."* | **Step 4** appears. **🤝 RECONCILIATION BROKER · AGENT 4 OF 5** chip. |
+| **1:48** | *"Clinical's definition against finance's — side by side. One canonical GlossaryTerm that merges both intents. One source of truth for the entire pipeline."* | Point to the **Conflicting Definitions** panel on the left: clinical_team vs finance_team. Then point to the **Proposed Canonical Definition** panel on the right: **Billing Amount** with the **canonical** tag. |
 | **1:57** | *"And it generates the exact DataHub write operations: one GlossaryTerm upserted, twelve assets tagged, conflicting variants deprecated."* | Point to the **PROPOSED DATAHUB WRITE OPERATIONS** section: 📝 Canonical GlossaryTerm proposed · 🔗 12 downstream assets identified · 🗑 Conflicting definitions flagged. |
-| **2:06** | *"But nothing executes yet. Approval is enforced in code — the token is bound to the SHA-256 hash of this exact plan. Change the plan, you need new approval."* | Point to the note: **⚠ Human approval required — Rosetta will not write without it.** Pause one beat. |
+| **2:05** | *"But nothing runs yet. Approval is enforced in code — the token is cryptographically bound to this exact plan. Change one field, you need new approval."* | Point to the note: **⚠ Human approval required — Rosetta will not write without it.** Pause one full beat. |
 | **2:13** | *"Approved."* | Click **✓ Approve & Generate Write Plan**. Click **Next →**. |
 | | | |
 | **2:16** | *"Agent five — the Writer."* | **Step 5** appears. **✅ WRITER · AGENT 5 OF 5** chip. |
-| **2:19** | *"In Demo Mode —"* | Point to the **VALIDATED · NOT EXECUTED** badge. |
-| **2:21** | *"— validated, not executed. The plan passed every check. Human approval: complete. Write-plan validation: passed. External catalog modified: no."* | Point to the status table inside the **Write plan generated & validated** box. |
-| **2:30** | *"Five GlossaryTerms prepared. Twelve assets identified for linking. Five conflicting definitions flagged for retirement."* | Point to the three checklist items below the status box. |
-| **2:37** | *"The full plan is machine-readable JSON — inspectable by any judge, submittable in Connected Mode."* | Click **▶ Machine-readable plan (JSON)** to expand it. Show the JSON panel briefly. |
-| **2:43** | *"Every scan also exports a full audit trail — JSON, CSV, Markdown, and a self-contained HTML report."* | Point to the export chips: **View Write Plan** · **Download JSON** · **Download Audit Report**. |
-| **2:49** | *"In Connected Mode, these exact operations get submitted to your DataHub instance — and Rosetta re-reads every entity to verify the write was applied."* | Pause one beat on the VALIDATED · NOT EXECUTED badge. |
-| **2:55** | *"Let's see what just got resolved."* | Click **See the result →**. Page returns to the landing page and smooth-scrolls to the before/after section. |
-| **2:57** | *"Before Rosetta: three teams, three definitions, 1,215 bad rows. After: one canonical GlossaryTerm proposed for DataHub. All downstream assets identified for alignment."* | Let the **Three teams. Three definitions. One conflict resolved.** section hold on screen. |
+| **2:19** | *"Validated."* | Point to the **VALIDATED · NOT EXECUTED** badge. |
+| **2:21** | *"Not executed. Every check passed. Human approval is on record. DataHub hasn't been touched — yet."* | Point to the status table inside the **Write plan generated & validated** box. |
+| **2:30** | *"Five GlossaryTerms ready to write. Twelve assets queued for linking. Five conflicting definitions flagged for retirement."* | Point to the three checklist items below the status box. |
+| **2:37** | *"The full plan is machine-readable JSON — inspectable by any reviewer, submittable the moment you connect."* | Click **▶ Machine-readable plan (JSON)** to expand it. Show the JSON panel briefly. |
+| **2:43** | *"Every scan ships a complete audit trail — JSON, CSV, Markdown, and a self-contained HTML report."* | Point to the export chips: **View Write Plan** · **Download JSON** · **Download Audit Report**. |
+| **2:49** | *"In Connected Mode, Rosetta submits these exact operations to your DataHub instance — then re-reads every entity to confirm the write landed."* | Pause one beat on the VALIDATED · NOT EXECUTED badge. |
+| **2:55** | *"Let's see what changed."* | Click **See the result →**. Page returns to the landing page and smooth-scrolls to the before/after section. |
+| **2:57** | *"Before: three teams, three definitions, 1,215 bad rows. After: one canonical GlossaryTerm. Every downstream asset aligned."* | Let the **Three teams. Three definitions. One conflict resolved.** section hold on screen. |
 | **3:00** | — | End. |
 
 ---
