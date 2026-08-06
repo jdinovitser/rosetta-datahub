@@ -30,3 +30,10 @@ id = "It0RdXwz1MwxKaHE1S13V"
 uri = "file://devpost-media/screenshot-landing.jpg"
 type = "image"
 title = "5 · App Screenshot — Landing"
+
+[[outputs]]
+id = "nuavrjwoyp5HY5hk6BEU_"
+uri = "file://video_edit/final_3min.mp4"
+type = "video"
+title = "Demo Video — Trimmed to 3:00"
+description = "3:00 clean cut. 51s of silence removed across 78 gaps. Audio denoised with FFT filter. No speed changes. 1080p H.264, 192k AAC. 10.1 MB."
