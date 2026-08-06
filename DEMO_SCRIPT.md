@@ -53,8 +53,10 @@
 | **2:43** | *"Every scan ships a full audit trail: JSON, CSV, Markdown, and a self-contained HTML report."* | Point to the export chips: **View Write Plan** · **Download JSON** · **Download Audit Report**. |
 | **2:49** | *"In Connected Mode, these exact operations go to DataHub — and Rosetta re-reads every entity to confirm the write landed. No silent changes. Ever."* | Pause one beat on the VALIDATED · NOT EXECUTED badge. |
 | **2:55** | *"Let's see what changed."* | Click **See the result →**. Page returns to the landing page and smooth-scrolls to the before/after section. |
-| **2:57** | *"Before: three teams, three definitions, 1,215 bad rows. After: one GlossaryTerm. For the first time, `billing_amount` means the same thing to everyone who uses it."* | Let the **Three teams. Three definitions. One conflict resolved.** section hold on screen. |
-| **3:00** | — | End. |
+| **2:57** | *"Before: three teams, three definitions, 1,215 bad rows."* | Let the **Three teams. Three definitions. One conflict resolved.** section hold on screen. Pause one beat. |
+| **2:59** | *"After: one source of truth."* | Hold. Pause. |
+| **3:01** | *"And a CFO who can trust the numbers."* | Hold. Let it land. |
+| **3:04** | — | End. |
 
 ---
 
