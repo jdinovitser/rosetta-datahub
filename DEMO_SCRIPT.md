@@ -24,7 +24,7 @@
 | **0:15** | *"The result: 1,215 negative billing entries sitting in your downstream mart — twenty-eight and a half million dollars of corrupted data. No alert. No error."* | Scroll to reveal the **CRITICAL CONFLICT DETECTED** problem card. |
 | **0:22** | *"This is the official hackathon dataset — fifty-five thousand synthetic patient records. This is Rosetta."* | Point to the card: **1,215 bad rows · $28.48M affected transaction value in sample data**. |
 | **0:29** | *"A five-agent semantic linter, built natively on DataHub."* | Point to the agent row below: **Harvester · Detector · Blast Radius · Broker · Writer**. |
-| **0:34** | *"Let's run it."* | Click **Run the five-agent demo**. |
+| **0:34** | *"Let's run it."* | Click **🏥 Healthcare Scan** in the topbar. *(Do NOT click "▶ Demo" or the hero button — those run a different scenario.)* |
 | | | |
 | **0:38** | *"Agent one — the Harvester. It reads your DataHub graph: glossary terms, owners, SQL logic, and cross-domain lineage."* | **Step 1** appears. Four terminal lines tick: ✓ DataHub glossary terms loaded · ✓ Metric owners identified · ✓ Cross-domain lineage mapped · ✓ SQL logic extracted for comparison. |
 | **0:47** | *"Ten metric definitions. Six business domains. Five hundred and eighty-five downstream assets already in scope."* | Stats animate: **10** Metric Definitions · **6** Business Domains · **585** Downstream Assets. |
@@ -86,8 +86,10 @@
 
 | What the script says | Exact text on screen |
 |---------------------|----------------------|
-| "Run the five-agent demo" | **Run the five-agent demo** (large primary button, hero) |
-| "Run Healthcare Demo" (alt start) | **Run Healthcare Demo ›** (button inside the CRITICAL CONFLICT DETECTED card) |
+| Start the demo | **🏥 Healthcare Scan** — topbar, top-right *(use this one)* |
+| Alt start | **🏥 Scan Healthcare** — dataset cards section |
+| Alt start | **Run Healthcare Demo ›** — inside the CRITICAL CONFLICT DETECTED card |
+| ⚠️ Do NOT use | **▶ Demo** or **Run the five-agent demo** — these run the active-user scenario, not billing_amount |
 | Next between steps | **Next →** (bottom-right of each step panel) |
 | Step 1 chip | 🔍 **HARVESTER · AGENT 1 OF 5** |
 | Step 1 title | **Discover the meaning** |
