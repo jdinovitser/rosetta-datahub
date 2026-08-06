@@ -1305,7 +1305,7 @@ topbarHomeBtn?.addEventListener("click", () => {
 })();
 
 // Extra landing CTAs
-document.getElementById("runDemo2")?.addEventListener("click", () => run("/api/demo"));
+document.getElementById("runDemo2")?.addEventListener("click", () => run("/api/healthcare-scan"));
 document.getElementById("navTechViewHero")?.addEventListener("click", () => {
   if (!stepsReady) run("/api/demo").then(showTech);
   else showTech();
