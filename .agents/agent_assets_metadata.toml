@@ -44,3 +44,10 @@ uri = "file://video_edit/demo_trimmed.mp4"
 type = "video"
 title = "Demo — 2:54 (breathing / dead air removed)"
 description = "10 long pauses removed (1.2s+ gaps only). Natural speech rhythm untouched. Audio denoised. Full video preserved. 1080p H.264, 192k AAC. 9.6 MB."
+
+[[outputs]]
+id = "z0Z8ZepJR6j0kSCXlUXQZ"
+uri = "file://video_edit/demo_revised_trimmed.mp4"
+type = "video"
+title = "Demo (revised) — 3:26"
+description = "5 longest dead spots removed (1.5s+ gaps only). Natural pauses and speech rhythm fully intact. Audio denoised. 1080p, 192k AAC. 13.8 MB."
