@@ -37,3 +37,10 @@ uri = "file://video_edit/final_3min.mp4"
 type = "video"
 title = "Demo Video — 2:59 (full content)"
 description = "51s of silence removed from throughout. End of demo fully preserved. Audio denoised. No speed changes. 1080p H.264, 192k AAC. 10.7 MB."
+
+[[outputs]]
+id = "Nwe3PDfrjb-2xXDFDyKWI"
+uri = "file://video_edit/demo_trimmed.mp4"
+type = "video"
+title = "Demo — 2:54 (breathing / dead air removed)"
+description = "10 long pauses removed (1.2s+ gaps only). Natural speech rhythm untouched. Audio denoised. Full video preserved. 1080p H.264, 192k AAC. 9.6 MB."
