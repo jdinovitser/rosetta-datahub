@@ -51,3 +51,10 @@ uri = "file://video_edit/demo_revised_trimmed.mp4"
 type = "video"
 title = "Demo (revised) — 3:26"
 description = "5 longest dead spots removed (1.5s+ gaps only). Natural pauses and speech rhythm fully intact. Audio denoised. 1080p, 192k AAC. 13.8 MB."
+
+[[outputs]]
+id = "AMMc_XdyuYtGw_LFfo0p9"
+uri = "file://video_edit/demo_revised_trimmed2.mp4"
+type = "video"
+title = "Demo (revised) — 3:14"
+description = "12 gaps removed (0.8s+ only). Natural pacing preserved. 11.9s cut. 1080p H.264, 192k AAC. 13.3 MB."
