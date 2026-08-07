@@ -259,7 +259,7 @@ def api_scan():
 
 @app.route("/api/export/<fmt>")
 def api_export(fmt: str):
-    report = dict(_LAST_REPORT or run_demo()["report"])
+    report = dict(_LAST_REPORT or run_healthcare_demo()["report"])
     # Embed post-write verification evidence so machine-readable exports are
     # auditable: judges can see exactly what Rosetta read back from DataHub.
     if _LAST_VERIFICATION:
@@ -286,7 +286,7 @@ def health():
 @app.route("/api/graph")
 def api_graph():
     """Return the blast-radius graph for the highest-severity conflict."""
-    report = _LAST_REPORT or run_demo()["report"]
+    report = _LAST_REPORT or run_healthcare_demo()["report"]
     conflicts = report.get("conflicts", [])
     if not conflicts:
         return jsonify({"nodes": [], "edges": []})
@@ -297,7 +297,7 @@ def api_graph():
 @app.route("/api/dashboard")
 def api_dashboard():
     """Executive Data Intelligence Dashboard — scores + prioritised actions."""
-    report = _LAST_REPORT or run_demo()["report"]
+    report = _LAST_REPORT or run_healthcare_demo()["report"]
     return jsonify(compute_executive_dashboard(report))
 
 

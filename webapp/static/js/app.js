@@ -16,7 +16,7 @@ function friendlyMetric(m) {
       p.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
     ).join(" vs ");
   }
-  return m;
+  return m.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function animateCount(el, to, opts = {}) {
@@ -498,7 +498,7 @@ function buildStep5(data, writeResult) {
 
   const top   = (report.conflicts || [])[0];
   const blast = (top || {}).blast_radius || 22;
-  const name  = friendlyMetric((top || {}).metric || "Active User");
+  const name  = friendlyMetric((top || {}).metric || "Billing Amount");
 
   const isLive = writeResult != null;
 
